@@ -11,7 +11,7 @@
 <meta name="theme-color" content="#08130f">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Maistro r29</title>
+<title>Maistro r30</title>
 <style>
 :root{--bg:#dfe9e4;--glass:rgba(255,255,255,.62);--win:rgba(255,255,255,.16);--ink:#14231f;--mute:#5a6e68;--line:rgba(20,35,31,.16);--acc:#d9731a;--acc-ink:#fff;--ok:#12805c;--bad:#b3261e;--chip:rgba(20,35,31,.08);--user:#cfe5db;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -136,7 +136,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 </style>
 </head>
 <body>
-<div class="gate" id="gate"><div class="card box"><div class="brand"><img src="icon.jpg" alt="" width="42" height="42" style="border-radius:10px">Maistro<span class="rev" id="grev">r29</span></div><p class="why" id="gmsg">Sign in. Accounts are shared.</p>
+<div class="gate" id="gate"><div class="card box"><div class="brand"><img src="icon.jpg" alt="" width="42" height="42" style="border-radius:10px">Maistro<span class="rev" id="grev">r30</span></div><p class="why" id="gmsg">Sign in. Accounts are shared.</p>
 <div id="gform"><label class="f">Username<input type="text" id="gh" autocomplete="username"></label><label class="f">Passphrase<input type="password" id="gp" autocomplete="current-password"></label><div class="row"><button class="btn pri" id="gin" type="button">Sign in</button><button class="btn" id="gnew" type="button">Create account</button></div><div id="grecent" class="row" style="margin-top:8px;flex-wrap:wrap"></div><label class="f" id="gconfirm" hidden>Confirm passphrase<input type="password" id="gp2" autocomplete="new-password"></label><div id="gstat" style="display:block;margin-top:10px;padding:10px 12px;border-radius:8px;font-weight:700;color:#fff;background:#12805c">Ready.</div></div>
 <label class="pill" style="display:inline-block;margin-top:8px"><input type="checkbox" id="rem" checked> Remember this browser</label>
 <button class="btn pri" id="install" type="button" style="margin-top:10px;width:100%">Install app</button>
@@ -176,7 +176,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 <div class="app">
 
 <aside class="card side" id="sidec" aria-label="Tasks">
-  <div class="brand"><canvas id="mini" width="28" height="28" aria-hidden="true"></canvas>Maistro<span class="rev" id="rev">r29</span><button class="live" id="live" type="button" title="Live. Tap to refresh"><span class="lt g" id="livedot"></span></button><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
+  <div class="brand"><canvas id="mini" width="28" height="28" aria-hidden="true"></canvas>Maistro<span class="rev" id="rev">r30</span><button class="live" id="live" type="button" title="Live. Tap to refresh"><span class="lt g" id="livedot"></span></button><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
   <div class="menu" id="menu" role="menu" hidden><button type="button" role="menuitem" data-a="new_task">New Task</button><button type="button" role="menuitem" data-a="new_project">New Project</button><button type="button" role="menuitem" data-a="open_project">Open Project</button><button type="button" role="menuitem" data-a="import_project">Import Project</button><button type="button" role="menuitem" data-a="export_project">Export Project</button><div class="sgrp" style="padding:6px 10px 2px">Recent projects</div><div id="mrec"></div></div>
   <details id="rec" open><summary>📁 Recent projects</summary><div id="reclist"></div></details>
   <details id="rq" open><summary>🧾 Recent queue</summary><div id="rqlist"></div></details>
@@ -191,6 +191,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 <div class="grip" id="gl" title="Drag to resize"></div>
 <main class="card" id="mainc" aria-label="Conversation">
   <div class="top">
+  <div class="mono" id="mmodel" style="padding:4px 10px 0;font-size:12px">Model: none yet · Usage: 0 calls</div>
     <span class="crumb mono" id="crumb">this machine / project</span><span class="sp"></span>
     <button class="vbtn" id="mute" type="button" aria-pressed="false">Unmute</button>
     <button class="vbtn spk" id="spkb" type="button" aria-pressed="false">Speak replies</button>
@@ -613,7 +614,7 @@ console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
 <script>
 (function(){
 var $=function(i){return document.getElementById(i)};
-var REV="r29"; /* bump REV on every build */
+var REV="r30"; /* bump REV on every build */
 var S={voice:false,vwho:"",vgen:0,jobs:[],jid:0,sess:null,hits:[],busy:false,last:""};
 var STAGES=["Brief","Image","3D mesh","Cleanup","Import","Demo link"];
 function sha(){return Math.random().toString(16).slice(2,9)}
@@ -832,7 +833,7 @@ function paintTasks(){var T=$("tasks");if(!S.jobs.length){T.innerHTML="<p class=
 /* ---------- session ---------- */
 var USE={};try{USE=JSON.parse(localStorage.getItem("maistro.use")||"{}")||{}}catch(e){USE={}}
 function noteUse(name,text){var u=USE[name]=USE[name]||{calls:0,chars:0};u.calls++;u.chars+=(text||"").length;USE.last=name;try{localStorage.setItem("maistro.use",JSON.stringify(USE))}catch(e){}paintUse()}
-function paintUse(){var name=USE.last||"none yet",u=USE[name]||{calls:0,chars:0};if($("curmodel"))$("curmodel").textContent="Model: "+name;if($("curuse"))$("curuse").textContent="Usage: "+u.calls+" calls · ~"+u.chars+" chars";var box=$("uselist");if(!box)return;box.innerHTML="";var keys=[];if(KEYS.gg)keys.push("Google key saved");if(KEYS.gk)keys.push("Groq key saved");if(KEYS.ok)keys.push("OpenRouter key saved");var p=document.createElement("p");p.className="why";p.textContent=keys.length?keys.join(" · "):"No API key saved yet. Add one under Models.";box.appendChild(p);Object.keys(USE).forEach(function(k){if(k==="last")return;var row=document.createElement("div");row.className="job";row.innerHTML="<b>"+esc(k)+"</b><div class='why'>"+USE[k].calls+" calls · ~"+USE[k].chars+" characters on this device</div>";box.appendChild(row)})}
+function paintUse(){var name=USE.last||"none yet",u=USE[name]||{calls:0,chars:0};if($("curmodel"))$("curmodel").textContent="Model: "+name;if($("curuse"))$("curuse").textContent="Usage: "+u.calls+" calls · ~"+u.chars+" chars";if($("mmodel"))$("mmodel").textContent="Model: "+name+" · Usage: "+u.calls+" calls";var box=$("uselist");if(!box)return;box.innerHTML="";var keys=[];if(KEYS.gg)keys.push("Google key saved");if(KEYS.gk)keys.push("Groq key saved");if(KEYS.ok)keys.push("OpenRouter key saved");var p=document.createElement("p");p.className="why";p.textContent=keys.length?keys.join(" · "):"No API key saved yet. Add one under Models.";box.appendChild(p);Object.keys(USE).forEach(function(k){if(k==="last")return;var row=document.createElement("div");row.className="job";row.innerHTML="<b>"+esc(k)+"</b><div class='why'>"+USE[k].calls+" calls · ~"+USE[k].chars+" characters on this device</div>";box.appendChild(row)})}
 function paintSess(){var s=S.sess;$("sinfo").textContent=s?"In session on "+s.branch+" • "+s.turns.length+" changes":"No session open.";
  $("branch").textContent=(ME?ME.handle:"signed out")+" on "+(s?s.branch+" @ "+(s.turns.length?s.turns[s.turns.length-1].sha:s.base):"main");paintUse();
  var T=$("turns");T.innerHTML="";if(s)s.turns.slice().reverse().forEach(function(t){var d=document.createElement("div");d.className="job";d.innerHTML="<span class='mono'>"+t.sha+"</span> "+esc(t.text.slice(0,70))+"<div class='why'>"+t.note+"</div>";T.appendChild(d)})}
