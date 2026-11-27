@@ -5,7 +5,7 @@
 <link rel="apple-touch-icon" href="icon.jpg">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Maistro r19</title>
+<title>Maistro r20</title>
 <style>
 :root{--bg:#dfe9e4;--glass:rgba(255,255,255,.62);--ink:#14231f;--mute:#5a6e68;--line:rgba(20,35,31,.16);--acc:#d9731a;--acc-ink:#fff;--ok:#12805c;--bad:#b3261e;--chip:rgba(20,35,31,.08);--user:#cfe5db;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -130,7 +130,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 </style>
 </head>
 <body>
-<div class="gate" id="gate"><div class="card box"><div class="brand"><img src="icon.jpg" alt="" width="42" height="42" style="border-radius:10px">Maistro<span class="rev" id="grev">r19</span></div><p class="why" id="gmsg">Sign in. Accounts are shared.</p>
+<div class="gate" id="gate"><div class="card box"><div class="brand"><img src="icon.jpg" alt="" width="42" height="42" style="border-radius:10px">Maistro<span class="rev" id="grev">r20</span></div><p class="why" id="gmsg">Sign in. Accounts are shared.</p>
 <div id="gform"><label class="f">Username<input type="text" id="gh" autocomplete="username"></label><label class="f">Passphrase<input type="password" id="gp" autocomplete="current-password"></label><div class="row"><button class="btn pri" id="gin" type="button">Sign in</button><button class="btn" id="gnew" type="button">Create account</button></div><div id="grecent" class="row" style="margin-top:8px;flex-wrap:wrap"></div><p class="why" id="gstat" style="margin:8px 0 0;min-height:1.2em"></p></div>
 <label class="pill" style="display:inline-block;margin-top:8px"><input type="checkbox" id="rem" checked> Remember this browser</label>
 <button class="btn" id="gskip" type="button" hidden>Continue on this device only</button>
@@ -138,7 +138,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 <div class="app">
 
 <aside class="card side" id="sidec" aria-label="Tasks">
-  <div class="brand"><img src="icon.jpg" alt="" width="28" height="28" style="border-radius:7px">Maistro<span class="rev" id="rev">r19</span><button class="live" id="live" type="button" title="Live. Tap to refresh"><span class="lt g" id="livedot"></span></button><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
+  <div class="brand"><img src="icon.jpg" alt="" width="28" height="28" style="border-radius:7px">Maistro<span class="rev" id="rev">r20</span><button class="live" id="live" type="button" title="Live. Tap to refresh"><span class="lt g" id="livedot"></span></button><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
   <div class="menu" id="menu" role="menu" hidden><button type="button" role="menuitem" data-a="new_task">New Task</button><button type="button" role="menuitem" data-a="new_project">New Project</button><button type="button" role="menuitem" data-a="open_project">Open Project</button><button type="button" role="menuitem" data-a="import_project">Import Project</button><button type="button" role="menuitem" data-a="export_project">Export Project</button><div class="sgrp" style="padding:6px 10px 2px">Recent projects</div><div id="mrec"></div></div>
   <details id="rec" open><summary>📁 Recent projects</summary><div id="reclist"></div></details>
   <details id="rq" open><summary>🧾 Recent queue</summary><div id="rqlist"></div></details>
@@ -570,7 +570,7 @@ console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
 <script>
 (function(){
 var $=function(i){return document.getElementById(i)};
-var REV="r19"; /* bump REV on every build */
+var REV="r20"; /* bump REV on every build */
 var S={voice:false,vwho:"",vgen:0,jobs:[],jid:0,sess:null,hits:[],busy:false,last:""};
 var STAGES=["Brief","Image","3D mesh","Cleanup","Import","Demo link"];
 function sha(){return Math.random().toString(16).slice(2,9)}
@@ -1225,7 +1225,8 @@ function bootAsk(){
 function beat(){var id=ghUser(),me={id:id,handle:(ME&&ME.handle)||id,t:Date.now()};return ghGet("lists/online.json").catch(function(){return null}).then(function(d){var users=((d&&d.users)||[]).filter(function(u){return u.id!==id&&Date.now()-(u.t||0)<60000});users.push(me);paintUsers(users);if(!ghTok())return;return ghPut("lists/online.json",{users:users,updated:Date.now()},"online")})}
 function liveTick(){var dot=$("livedot");loadGlobal().then(function(){if(dot&&$("askupd").hidden)dot.className="lt g"}).catch(function(){if(dot)dot.className="lt r"});loadMain().catch(function(){});loadMine(true);beat().catch(function(){})}
  setInterval(liveTick,30000);
- setInterval(function(){fetch("index.html?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var REV="(r\d+)"/);if(m&&m[1]!==REV){askStat("Update "+m[1]+" is ready.");var b=$("askupd");if(b)b.hidden=false;var d=$("livedot");if(d)d.className="lt r"}}).catch(function(){})},60000);
+ if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){});var reloading=false;navigator.serviceWorker.addEventListener("controllerchange",function(){if(reloading)return;reloading=true;location.reload()})}
+setInterval(function(){fetch("https://raw.githubusercontent.com/spellstackstudios/maistro-live/main/version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()}).then(function(v){if(v&&v.rev&&v.rev!==REV){askStat("Updating to "+v.rev+"…");var d=$("livedot");if(d)d.className="lt a";setTimeout(function(){location.reload()},600)}}).catch(function(){})},20000);
  $("askwait").value=+CFG.askwait||3;
  $("askwait").oninput=function(){CFG.askwait=Math.max(1,+this.value||3);save()};
  $("askin").addEventListener("keydown",function(e){if(e.key==="Enter"&&(e.metaKey||e.ctrlKey)){e.preventDefault();askGo(true)}else if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();askGo(false)}});
