@@ -1,6 +1,14 @@
 {
   "users": [
     {
+      "handle": "drew",
+      "salt": "U6h7TjBHrnS3sP7u1Vjywg==",
+      "hash": "BnQ7dZUcUcV47fwg1F4ewzHrBWzz/o9RRYp0wz7NOAI=",
+      "iter": 250000,
+      "role": "owner",
+      "created": 1795774988627
+    },
+    {
       "handle": "jato",
       "salt": "3JEY9q4INlT1dcW5Rj2bNQ==",
       "hash": "MazsPwsx/993pOirZBShieTAygNi8xuKi1OodpJtb7E=",
