@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="icon" href="icon.png">
-<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-512.png">
 <link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -11,7 +11,7 @@
 <meta name="theme-color" content="#08130f">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Maistro 1.32</title>
+<title>Maistro 1.33</title>
 <style>
 :root{--bg:#dfe9e4;--glass:rgba(255,255,255,.62);--win:rgba(255,255,255,.16);--ink:#14231f;--mute:#5a6e68;--line:rgba(20,35,31,.16);--acc:#d9731a;--acc-ink:#fff;--ok:#12805c;--bad:#b3261e;--chip:rgba(20,35,31,.08);--user:#cfe5db;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -136,7 +136,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 </style>
 </head>
 <body>
-<div class="gate" id="gate"><div class="card box"><div class="brand"><img src="icon.png" alt="" width="42" height="42" style="border-radius:10px">Maistro<span class="rev" id="grev">1.32</span></div><p class="why" id="gmsg">Sign in. Accounts are shared.</p>
+<div class="gate" id="gate"><div class="card box"><div class="brand"><img src="icon.png" alt="" width="42" height="42" style="border-radius:10px">Maistro<span class="rev" id="grev">1.33</span></div><p class="why" id="gmsg">Sign in. Accounts are shared.</p>
 <div id="gform"><label class="f">Username<input type="text" id="gh" autocomplete="username"></label><label class="f">Passphrase<input type="password" id="gp" autocomplete="current-password"></label><div class="row"><button class="btn pri" id="gin" type="button">Sign in</button><button class="btn" id="gnew" type="button">Create account</button></div><div id="grecent" class="row" style="margin-top:8px;flex-wrap:wrap"></div><label class="f" id="gconfirm" hidden>Confirm passphrase<input type="password" id="gp2" autocomplete="new-password"></label><div id="gstat" style="display:block;margin-top:10px;padding:10px 12px;border-radius:8px;font-weight:700;color:#fff;background:#12805c">Ready.</div></div>
 <label class="pill" style="display:inline-block;margin-top:8px"><input type="checkbox" id="rem" checked> Remember this browser</label>
 <button class="btn pri" id="install" type="button" style="margin-top:10px;width:100%">Install app</button>
@@ -176,7 +176,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 <div class="app">
 
 <aside class="card side" id="sidec" aria-label="Tasks">
-  <div class="brand"><canvas id="mini" width="28" height="28" aria-hidden="true"></canvas>Maistro<span class="rev" id="rev">1.32</span><button class="live" id="live" type="button" title="Live. Tap to refresh"><span class="lt g" id="livedot"></span></button><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
+  <div class="brand"><canvas id="mini" width="28" height="28" aria-hidden="true"></canvas>Maistro<span class="rev" id="rev">1.33</span><button class="live" id="live" type="button" title="Status"><span class="lt g" id="livedot"></span></button><div class="menu" id="livemenu" role="menu" hidden><button type="button" role="menuitem" data-a="refresh">Refresh</button><button type="button" role="menuitem" data-a="check">Check for updates</button><button type="button" role="menuitem" data-a="restart">Restart application</button></div><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
   <div class="menu" id="menu" role="menu" hidden><button type="button" role="menuitem" data-a="new_task">New Task</button><button type="button" role="menuitem" data-a="new_project">New Project</button><button type="button" role="menuitem" data-a="open_project">Open Project</button><button type="button" role="menuitem" data-a="import_project">Import Project</button><button type="button" role="menuitem" data-a="export_project">Export Project</button><div class="sgrp" style="padding:6px 10px 2px">Recent projects</div><div id="mrec"></div></div>
   <details id="rec" open><summary>📁 Recent projects</summary><div id="reclist"></div></details>
   <details id="rq" open><summary>🧾 Recent queue</summary><div id="rqlist"></div></details>
@@ -615,7 +615,7 @@ console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
 <script>
 (function(){
 var $=function(i){return document.getElementById(i)};
-var REV="1.32"; /* bump REV on every build */
+var REV="1.33"; /* bump REV on every build */
 var S={voice:false,vwho:"",vgen:0,jobs:[],jid:0,sess:null,hits:[],busy:false,last:""};
 var STAGES=["Brief","Image","3D mesh","Cleanup","Import","Demo link"];
 function sha(){return Math.random().toString(16).slice(2,9)}
@@ -1290,7 +1290,13 @@ function bootAsk(){
  $("askimp").onclick=improveFromLists;loadDone();
  $("asksync2").onclick=$("asksync").onclick;$("askmine2").onclick=$("askmine").onclick;$("askglob2").onclick=$("askglob").onclick;$("askmain2").onclick=$("askmain").onclick;$("askimp2").onclick=$("askimp").onclick;
  $("askupd").onclick=function(){location.reload()};
- $("live").onclick=function(){if($("askupd")&&!$("askupd").hidden){location.reload();return}liveTick();askStat("Refreshed.")};
+ function checkUpdate(){return fetch("https://raw.githubusercontent.com/spellstackstudios/maistro-live/main/version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()}).then(function(v){if(v&&v.rev&&v.rev!==REV){askStat("Updating to "+v.rev+"…");setTimeout(function(){location.reload()},400);return true}askStat("Up to date. "+REV+".");return false})}
+$("live").onclick=function(e){e.stopPropagation();var m=$("livemenu");m.hidden=!m.hidden};
+$("livemenu").onclick=function(e){var b=e.target.closest("button");if(!b)return;$("livemenu").hidden=true;var a=b.dataset.a;
+ if(a==="refresh"){liveTick();askStat("Refreshed.");return}
+ if(a==="check"){askStat("Checking for updates…");checkUpdate();return}
+ if(a==="restart"){askStat("Restarting…");setTimeout(function(){location.replace(location.pathname+"?v="+Date.now())},300)}};
+addEventListener("click",function(){var m=$("livemenu");if(m)m.hidden=true});
  $("askopen").onclick=function(){ASK.off=false;ASK.open=true;saveAsk();paintAsk()};
 
  loadGlobal().catch(function(){});
