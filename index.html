@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Maistro r7</title>
+<title>Maistro r8</title>
 <style>
 :root{--bg:#dfe9e4;--glass:rgba(255,255,255,.62);--ink:#14231f;--mute:#5a6e68;--line:rgba(20,35,31,.16);--acc:#d9731a;--acc-ink:#fff;--ok:#12805c;--bad:#b3261e;--chip:rgba(20,35,31,.08);--user:#cfe5db;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -105,7 +105,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 #askin{width:100%;min-height:72px;resize:vertical;border:1px solid var(--line);background:var(--chip);border-radius:10px;padding:8px 10px}
 #asklist{display:flex;flex-direction:column;gap:6px;margin-top:10px}
 .askrow{display:flex;gap:8px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:7px 8px;background:var(--chip)}
-.askrow b{font-weight:600;font-size:14px}
+.askrow{cursor:pointer}.askrow b{font-weight:600;font-size:14px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}.askrow.open b{white-space:normal;max-width:none}.askrow .detail{display:none;margin-top:6px}.askrow.open .detail{display:block}#askmenu{position:fixed;z-index:80;min-width:140px;padding:6px;border:1px solid var(--line);border-radius:10px;background:var(--bg);box-shadow:0 8px 24px rgba(0,0,0,.35)}#askmenu button{display:block;width:100%;text-align:left;border:0;background:none;padding:8px 10px;border-radius:8px}#askmenu button:hover{background:var(--chip)}#askdup{margin-top:8px}
 .askrow small{display:block;color:var(--mute);font-size:12px}
 #askorb{position:relative;width:62px;height:62px;border-radius:50%;border:1px solid var(--acc);background:var(--acc);color:var(--acc-ink);font-weight:750;font-size:14px;box-shadow:0 10px 28px rgba(0,0,0,.28);padding:0}
 #askorb:hover{filter:brightness(1.06)}
@@ -133,7 +133,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 <div class="app">
 
 <aside class="card side" id="sidec" aria-label="Tasks">
-  <div class="brand"><canvas id="mini" width="28" height="28" aria-hidden="true"></canvas>Maistro<span class="rev" id="rev">r7</span><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
+  <div class="brand"><canvas id="mini" width="28" height="28" aria-hidden="true"></canvas>Maistro<span class="rev" id="rev">r8</span><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
   <div class="menu" id="menu" role="menu" hidden><button type="button" role="menuitem" data-a="new_task">New Task</button><button type="button" role="menuitem" data-a="new_project">New Project</button><button type="button" role="menuitem" data-a="open_project">Open Project</button><button type="button" role="menuitem" data-a="import_project">Import Project</button><button type="button" role="menuitem" data-a="export_project">Export Project</button><div class="sgrp" style="padding:6px 10px 2px">Recent projects</div><div id="mrec"></div></div>
   <details id="rec" open><summary>📁 Recent projects</summary><div id="reclist"></div></details>
   <details id="rq" open><summary>🧾 Recent queue</summary><div id="rqlist"></div></details>
@@ -535,7 +535,9 @@ console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
       <p class="why">Tell me what to add. I keep the list, then make one job for each item. Enter adds. Ctrl+Enter creates the jobs.</p>
       <textarea id="askin" placeholder="Add a pause menu, footstep audio, and a health pickup"></textarea>
       <div class="row" style="margin-top:8px"><button class="btn" id="askadd" type="button">Add to list</button><button class="btn pri" id="askjobs" type="button">Create jobs</button></div>
+      <div id="askdup" hidden></div>
       <div id="asklist"></div>
+      <label class="f" style="margin-top:8px">Auto-send after silence (seconds)<input type="number" id="askwait" min="1" max="30" value="3"></label>
       <p class="why" style="margin-top:12px">Yours stays on this device. Adds also go to today's shared list. Once a day that rolls into the main list, which keeps every day.</p>
       <input type="password" id="ght" placeholder="Token shows here after generate or import" autocomplete="off" style="margin-top:6px">
       <div class="row" style="margin-top:6px"><button class="btn sm pri" id="ghtgen" type="button">Generate token</button><button class="btn sm" id="ghtpaste" type="button">Paste</button><button class="btn sm" id="ghtimp" type="button">Import file</button><input type="file" id="ghtfile" accept=".txt,.token,text/plain" hidden></div>
@@ -550,7 +552,7 @@ console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
 <script>
 (function(){
 var $=function(i){return document.getElementById(i)};
-var REV="r7"; /* bump REV on every build */
+var REV="r8"; /* bump REV on every build */
 var S={voice:false,vwho:"",vgen:0,jobs:[],jid:0,sess:null,hits:[],busy:false,last:""};
 var STAGES=["Brief","Image","3D mesh","Cleanup","Import","Demo link"];
 function sha(){return Math.random().toString(16).slice(2,9)}
@@ -702,6 +704,7 @@ $('pfile').onchange=function(){var f=this.files[0];this.value='';if(!f)return;f.
 function R(k,l,t,o,d,b){return{k:k,l:l,t:t,o:o,d:d,b:b}}
 var SCH=['General',R('theme','Theme','select',['auto','light','dark'],'auto'),R('fsize','Text size','range',[13,19,1],15),R('compact','Compact layout','check',0,0),R('still','Reduce motion','check',0,0),
 'Voice',R('vlang','Speech language','text',0,'en-US'),R('spk','Speak replies','check',0,0,'spk'),R('rate','Speaking speed','range',[.6,1.6,.1],1),
+'Ask Maistro',R('askwait','Auto-send after silence (seconds)','number',0,3),
 'Routing',R('prio','Route by','select',0,'auto','prio'),R('runon','Run on','select',0,'auto','runon'),R('own','Own model (always wins)','select',0,'','own'),R('cheap','Cheap routing for small jobs','check',0,1,'cheap'),R('maxc','Longest small job (characters)','number',0,1500),
 'Enhance',R('autoenh','Enhance before queueing','check',0,1),R('ol','Ollama address','text',0,'http://localhost:11434','ol'),R('olm','Ollama model','text',0,'qwen2.5:7b','olm'),R('gk','Groq key','password',0,'','gk'),R('ok','OpenRouter key','password',0,'','ok'),R('timeout','Seconds to wait for each model','number',0,8),R('limit','Free enhances an hour','number',0,20),
 'Session',R('rules','Rules sent with every message','area',0,'Work only on this session branch. Keep changes small. Commit after each message. Run tests when the session ends.','rules'),R('prefix','Branch prefix','text',0,'session/you'),R('hours','Auto-end after hours','number',0,12),R('hold','Hold the queue during a session','check',0,1),
@@ -794,11 +797,13 @@ function armVoice(who,target){rec=new SR();rec.continuous=true;rec.interimResult
  rec.onresult=function(e){if(gen!==S.vgen)return;var cur=target.value;if(cur!==last){seed=cur;last=cur;try{rec.abort()}catch(x){}return}
   var fin="",inter="";for(var i=0;i<e.results.length;i++){var tr=e.results[i][0].transcript;if(e.results[i].isFinal)fin+=tr;else inter+=tr}
   var parts=[];if(seed)parts.push(seed.replace(/\s+$/,""));if(fin.trim())parts.push(fin.trim());if(inter.trim())parts.push(inter.trim());
-  var next=parts.join(" ");target.value=next;last=next;if(target.id==="in")paintRoute()};
+  var next=parts.join(" ");target.value=next;last=next;if(target.id==="in")paintRoute();if(who==="askmic")armAskSend()};
  rec.onerror=function(e){if(e.error==="aborted"||e.error==="no-speech")return;S.voice=false;say("Voice error: "+e.error+". Allow microphone access and try again.","sys");paint()};
  rec.onend=function(){if(!S.voice||S.vwho!==who||gen!==S.vgen)return;armVoice(who,target)};
  try{rec.start()}catch(x){S.voice=false;say("Could not start the microphone.","sys")}paint()}
-function startVoice(who,target){if(location.protocol==="file:"){say("Microphone is blocked on a file opened from disk (file://). Chrome and Edge only allow the mic on http://localhost or https. In the folder with this file, run: python -m http.server 8080  then open http://localhost:8080/maistro.html","sys");return}
+var ASKNEXT=["What's the next thing on the list?","What else should I add?","Anything else for the list?","What's next?","What do you want to add next?"];
+function armAskSend(){clearTimeout(S.askTimer);if(S.vwho!=="askmic")return;var sec=Math.max(1,+CFG.askwait||3);S.askTimer=setTimeout(function(){var v=$("askin").value.trim();if(!v||S.vwho!=="askmic")return;askGo(false);var q=ASKNEXT[Math.floor(Math.random()*ASKNEXT.length)];say(q,"ask");askStat(q)},sec*1000)}
+function startVoice(who,target){clearTimeout(S.askTimer);if(location.protocol==="file:"){say("Microphone is blocked on a file opened from disk (file://). Chrome and Edge only allow the mic on http://localhost or https. In the folder with this file, run: python -m http.server 8080  then open http://localhost:8080/maistro.html","sys");return}
  if(!window.isSecureContext){say("Microphone needs a secure page. Open this from http://localhost or https, not a plain file.","sys");return}
  if(!SR){say("Speech input is not supported here. Try Chrome or Edge.","sys");return}
  if(S.voice&&S.vwho===who){S.voice=false;S.vgen++;try{rec&&rec.stop()}catch(x){}paint();return}
@@ -1066,7 +1071,17 @@ function askParse(raw){
  else parts=[t];
  var items=parts.map(function(s){return s.replace(/^\s*(?:[-*•]|\d+[.)])\s*/,"").replace(/^(?:and|then)\s+/i,"").replace(/^(?:a|an)\s+/i,"").replace(/[.\s]+$/,"").trim()}).filter(function(s){return s.length>1&&!/^(please|thanks|thank you)$/i.test(s)}).slice(0,40);
  return{cmd:also?"add+jobs":"add",items:items}}
-function askAdd(items){var added=[],skip=[];items.forEach(function(text){text=text.slice(0,2000);var dup=ASK.items.some(function(it){return it.text.toLowerCase()===text.toLowerCase()&&!it.jobId});if(dup){skip.push(text);return}ASK.items.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),text:text});added.push(text)});if(added.length)pushLists(added);return{added:added,skip:skip}}
+function askPush(text){ASK.items.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),text:text,t:Date.now()})}
+function askAdd(items){var added=[],skip=[],queued=(items||[]).map(function(t){return String(t).slice(0,2000)}).filter(Boolean);
+ function next(){if(!queued.length){if(added.length)pushLists(added);saveAsk();paintAsk();return {added:added,skip:skip}}
+  var text=queued.shift(),dup=ASK.items.filter(function(it){return it.text.toLowerCase()===text.toLowerCase()})[0];
+  if(!dup){askPush(text);added.push(text);return next()}
+  skip.push(text);var box=$("askdup");box.hidden=false;box.innerHTML="";
+  var p=document.createElement("p");p.className="why";p.textContent="Already on the list: "+text;box.appendChild(p);
+  var row=document.createElement("div");row.className="row";
+  [["Add","add"],["Override","over"],["Discard","drop"]].forEach(function(c){var b=document.createElement("button");b.type="button";b.className="btn sm"+(c[1]==="add"?" pri":"");b.textContent=c[0];b.onclick=function(){box.hidden=true;box.innerHTML="";if(c[1]==="add"){askPush(text);added.push(text)}else if(c[1]==="over"){dup.text=text;dup.t=Date.now();added.push(text)}next()};row.appendChild(b)});
+  box.appendChild(row);return {added:added,skip:skip}}
+ return next()}
 var GH={owner:"spellstackstudios",repo:"maistro-live",branch:"main"};
 function ghUser(){var h=ME&&ME.handle;if(h&&h!=="local")return String(h).toLowerCase().replace(/[^a-z0-9_-]/g,"-").slice(0,40);try{h=localStorage.getItem("maistro.device")}catch(e){}if(!h){h="d"+Math.random().toString(36).slice(2,10);try{localStorage.setItem("maistro.device",h)}catch(e){}}return h}
 function dayKey(t){return new Date(t||Date.now()).toISOString().slice(0,10)}
@@ -1115,11 +1130,20 @@ function paintAsk(){var root=$("askroot");if(!root)return;
  var badge=$("askbadge");badge.hidden=!pending||!!ASK.off;badge.textContent=pending>9?"9+":String(pending);
  var L=$("asklist");L.innerHTML="";
  if(!ASK.items.length){var e=document.createElement("p");e.className="why";e.textContent="Nothing on the list yet.";L.appendChild(e);return}
- ASK.items.slice().reverse().forEach(function(it){var row=document.createElement("div"),tx=document.createElement("div"),sm=document.createElement("small"),x=document.createElement("button"),j=it.jobId?S.jobs.filter(function(q){return q.id===it.jobId})[0]:null;
-  row.className="askrow";tx.appendChild(document.createElement("b")).textContent=it.text;
+ ASK.items.slice().reverse().forEach(function(it){var row=document.createElement("div"),tx=document.createElement("div"),sm=document.createElement("small"),j=it.jobId?S.jobs.filter(function(q){return q.id===it.jobId})[0]:null;
+  row.className="askrow"+(ASK.openId===it.id?" open":"");tx.appendChild(document.createElement("b")).textContent=it.text;
   sm.textContent=j?("job "+j.id+" · "+j.state+(j.state==="refused"&&j.why?" · "+j.why:"")):it.jobId?"job "+it.jobId:"on the list";
-  if(j&&j.state==="refused")sm.className="err";tx.appendChild(sm);row.appendChild(tx);
-  x.type="button";x.className="btn sm";x.textContent="Remove";x.onclick=function(){ASK.items=ASK.items.filter(function(q){return q!==it});saveAsk();paintAsk()};row.appendChild(x);L.appendChild(row)})}
+  if(j&&j.state==="refused")sm.className="err";tx.appendChild(sm);
+  var det=document.createElement("div");det.className="detail";det.textContent=it.note||"Tap again to collapse. Long-press for edit, remove, or make a job.";tx.appendChild(det);row.appendChild(tx);
+  var hold=null,sx=0,sy=0,lp=false;
+  row.addEventListener("pointerdown",function(e){if(e.target.closest&&e.target.closest("button,input,textarea"))return;lp=false;sx=e.clientX;sy=e.clientY;hold=setTimeout(function(){lp=true;askMenu(it,e.clientX,e.clientY)},550)});
+  row.addEventListener("pointermove",function(e){if(Math.abs(e.clientX-sx)>12||Math.abs(e.clientY-sy)>12){clearTimeout(hold);hold=null}});
+  row.addEventListener("pointerup",function(){clearTimeout(hold);if(lp)return;ASK.openId=ASK.openId===it.id?null:it.id;saveAsk();paintAsk()});
+  row.addEventListener("pointercancel",function(){clearTimeout(hold)});
+  L.appendChild(row)})}
+function askMenu(it,x,y){var m=$("askmenu");if(!m){m=document.createElement("div");m.id="askmenu";document.body.appendChild(m);document.addEventListener("pointerdown",function(e){if(m&&!m.contains(e.target))m.hidden=true})}
+ m.innerHTML="";m.hidden=false;m.style.left=Math.min(x,innerWidth-160)+"px";m.style.top=Math.min(y,innerHeight-160)+"px";
+ [["Edit",function(){var v=prompt("Edit item",it.text);if(v&&v.trim()){it.text=v.trim().slice(0,2000);it.t=Date.now();saveAsk();paintAsk()}}],["Remove",function(){ASK.items=ASK.items.filter(function(q){return q!==it});saveAsk();paintAsk()}],["Make job",function(){if(!it.jobId){var j=queue(it.text);it.jobId=j.id;saveAsk();paintAsk();say("Queued "+it.text,"ask")}}],["Add note",function(){var v=prompt("Note",it.note||"");if(v!=null){it.note=v.trim();saveAsk();paintAsk()}}]].forEach(function(c){var b=document.createElement("button");b.type="button";b.textContent=c[0];b.onclick=function(){m.hidden=true;c[1]()};m.appendChild(b)})}
 function bootAsk(){
  if(ASK.x!=null)placeAsk(ASK.x,ASK.y);
  bindDrag($("askorb"),function(){ASK.open=!ASK.open;burst(18);saveAsk();paintAsk();if(ASK.open)$("askin").focus()});
@@ -1147,6 +1171,8 @@ function bootAsk(){
  loadMain().catch(function(){});
  if(ghTok())syncMain().catch(function(){});
  loadMine(true);
+ $("askwait").value=+CFG.askwait||3;
+ $("askwait").oninput=function(){CFG.askwait=Math.max(1,+this.value||3);save()};
  $("askin").addEventListener("keydown",function(e){if(e.key==="Enter"&&(e.metaKey||e.ctrlKey)){e.preventDefault();askGo(true)}else if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();askGo(false)}});
  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&ASK.open){ASK.open=false;saveAsk();paintAsk()}})}
 bootAsk();
