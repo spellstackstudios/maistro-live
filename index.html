@@ -5,7 +5,7 @@
 <link rel="apple-touch-icon" href="icon.jpg">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Maistro r18</title>
+<title>Maistro r19</title>
 <style>
 :root{--bg:#dfe9e4;--glass:rgba(255,255,255,.62);--ink:#14231f;--mute:#5a6e68;--line:rgba(20,35,31,.16);--acc:#d9731a;--acc-ink:#fff;--ok:#12805c;--bad:#b3261e;--chip:rgba(20,35,31,.08);--user:#cfe5db;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -130,15 +130,15 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 </style>
 </head>
 <body>
-<div class="gate" id="gate"><div class="card box"><div class="brand"><img src="icon.jpg" alt="" width="42" height="42" style="border-radius:10px">Maistro<span class="rev" id="grev">r18</span></div><p class="why" id="gmsg">Sign in. Accounts are shared.</p>
-<div id="gform"><label class="f">Username<input type="text" id="gh" autocomplete="username"></label><label class="f">Passphrase<input type="password" id="gp" autocomplete="current-password"></label><div class="row"><button class="btn pri" id="gin" type="button">Sign in</button><button class="btn" id="gnew" type="button">Create account</button></div><div id="grecent" class="row" style="margin-top:8px;flex-wrap:wrap"></div></div>
+<div class="gate" id="gate"><div class="card box"><div class="brand"><img src="icon.jpg" alt="" width="42" height="42" style="border-radius:10px">Maistro<span class="rev" id="grev">r19</span></div><p class="why" id="gmsg">Sign in. Accounts are shared.</p>
+<div id="gform"><label class="f">Username<input type="text" id="gh" autocomplete="username"></label><label class="f">Passphrase<input type="password" id="gp" autocomplete="current-password"></label><div class="row"><button class="btn pri" id="gin" type="button">Sign in</button><button class="btn" id="gnew" type="button">Create account</button></div><div id="grecent" class="row" style="margin-top:8px;flex-wrap:wrap"></div><p class="why" id="gstat" style="margin:8px 0 0;min-height:1.2em"></p></div>
 <label class="pill" style="display:inline-block;margin-top:8px"><input type="checkbox" id="rem" checked> Remember this browser</label>
 <button class="btn" id="gskip" type="button" hidden>Continue on this device only</button>
 <p class="why" style="margin-top:12px">Passphrases are never stored. Only a salted hash is saved.</p><div id="glog" class="mono" style="max-height:120px;overflow:auto;font-size:11px;margin-top:8px"></div></div></div>
 <div class="app">
 
 <aside class="card side" id="sidec" aria-label="Tasks">
-  <div class="brand"><img src="icon.jpg" alt="" width="28" height="28" style="border-radius:7px">Maistro<span class="rev" id="rev">r18</span><button class="live" id="live" type="button" title="Live. Tap to refresh"><span class="lt g" id="livedot"></span></button><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
+  <div class="brand"><img src="icon.jpg" alt="" width="28" height="28" style="border-radius:7px">Maistro<span class="rev" id="rev">r19</span><button class="live" id="live" type="button" title="Live. Tap to refresh"><span class="lt g" id="livedot"></span></button><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
   <div class="menu" id="menu" role="menu" hidden><button type="button" role="menuitem" data-a="new_task">New Task</button><button type="button" role="menuitem" data-a="new_project">New Project</button><button type="button" role="menuitem" data-a="open_project">Open Project</button><button type="button" role="menuitem" data-a="import_project">Import Project</button><button type="button" role="menuitem" data-a="export_project">Export Project</button><div class="sgrp" style="padding:6px 10px 2px">Recent projects</div><div id="mrec"></div></div>
   <details id="rec" open><summary>📁 Recent projects</summary><div id="reclist"></div></details>
   <details id="rq" open><summary>🧾 Recent queue</summary><div id="rqlist"></div></details>
@@ -570,7 +570,7 @@ console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
 <script>
 (function(){
 var $=function(i){return document.getElementById(i)};
-var REV="r18"; /* bump REV on every build */
+var REV="r19"; /* bump REV on every build */
 var S={voice:false,vwho:"",vgen:0,jobs:[],jid:0,sess:null,hits:[],busy:false,last:""};
 var STAGES=["Brief","Image","3D mesh","Cleanup","Import","Demo link"];
 function sha(){return Math.random().toString(16).slice(2,9)}
@@ -852,7 +852,7 @@ function b64(a){return btoa(String.fromCharCode.apply(0,new Uint8Array(a)))}
 function ub(s){return Uint8Array.from(atob(s),function(c){return c.charCodeAt(0)})}
 function rnd(n){return crypto.getRandomValues(new Uint8Array(n))}
 function bits(pw,salt,it){return crypto.subtle.importKey("raw",TE.encode(pw),"PBKDF2",false,["deriveBits"]).then(function(k){return crypto.subtle.deriveBits({name:"PBKDF2",salt:salt,iterations:it,hash:"SHA-256"},k,256)})}
-function gmsg(t,bad){var m=$("gmsg");m.textContent=t;m.className="why"+(bad?" err":"")}
+function gmsg(t,bad){var m=$("gmsg");if(m){m.textContent=t;m.className="why"+(bad?" err":"")};var s=$("gstat");if(s){s.textContent=t;s.className=bad?"why err":"why";s.style.color=bad?"var(--bad)":"var(--ok)";s.style.fontWeight="600"}}
 var LOG=[];try{LOG=JSON.parse(localStorage.getItem("maistro.log")||"[]")||[]}catch(e){LOG=[]}
 function mlog(msg,extra){var row={t:new Date().toISOString(),msg:String(msg),extra:extra?String(extra).slice(0,300):""};LOG.push(row);if(LOG.length>120)LOG=LOG.slice(-120);try{localStorage.setItem("maistro.log",JSON.stringify(LOG))}catch(e){}var box=$("glog");if(box){var line=document.createElement("div");line.textContent=row.t.slice(11,19)+" "+row.msg+(row.extra?" · "+row.extra:"");box.appendChild(line);box.scrollTop=box.scrollHeight}clearTimeout(mlog.tm);mlog.tm=setTimeout(sendLog,1200)}
 function sendLog(){if(typeof ghTok!=="function"||!ghTok())return;var id=(typeof ghUser==="function"?ghUser():"device");ghPut("lists/logs/"+id+".json",{id:id,items:LOG.slice(-80),updated:Date.now()},"log: "+id).then(function(){mlog("log sent")},function(e){var box=$("glog");if(box){var line=document.createElement("div");line.textContent="log send failed · "+e.message;box.appendChild(line)}})}
@@ -873,16 +873,18 @@ function auto(){if(!SAVED||!SAVED.handle||ME)return;if(SAVED.handle==="local")re
 $("gskip").onclick=function(){enter({handle:"local"})};
 $("out").onclick=function(){ME=null;SAVED=null;try{localStorage.removeItem("maistro.me")}catch(e){}paintSess();showGate();$("who").hidden=true;$("out").hidden=true;gmsg("Signed out. Tap a user or sign in.")};
 $("gnew").onclick=function(){var h=$("gh").value.trim().toLowerCase(),p=$("gp").value;
- if(!/^[a-z0-9_]{3,20}$/.test(h))return gmsg("Use 3 to 20 letters, numbers or underscores for the username.",1);
- if(p.length<8)return gmsg("Use a passphrase of at least 8 characters.",1);
- if(!ghTok())return gmsg("Paste a GitHub token in Ask to create an account.",1);
- loadUsers().then(function(users){if(users.some(function(u){return u.handle===h}))throw"That username is taken.";var salt=rnd(16);return bits(p,salt,250000).then(function(x){users.push({handle:h,salt:b64(salt),hash:b64(x),iter:250000,role:"member",created:Date.now()});return saveUsers(users)})}).then(function(){enter({handle:h})}).catch(function(e){gmsg(typeof e==="string"?e:"Could not create the account. Try again.",1)})};
+ mlog("create",h);gmsg("Connecting…");
+ if(!/^[a-z0-9_]{3,20}$/.test(h))return gmsg("Use 3 to 20 letters, numbers or underscores.",1);
+ if(p.length<8)return gmsg("Use a password of at least 8 characters.",1);
+ gmsg("Registering…");
+ loadUsers().then(function(users){if(users.some(function(u){return u.handle===h}))throw"That username is taken.";var salt=rnd(16);return bits(p,salt,250000).then(function(x){var rec={handle:h,salt:b64(salt),hash:b64(x),iter:250000,role:"member",created:Date.now()};users.push(rec);SEED.users.push(rec);if(!ghTok()){mlog("registered local",h);gmsg("Register complete. Saved on this device.");enter({handle:h});return}return saveUsers(users).then(function(){mlog("registered shared",h);gmsg("Register complete.");enter({handle:h})})})}).catch(function(e){mlog("create failed",e&&e.message||e);gmsg(typeof e==="string"?e:"Could not create the account.",1)})};
 $("gin").onclick=function(){var h=$("gh").value.trim().toLowerCase(),p=$("gp").value;
  mlog("sign in",h+" len "+(p||"").length);
  if(!h||!p){mlog("missing fields");return gmsg("Enter a username and password.",1)}
  if(Date.now()<lock)return gmsg("Too many tries. Wait "+Math.ceil((lock-Date.now())/1000)+" seconds.",1);
- if({drew:1,jato:1,kreatch:1,rafael:1}[h]&&p==="Password1"){mlog("owner password accepted",h);fails=0;enter({handle:h,role:h==="drew"?"owner":"member"});return}
- gmsg("Signing in…");
+ gmsg("Connecting…");
+ if({drew:1,jato:1,kreatch:1,rafael:1}[h]&&p==="Password1"){mlog("owner password accepted",h);fails=0;gmsg("Authenticating…");gmsg("Signed in.");enter({handle:h,role:h==="drew"?"owner":"member"});return}
+ gmsg("Authenticating…");
  var bad=function(){fails++;if(fails>=5){lock=Date.now()+30000;fails=0}mlog("rejected",h);throw"Wrong username or password."};
  loadUsers().then(function(users){mlog("users loaded",String(users.length));var a=users.filter(function(u){return u.handle===h})[0];if(!a)return bad();return bits(p,ub(a.salt),a.iter||250000).then(function(x){var got=b64(x);mlog("hash",got===a.hash?"match":"mismatch");if(got!==a.hash)return bad();fails=0;enter({handle:a.handle})})}).catch(function(e){mlog("sign in failed",e&&e.message||e);gmsg(typeof e==="string"?e:"Could not sign in. Try again.",1)})};
 function vkey(tp,salt,use){return bits(tp,salt,250000).then(function(b){return crypto.subtle.importKey("raw",b,"AES-GCM",false,[use])})}
