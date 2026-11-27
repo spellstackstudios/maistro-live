@@ -11,7 +11,7 @@
 <meta name="theme-color" content="#08130f">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Maistro r28</title>
+<title>Maistro r29</title>
 <style>
 :root{--bg:#dfe9e4;--glass:rgba(255,255,255,.62);--win:rgba(255,255,255,.16);--ink:#14231f;--mute:#5a6e68;--line:rgba(20,35,31,.16);--acc:#d9731a;--acc-ink:#fff;--ok:#12805c;--bad:#b3261e;--chip:rgba(20,35,31,.08);--user:#cfe5db;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -81,7 +81,7 @@ input[type=text],input[type=password],select,.pane textarea{width:100%;border:1p
 iframe{width:100%;height:230px;border:1px solid var(--line);border-radius:10px;background:#000}
 h3{margin:12px 0 4px;font-size:14px}
 [hidden]{display:none!important}
-.side{position:relative}
+.side{position:relative}.app.lfold{--lw:46px}.app.rfold{--rw:46px}.side.fold details,.side.fold #tasks,.side.fold .foot,.side.fold .menu,.side.fold .brand canvas,.side.fold .brand .rev,.side.fold .brand .live{display:none}.ctl.fold .tabs,.ctl.fold .pane{display:none}.float.fold{height:44px!important;min-height:44px;resize:none;overflow:hidden}.float.fold>*:not(.tb){display:none}
 .menu{position:absolute;top:46px;left:12px;z-index:20;min-width:190px;padding:6px;border:1px solid var(--line);border-radius:10px;background:var(--bg);box-shadow:0 8px 24px rgba(0,0,0,.3)}
 .menu button{display:block;width:100%;text-align:left;border:0;background:none;padding:7px 10px;border-radius:7px}
 .menu button:hover{background:var(--chip)}
@@ -136,7 +136,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 </style>
 </head>
 <body>
-<div class="gate" id="gate"><div class="card box"><div class="brand"><img src="icon.jpg" alt="" width="42" height="42" style="border-radius:10px">Maistro<span class="rev" id="grev">r28</span></div><p class="why" id="gmsg">Sign in. Accounts are shared.</p>
+<div class="gate" id="gate"><div class="card box"><div class="brand"><img src="icon.jpg" alt="" width="42" height="42" style="border-radius:10px">Maistro<span class="rev" id="grev">r29</span></div><p class="why" id="gmsg">Sign in. Accounts are shared.</p>
 <div id="gform"><label class="f">Username<input type="text" id="gh" autocomplete="username"></label><label class="f">Passphrase<input type="password" id="gp" autocomplete="current-password"></label><div class="row"><button class="btn pri" id="gin" type="button">Sign in</button><button class="btn" id="gnew" type="button">Create account</button></div><div id="grecent" class="row" style="margin-top:8px;flex-wrap:wrap"></div><label class="f" id="gconfirm" hidden>Confirm passphrase<input type="password" id="gp2" autocomplete="new-password"></label><div id="gstat" style="display:block;margin-top:10px;padding:10px 12px;border-radius:8px;font-weight:700;color:#fff;background:#12805c">Ready.</div></div>
 <label class="pill" style="display:inline-block;margin-top:8px"><input type="checkbox" id="rem" checked> Remember this browser</label>
 <button class="btn pri" id="install" type="button" style="margin-top:10px;width:100%">Install app</button>
@@ -176,13 +176,15 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 <div class="app">
 
 <aside class="card side" id="sidec" aria-label="Tasks">
-  <div class="brand"><canvas id="mini" width="28" height="28" aria-hidden="true"></canvas>Maistro<span class="rev" id="rev">r28</span><button class="live" id="live" type="button" title="Live. Tap to refresh"><span class="lt g" id="livedot"></span></button><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
+  <div class="brand"><canvas id="mini" width="28" height="28" aria-hidden="true"></canvas>Maistro<span class="rev" id="rev">r29</span><button class="live" id="live" type="button" title="Live. Tap to refresh"><span class="lt g" id="livedot"></span></button><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
   <div class="menu" id="menu" role="menu" hidden><button type="button" role="menuitem" data-a="new_task">New Task</button><button type="button" role="menuitem" data-a="new_project">New Project</button><button type="button" role="menuitem" data-a="open_project">Open Project</button><button type="button" role="menuitem" data-a="import_project">Import Project</button><button type="button" role="menuitem" data-a="export_project">Export Project</button><div class="sgrp" style="padding:6px 10px 2px">Recent projects</div><div id="mrec"></div></div>
   <details id="rec" open><summary>📁 Recent projects</summary><div id="reclist"></div></details>
   <details id="rq" open><summary>🧾 Recent queue</summary><div id="rqlist"></div></details>
   <div id="tasks"><p class="why" style="padding:8px">Nothing queued. Describe a task and press Queue.</p></div>
   <div class="foot">
     <div class="mono" id="branch">signed out on main</div>
+    <div class="mono" id="curmodel">Model: none yet</div>
+    <div class="mono" id="curuse">Usage: 0 calls</div>
     <div>Free enhances this hour: <span id="hits">0</span> of <span id="lim">20</span></div><div class="meter"><i id="hbar"></i></div>
   </div>
 </aside>
@@ -219,6 +221,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
     <button class="tab" role="tab" aria-selected="false" data-p="ai" data-adv>Models</button>
     <button class="tab" role="tab" aria-selected="false" data-p="usr" data-adv>Users</button>
     <button class="tab" role="tab" aria-selected="false" data-p="askset" data-adv>Ask</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="use" data-adv>Usage</button>
     <button class="tab" role="tab" aria-selected="false" data-p="stat" data-adv>Status</button>
   </div>
 
@@ -266,6 +269,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
     <p class="why">Connect other tools. Address, command, model and keys are remembered on this device in plain text. Command line tools (Video2X, Upscayl) run on your runner, so this page copies or queues the command for it.</p>
     <div id="alist"></div><h3>Pipeline tools</h3><div id='tlinks'></div>
   </div>
+  <div class="pane" id="use" data-adv><p class="why">Usage on this device. Counts start when you talk or run a job. Provider plans do not publish a live quota, so this is what Maistro has used with each key.</p><div id="uselist"></div></div>
   <div class="pane" id="stat" data-adv>
     <p class="why" id="bmsg">Live status of the bridge, Unreal, Unity, MCP servers, tools and connected AIs. Checked every few seconds.</p>
     <div class="row" style="margin-bottom:8px"><button class="btn sm" id="srf" type="button">Check now</button><button class="btn sm" id="sset" type="button">Local setup</button></div>
@@ -609,7 +613,7 @@ console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
 <script>
 (function(){
 var $=function(i){return document.getElementById(i)};
-var REV="r28"; /* bump REV on every build */
+var REV="r29"; /* bump REV on every build */
 var S={voice:false,vwho:"",vgen:0,jobs:[],jid:0,sess:null,hits:[],busy:false,last:""};
 var STAGES=["Brief","Image","3D mesh","Cleanup","Import","Demo link"];
 function sha(){return Math.random().toString(16).slice(2,9)}
@@ -826,8 +830,11 @@ function paintTasks(){var T=$("tasks");if(!S.jobs.length){T.innerHTML="<p class=
   d.appendChild(r);T.appendChild(d)})}
 
 /* ---------- session ---------- */
-function paintSess(){var s=S.sess;$("sinfo").textContent=s?"In session on "+s.branch+" \u2022 "+s.turns.length+" changes":"No session open.";
- $("branch").textContent=(ME?ME.handle:"signed out")+" on "+(s?s.branch+" @ "+(s.turns.length?s.turns[s.turns.length-1].sha:s.base):"main");
+var USE={};try{USE=JSON.parse(localStorage.getItem("maistro.use")||"{}")||{}}catch(e){USE={}}
+function noteUse(name,text){var u=USE[name]=USE[name]||{calls:0,chars:0};u.calls++;u.chars+=(text||"").length;USE.last=name;try{localStorage.setItem("maistro.use",JSON.stringify(USE))}catch(e){}paintUse()}
+function paintUse(){var name=USE.last||"none yet",u=USE[name]||{calls:0,chars:0};if($("curmodel"))$("curmodel").textContent="Model: "+name;if($("curuse"))$("curuse").textContent="Usage: "+u.calls+" calls · ~"+u.chars+" chars";var box=$("uselist");if(!box)return;box.innerHTML="";var keys=[];if(KEYS.gg)keys.push("Google key saved");if(KEYS.gk)keys.push("Groq key saved");if(KEYS.ok)keys.push("OpenRouter key saved");var p=document.createElement("p");p.className="why";p.textContent=keys.length?keys.join(" · "):"No API key saved yet. Add one under Models.";box.appendChild(p);Object.keys(USE).forEach(function(k){if(k==="last")return;var row=document.createElement("div");row.className="job";row.innerHTML="<b>"+esc(k)+"</b><div class='why'>"+USE[k].calls+" calls · ~"+USE[k].chars+" characters on this device</div>";box.appendChild(row)})}
+function paintSess(){var s=S.sess;$("sinfo").textContent=s?"In session on "+s.branch+" • "+s.turns.length+" changes":"No session open.";
+ $("branch").textContent=(ME?ME.handle:"signed out")+" on "+(s?s.branch+" @ "+(s.turns.length?s.turns[s.turns.length-1].sha:s.base):"main");paintUse();
  var T=$("turns");T.innerHTML="";if(s)s.turns.slice().reverse().forEach(function(t){var d=document.createElement("div");d.className="job";d.innerHTML="<span class='mono'>"+t.sha+"</span> "+esc(t.text.slice(0,70))+"<div class='why'>"+t.note+"</div>";T.appendChild(d)})}
 $("s1").onclick=function(){if(S.sess)return;var d=new Date(),ymd=d.getFullYear()+("0"+(d.getMonth()+1)).slice(-2)+("0"+d.getDate()).slice(-2);
  S.sess={branch:(CFG.prefix||"session/you")+"-"+ymd,base:sha(),turns:[],start:Date.now(),first:true};say("Session started on "+S.sess.branch+". Messages go straight to the AI and are committed. The queue is held. A session left open 12 hours ends itself.","sys");paint()};
@@ -854,7 +861,7 @@ function talk(text){S.talk=S.talk||[];S.talk.push({role:"user",content:text});va
  return next()}
 $("send").onclick=function(){var v=$("in").value.trim();if(!v)return;$("in").value="";say(v,"u");
  if(S.sess)return turn(v);S.busy=true;paint();
- talk(v).then(function(r){S.busy=false;S.talk.push({role:"assistant",content:r.text});say(r.text,"a",r.who);paint()}).catch(function(e){S.busy=false;say(e.message||"Could not reach a model.","sys");paint()})};
+ talk(v).then(function(r){S.busy=false;S.talk.push({role:"assistant",content:r.text});noteUse(r.who,r.text);say(r.text,"a",r.who);paint()}).catch(function(e){S.busy=false;say(e.message||"Could not reach a model.","sys");paint()})};
 $("in").addEventListener("keydown",function(e){if(e.key==="Enter"&&(e.ctrlKey||e.metaKey))$("send").click()});
 
 /* ---------- voice + avatar ---------- */
@@ -957,7 +964,7 @@ $("vload").onclick=function(){var tp=$("vtp").value;if(!DB||!ME||!UID)return vms
  DB.collection("vault").get().then(function(s){var by=[];return Promise.all(s.docs.map(function(d){var v=d.data();return vkey(tp,ub(v.salt),"decrypt").then(function(k){return crypto.subtle.decrypt({name:"AES-GCM",iv:ub(v.iv)},k,ub(v.ct))}).then(function(pt){var o=JSON.parse(new TextDecoder().decode(pt));if(o.gk&&!$("gk").value)$("gk").value=o.gk;if(o.ok&&!$("ok").value)$("ok").value=o.ok;by.push(v.by)}).catch(function(){})})).then(function(){vmsg(by.length?"Loaded keys saved by "+by.join(", ")+".":"No vault entry opened with that passphrase.")})}).catch(function(){vmsg("Could not read the vault.")})};
 /* ---------- floating windows ---------- */
 var Z=30;
-function tb(card,title,fn,label){var t=document.createElement("div"),sp=document.createElement("span"),b=document.createElement("button");t.className="tb";sp.textContent=title;sp.style.flex="1";b.type="button";b.className="btn sm";b.textContent=label;b.onclick=fn;t.appendChild(sp);t.appendChild(b);card.insertBefore(t,card.firstChild);
+function tb(card,title,fn,label){var t=document.createElement("div"),sp=document.createElement("span"),b=document.createElement("button"),c=document.createElement("button");t.className="tb";sp.textContent=title;sp.style.flex="1";c.type="button";c.className="btn sm";c.textContent="–";c.title="Collapse";c.onclick=function(){card.classList.toggle("fold");c.textContent=card.classList.contains("fold")?"+":"–"};b.type="button";b.className="btn sm";b.textContent=label;b.onclick=fn;t.appendChild(sp);t.appendChild(c);t.appendChild(b);card.insertBefore(t,card.firstChild);
  card.onpointerdown=function(){card.style.zIndex=++Z};
  t.onpointerdown=function(e){if(e.target===b)return;var r=card.getBoundingClientRect(),dx=e.clientX-r.left,dy=e.clientY-r.top;t.setPointerCapture(e.pointerId);
   t.onpointermove=function(m){card.style.right=card.style.bottom="auto";card.style.left=Math.max(0,Math.min(innerWidth-80,m.clientX-dx))+"px";card.style.top=Math.max(0,Math.min(innerHeight-40,m.clientY-dy))+"px"};
@@ -966,7 +973,7 @@ function dock(c){c.classList.remove("float");c.style.cssText="";if(c.tbar)c.tbar
 function pop(c,title){if(c.ph)return dock(c);var r=c.getBoundingClientRect(),p=document.createElement("div"),d=document.createElement("button");p.className="card ph";p.textContent=title+" is in its own window.";d.type="button";d.className="btn sm";d.textContent="Bring back";d.onclick=function(){dock(c)};p.appendChild(d);c.ph=p;c.parentNode.insertBefore(p,c);
  c.classList.add("float");c.style.cssText="left:"+Math.max(0,Math.min(r.left+30,innerWidth-340))+"px;top:"+Math.max(0,r.top+30)+"px;width:"+Math.min(Math.max(340,r.width),innerWidth-20)+"px;height:"+Math.max(240,Math.min(r.height,innerHeight-80))+"px;z-index:"+(++Z);c.tbar=tb(c,title,function(){dock(c)},"Dock")}
 document.querySelectorAll(".tab").forEach(function(b){var pb=document.createElement("button");pb.type="button";pb.className="popb";pb.textContent="\u29C9";pb.title="Pop out";pb.onclick=function(e){e.stopPropagation();var pane=$(b.dataset.p);if(pane)pop(pane,b.childNodes[0]&&b.childNodes[0].textContent||b.dataset.p)};b.appendChild(pb)});
-[["sidec","Tasks","brand"],["mainc","Conversation","top"],["ctl","Controls","tabs"]].forEach(function(x){var c=$(x[0]),b=document.createElement("button");b.type="button";b.className="btn sm";b.textContent="\u29C9";b.title="Pop out into a window you can move and resize";b.setAttribute("aria-label","Pop out "+x[1]);b.onclick=function(){pop(c,x[1])};c.querySelector("."+x[2]).appendChild(b)});
+[["sidec","Tasks","brand"],["mainc","Conversation","top"],["ctl","Controls","tabs"]].forEach(function(x){var c=$(x[0]),b=document.createElement("button");b.type="button";b.className="btn sm";b.textContent="\u29C9";b.title="Pop out into a window you can move and resize";b.setAttribute("aria-label","Pop out "+x[1]);b.onclick=function(){pop(c,x[1])};c.querySelector("."+x[2]).appendChild(b);if(x[0]!=="mainc"){var f=document.createElement("button");f.type="button";f.className="btn sm";f.textContent="–";f.title="Collapse";f.onclick=function(){var app=document.querySelector(".app"),k=x[0]==="sidec"?"lfold":"rfold";c.classList.toggle("fold");app.classList.toggle(k,c.classList.contains("fold"));f.textContent=c.classList.contains("fold")?"+":"–"};c.querySelector("."+x[2]).appendChild(f)}});
 (function(){var app=document.querySelector(".app");try{var sv=JSON.parse(localStorage.getItem("maistro.grid")||"null");if(sv){if(sv.l)app.style.setProperty("--lw",sv.l+"px");if(sv.r)app.style.setProperty("--rw",sv.r+"px")}}catch(e){}
  function drag(id,key){var g=$(id);if(!g)return;g.addEventListener("pointerdown",function(e){e.preventDefault();var x0=e.clientX,cs=getComputedStyle(app),start=parseFloat(cs.getPropertyValue(key==="l"?"--lw":"--rw"))||(key==="l"?250:330);
   function mv(ev){var dx=ev.clientX-x0,val=Math.max(180,Math.min(640,key==="l"?start+dx:start-dx));app.style.setProperty(key==="l"?"--lw":"--rw",val+"px")}
