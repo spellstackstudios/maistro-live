@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Maistro r6</title>
+<title>Maistro r7</title>
 <style>
 :root{--bg:#dfe9e4;--glass:rgba(255,255,255,.62);--ink:#14231f;--mute:#5a6e68;--line:rgba(20,35,31,.16);--acc:#d9731a;--acc-ink:#fff;--ok:#12805c;--bad:#b3261e;--chip:rgba(20,35,31,.08);--user:#cfe5db;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -133,7 +133,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 <div class="app">
 
 <aside class="card side" id="sidec" aria-label="Tasks">
-  <div class="brand"><canvas id="mini" width="28" height="28" aria-hidden="true"></canvas>Maistro<span class="rev" id="rev">r6</span><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
+  <div class="brand"><canvas id="mini" width="28" height="28" aria-hidden="true"></canvas>Maistro<span class="rev" id="rev">r7</span><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
   <div class="menu" id="menu" role="menu" hidden><button type="button" role="menuitem" data-a="new_task">New Task</button><button type="button" role="menuitem" data-a="new_project">New Project</button><button type="button" role="menuitem" data-a="open_project">Open Project</button><button type="button" role="menuitem" data-a="import_project">Import Project</button><button type="button" role="menuitem" data-a="export_project">Export Project</button><div class="sgrp" style="padding:6px 10px 2px">Recent projects</div><div id="mrec"></div></div>
   <details id="rec" open><summary>📁 Recent projects</summary><div id="reclist"></div></details>
   <details id="rq" open><summary>🧾 Recent queue</summary><div id="rqlist"></div></details>
@@ -536,11 +536,11 @@ console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
       <textarea id="askin" placeholder="Add a pause menu, footstep audio, and a health pickup"></textarea>
       <div class="row" style="margin-top:8px"><button class="btn" id="askadd" type="button">Add to list</button><button class="btn pri" id="askjobs" type="button">Create jobs</button></div>
       <div id="asklist"></div>
-      <p class="why" style="margin-top:12px">Lists live on GitHub Pages. Yours is per user. The shared list is everyone. Improvements come from what shows up most.</p>
+      <p class="why" style="margin-top:12px">Yours stays on this device. Adds also go to today's shared list. Once a day that rolls into the main list, which keeps every day.</p>
       <input type="password" id="ght" placeholder="Token shows here after generate or import" autocomplete="off" style="margin-top:6px">
       <div class="row" style="margin-top:6px"><button class="btn sm pri" id="ghtgen" type="button">Generate token</button><button class="btn sm" id="ghtpaste" type="button">Paste</button><button class="btn sm" id="ghtimp" type="button">Import file</button><input type="file" id="ghtfile" accept=".txt,.token,text/plain" hidden></div>
       <p class="why" id="askstat">No token yet. Generate opens GitHub with the right scope. Paste or Import brings it in. It stays on this device.</p>
-      <div class="row" style="margin-top:6px"><button class="btn sm" id="asksync" type="button">Save lists</button><button class="btn sm" id="askmine" type="button">Load mine</button><button class="btn sm" id="askglob" type="button">Load shared</button><button class="btn sm" id="askimp" type="button">Improve from lists</button></div>
+      <div class="row" style="margin-top:6px"><button class="btn sm" id="asksync" type="button">Save lists</button><button class="btn sm" id="askmine" type="button">Load mine</button><button class="btn sm" id="askglob" type="button">Load today</button><button class="btn sm" id="askmain" type="button">Load main</button><button class="btn sm" id="askimp" type="button">Improve from lists</button></div>
       <div id="askimpbox"></div>
     </div>
   </section>
@@ -550,7 +550,7 @@ console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
 <script>
 (function(){
 var $=function(i){return document.getElementById(i)};
-var REV="r6"; /* bump REV on every build */
+var REV="r7"; /* bump REV on every build */
 var S={voice:false,vwho:"",vgen:0,jobs:[],jid:0,sess:null,hits:[],busy:false,last:""};
 var STAGES=["Brief","Image","3D mesh","Cleanup","Import","Demo link"];
 function sha(){return Math.random().toString(16).slice(2,9)}
@@ -1068,7 +1068,9 @@ function askParse(raw){
  return{cmd:also?"add+jobs":"add",items:items}}
 function askAdd(items){var added=[],skip=[];items.forEach(function(text){text=text.slice(0,2000);var dup=ASK.items.some(function(it){return it.text.toLowerCase()===text.toLowerCase()&&!it.jobId});if(dup){skip.push(text);return}ASK.items.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),text:text});added.push(text)});if(added.length)pushLists(added);return{added:added,skip:skip}}
 var GH={owner:"spellstackstudios",repo:"maistro-live",branch:"main"};
-function ghUser(){var h=ME&&ME.handle;if(h)return String(h).toLowerCase().replace(/[^a-z0-9_-]/g,"-").slice(0,40);try{h=localStorage.getItem("maistro.listuser")}catch(e){}if(!h){h="u"+Math.random().toString(36).slice(2,8);try{localStorage.setItem("maistro.listuser",h)}catch(e){}}return h}
+function ghUser(){var h=ME&&ME.handle;if(h&&h!=="local")return String(h).toLowerCase().replace(/[^a-z0-9_-]/g,"-").slice(0,40);try{h=localStorage.getItem("maistro.device")}catch(e){}if(!h){h="d"+Math.random().toString(36).slice(2,10);try{localStorage.setItem("maistro.device",h)}catch(e){}}return h}
+function dayKey(t){return new Date(t||Date.now()).toISOString().slice(0,10)}
+function mergeItems(items,texts,user){items=items||[];(texts||[]).forEach(function(text){var k=String(text).toLowerCase(),hit=items.filter(function(it){return String(it.text).toLowerCase()===k})[0];if(hit){hit.n=(hit.n||1)+1;hit.by=hit.by||[];if(hit.by.indexOf(user)<0)hit.by.push(user);hit.t=Date.now()}else items.push({text:text,n:1,by:[user],t:Date.now()})});items.sort(function(a,b){return (b.n||0)-(a.n||0)});return items.slice(0,300)}
 function ghB64(t){return btoa(unescape(encodeURIComponent(t)))}
 function ghTok(){return ($("ght")&&$("ght").value||KEYS.ght||"").trim()}
 function ghGet(path){var h={Accept:"application/vnd.github+json"};var tok=ghTok();if(tok)h.Authorization="Bearer "+tok;return fetch("https://api.github.com/repos/"+GH.owner+"/"+GH.repo+"/contents/"+path+"?ref="+GH.branch+"&t="+Date.now(),{headers:h,cache:"no-store"}).then(function(r){if(r.status===404)return null;if(!r.ok)throw new Error("read "+r.status);return r.json()}).then(function(j){if(!j)return null;if(j.content){try{return JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,"")))))}catch(e){return null}}return j})}
@@ -1076,15 +1078,17 @@ function ghPut(path,obj,msg,attempt){var tok=ghTok();if(!tok)return Promise.reje
 function askStat(t,bad){var e=$("askstat");if(!e)return;e.textContent=t;e.className=bad?"why err":"why"}
 var GHLOCK=Promise.resolve();
 function pushLists(texts){var run=GHLOCK.then(function(){return pushListsNow(texts)});GHLOCK=run.catch(function(){});return run}
-function pushListsNow(texts){var tok=ghTok();if(!tok){askStat("Paste a GitHub token to save. Load still works.",1);say("Paste a GitHub token to save lists.","sys");return Promise.resolve()}if(!ASK.items.length){askStat("Add something to the list first.",1);return Promise.resolve()}var user=ghUser(),mine={user:user,items:ASK.items.slice(-80).map(function(it){return{text:it.text,t:it.t||Date.now(),job:!!it.jobId}}),updated:Date.now()};
- askStat("Saving…");return ghGet("lists/global.json").catch(function(){return null}).then(function(g){g=g||{items:[]};var items=g.items||[];(texts||ASK.items.map(function(it){return it.text})).forEach(function(text){var k=String(text).toLowerCase(),hit=items.filter(function(it){return String(it.text).toLowerCase()===k})[0];if(hit){hit.n=(hit.n||1)+1;hit.by=hit.by||[];if(hit.by.indexOf(user)<0)hit.by.push(user);hit.t=Date.now()}else items.push({text:text,n:1,by:[user],t:Date.now()})});items.sort(function(a,b){return (b.n||0)-(a.n||0)});return ghPut("lists/u/"+user+".json",mine,"list: "+user).then(function(){return ghPut("lists/global.json",{items:items.slice(0,200),updated:Date.now()},"list: shared")})}).then(function(){askStat("Saved. Yours and the shared list.");say("Saved your list and the shared list.","sys");return loadGlobal()}).catch(function(e){askStat("Save failed: "+e.message,1);say("Could not save lists. "+e.message,"sys")})}
-function loadMine(quiet){return ghGet("lists/u/"+ghUser()+".json").then(function(d){if(!d||!d.items||!d.items.length){if(!quiet)say("No saved list for "+ghUser()+" yet.","sys");return 0}var n=0;d.items.forEach(function(it){if(it&&it.text&&!ASK.items.some(function(q){return q.text.toLowerCase()===it.text.toLowerCase()})){ASK.items.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),text:it.text});n++}});if(n){saveAsk();paintAsk()}if(!quiet)say(n?"Loaded "+n+" from your list ("+ghUser()+").":"Your list is already here.","sys");return n}).catch(function(){if(!quiet)say("Could not load your list.","sys");return 0})}
-function loadGlobal(){return ghGet("lists/global.json").then(function(d){ASK.global=(d&&d.items)||[];paintImprove();return ASK.global})}
-function paintImprove(){var box=$("askimpbox");if(!box)return;box.innerHTML="";var items=(ASK.global||[]).slice(0,8);if(!items.length){var e=document.createElement("p");e.className="why";e.textContent="No shared asks yet.";box.appendChild(e);return}
- var h=document.createElement("p");h.className="why";h.textContent="Often asked";box.appendChild(h);
+function pushListsNow(texts){var tok=ghTok();if(!tok){askStat("Paste a GitHub token to save. Load still works.",1);say("Paste a GitHub token to save lists.","sys");return Promise.resolve()}if(!ASK.items.length){askStat("Add something to the list first.",1);return Promise.resolve()}var user=ghUser(),today=dayKey(),mine={id:user,user:(ME&&ME.handle)||user,day:today,items:ASK.items.slice(-80).map(function(it){return{text:it.text,t:it.t||Date.now(),job:!!it.jobId}}),updated:Date.now()};
+ askStat("Saving…");return ghPut("lists/u/"+user+".json",mine,"list: "+user).then(function(){return ghGet("lists/days/"+today+".json").catch(function(){return null})}).then(function(day){day=day||{day:today,items:[]};day.day=today;day.items=mergeItems(day.items,texts||ASK.items.map(function(it){return it.text}),user);day.updated=Date.now();return ghPut("lists/days/"+today+".json",day,"day: "+today)}).then(function(){return syncMain()}).then(function(){askStat("Saved to this device and today's list.");say("Saved your list and today's shared list.","sys");return loadGlobal()}).catch(function(e){askStat("Save failed: "+e.message,1);say("Could not save lists. "+e.message,"sys")})}
+function syncMain(){if(!ghTok())return Promise.resolve();var today=dayKey();return ghGet("lists/main.json").catch(function(){return null}).then(function(main){main=main||{days:{},items:[],lastSync:""};if(main.lastSync===today)return main;return ghGet("lists/days").catch(function(){return []}).then(function(dir){var names=(Array.isArray(dir)?dir:[]).map(function(f){return String(f.name||"").replace(/\.json$/,"");}).filter(function(d){return /^\d{4}-\d{2}-\d{2}$/.test(d)&&d<today&&!main.days[d]});var chain=Promise.resolve();names.forEach(function(d){chain=chain.then(function(){return ghGet("lists/days/"+d+".json").then(function(day){if(!day)return;main.days[d]={items:day.items||[],updated:day.updated||0};main.items=mergeItems(main.items,(day.items||[]).map(function(it){return it.text}),"day:"+d)})})});return chain.then(function(){main.lastSync=today;main.updated=Date.now();return ghPut("lists/main.json",main,"daily: sync to main")})})})}
+function loadMine(quiet){return ghGet("lists/u/"+ghUser()+".json").then(function(d){if(!d||!d.items||!d.items.length){if(!quiet)say("No saved list for "+ghUser()+" yet.","sys");return 0}var n=0;d.items.forEach(function(it){if(it&&it.text&&!ASK.items.some(function(q){return q.text.toLowerCase()===it.text.toLowerCase()})){ASK.items.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),text:it.text});n++}});if(n){saveAsk();paintAsk()}if(!quiet)say(n?"Loaded "+n+" from this device ("+ghUser()+").":"Your list is already here.","sys");return n}).catch(function(){if(!quiet)say("Could not load your list.","sys");return 0})}
+function loadGlobal(){return ghGet("lists/days/"+dayKey()+".json").then(function(d){ASK.global=(d&&d.items)||[];paintImprove();return ASK.global})}
+function loadMain(){return ghGet("lists/main.json").then(function(d){ASK.main=d||{days:{},items:[]};paintImprove();return ASK.main})}
+function paintImprove(){var box=$("askimpbox");if(!box)return;box.innerHTML="";var items=(ASK.global||[]).slice(0,8);var days=ASK.main&&ASK.main.days?Object.keys(ASK.main.days).length:0;if(!items.length){var e=document.createElement("p");e.className="why";e.textContent=days?"Nothing new today. Main has "+days+" day"+(days===1?"":"s")+".":"Nothing on today's list yet.";box.appendChild(e);return}
+ var h=document.createElement("p");h.className="why";h.textContent="Today"+(days?" · main keeps "+days+" day"+(days===1?"":"s"):"");box.appendChild(h);
  items.forEach(function(it){var row=document.createElement("div");row.className="askrow";var tx=document.createElement("div");tx.appendChild(document.createElement("b")).textContent=it.text;var sm=document.createElement("small");sm.textContent=(it.n||1)+" ask"+(it.n===1?"":"s")+(it.by&&it.by.length?" · "+it.by.slice(0,4).join(", "):"");tx.appendChild(sm);row.appendChild(tx);
   var b=document.createElement("button");b.type="button";b.className="btn sm";b.textContent="Add";b.onclick=function(){askAdd([it.text]);saveAsk();paintAsk()};row.appendChild(b);box.appendChild(row)})}
-function improveFromLists(){loadGlobal().then(function(items){if(!items.length){say("Nothing on the shared list yet.","sys");return}var top=items.slice(0,5).map(function(it){return it.text});var r=askAdd(top);saveAsk();paintAsk();say("Pulled "+(r.added.length||0)+" often-asked item"+(r.added.length===1?"":"s")+" into your list to improve from.","ask")}).catch(function(){say("Could not read the shared list.","sys")})}
+function improveFromLists(){loadMain().then(function(main){var items=(main&&main.items&&main.items.length)?main.items:(ASK.global||[]);if(!items.length)return loadGlobal().then(function(g){items=g||[];if(!items.length){say("Nothing on the lists yet.","sys");return}return pull(items,"today")});return pull(items,"main")}).catch(function(){say("Could not read the lists.","sys")});function pull(items,from){var top=items.slice(0,5).map(function(it){return it.text});var r=askAdd(top);saveAsk();paintAsk();say("Pulled "+(r.added.length||0)+" often-asked item"+(r.added.length===1?"":"s")+" from the "+from+" list.","ask")}}
 function askMake(){var n=0,bad=0;ASK.items.forEach(function(it){if(it.jobId)return;var j=queue(it.text);it.jobId=j.id;it.jobWhy=j.state==="refused"?j.why:"";if(j.state==="refused")bad++;else n++});saveAsk();paintAsk();
  if(!n&&!bad)say("Nothing new on the list. Add something first.","ask");
  else say("Created "+n+" job"+(n===1?"":"s")+" from your list."+(S.sess?" The queue is held while the session is open.":" Approve them on the board to run.")+(bad?" "+bad+" could not be queued.":""),"ask")}
@@ -1136,9 +1140,12 @@ function bootAsk(){
  $("ghtfile").onchange=function(){var f=this.files&&this.files[0];this.value="";if(!f)return;f.text().then(takeToken).catch(function(){askStat("Could not read that file.",1)})};
  $("asksync").onclick=function(){pushLists(ASK.items.map(function(it){return it.text}))};
  $("askmine").onclick=function(){loadMine(false)};
- $("askglob").onclick=function(){loadGlobal().then(function(items){say(items.length?"Shared list: "+items.length+" item"+(items.length===1?"":"s")+".":"Shared list is empty.","sys")}).catch(function(){say("Could not load the shared list.","sys")})};
+ $("askglob").onclick=function(){loadGlobal().then(function(items){say(items.length?"Today: "+items.length+" item"+(items.length===1?"":"s")+".":"Nothing on today's list yet.","sys")}).catch(function(){say("Could not load today's list.","sys")})};
+ $("askmain").onclick=function(){loadMain().then(function(m){var n=m&&m.items?m.items.length:0,d=m&&m.days?Object.keys(m.days).length:0;say(n?"Main: "+n+" item"+(n===1?"":"s")+" across "+d+" day"+(d===1?"":"s")+".":"Main list is empty. It fills once a day.","sys")}).catch(function(){say("Could not load the main list.","sys")})};
  $("askimp").onclick=improveFromLists;
  loadGlobal().catch(function(){});
+ loadMain().catch(function(){});
+ if(ghTok())syncMain().catch(function(){});
  loadMine(true);
  $("askin").addEventListener("keydown",function(e){if(e.key==="Enter"&&(e.metaKey||e.ctrlKey)){e.preventDefault();askGo(true)}else if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();askGo(false)}});
  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&ASK.open){ASK.open=false;saveAsk();paintAsk()}})}

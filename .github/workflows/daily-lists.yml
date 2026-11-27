@@ -1,0 +1,19 @@
+name: daily list sync
+on:
+  schedule:
+    - cron: "5 0 * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: node scripts/sync-main.js
+      - run: |
+          git config user.name "maistro"
+          git config user.email "maistro@users.noreply.github.com"
+          git add lists/main.json
+          git diff --staged --quiet || git commit -m "daily: sync lists to main"
+          git push
