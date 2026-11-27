@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Maistro r9</title>
+<title>Maistro r10</title>
 <style>
 :root{--bg:#dfe9e4;--glass:rgba(255,255,255,.62);--ink:#14231f;--mute:#5a6e68;--line:rgba(20,35,31,.16);--acc:#d9731a;--acc-ink:#fff;--ok:#12805c;--bad:#b3261e;--chip:rgba(20,35,31,.08);--user:#cfe5db;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -125,15 +125,15 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 </style>
 </head>
 <body>
-<div class="gate" id="gate"><div class="card box"><div class="brand">Maistro</div><p class="why" id="gmsg">Connecting to the shared account database…</p>
-<div id="gform" hidden><label class="f">Username<input type="text" id="gh" autocomplete="username"></label><label class="f">Passphrase<input type="password" id="gp" autocomplete="current-password"></label><div class="row"><button class="btn pri" id="gin" type="button">Sign in</button><button class="btn" id="gnew" type="button">Create account</button></div></div>
+<div class="gate" id="gate"><div class="card box"><div class="brand">Maistro</div><p class="why" id="gmsg">Sign in. Accounts are shared.</p>
+<div id="gform"><label class="f">Username<input type="text" id="gh" autocomplete="username"></label><label class="f">Passphrase<input type="password" id="gp" autocomplete="current-password"></label><div class="row"><button class="btn pri" id="gin" type="button">Sign in</button><button class="btn" id="gnew" type="button">Create account</button></div></div>
 <label class="pill" style="display:inline-block;margin-top:8px"><input type="checkbox" id="rem" checked> Remember this browser</label>
 <button class="btn" id="gskip" type="button" hidden>Continue on this device only</button>
 <p class="why" style="margin-top:12px">Passphrases are never stored. Only a salted hash is saved, and everyone using this page can read it, so pick a long passphrase.</p></div></div>
 <div class="app">
 
 <aside class="card side" id="sidec" aria-label="Tasks">
-  <div class="brand"><canvas id="mini" width="28" height="28" aria-hidden="true"></canvas>Maistro<span class="rev" id="rev">r9</span><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
+  <div class="brand"><canvas id="mini" width="28" height="28" aria-hidden="true"></canvas>Maistro<span class="rev" id="rev">r10</span><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
   <div class="menu" id="menu" role="menu" hidden><button type="button" role="menuitem" data-a="new_task">New Task</button><button type="button" role="menuitem" data-a="new_project">New Project</button><button type="button" role="menuitem" data-a="open_project">Open Project</button><button type="button" role="menuitem" data-a="import_project">Import Project</button><button type="button" role="menuitem" data-a="export_project">Export Project</button><div class="sgrp" style="padding:6px 10px 2px">Recent projects</div><div id="mrec"></div></div>
   <details id="rec" open><summary>📁 Recent projects</summary><div id="reclist"></div></details>
   <details id="rq" open><summary>🧾 Recent queue</summary><div id="rqlist"></div></details>
@@ -553,7 +553,7 @@ console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
 <script>
 (function(){
 var $=function(i){return document.getElementById(i)};
-var REV="r9"; /* bump REV on every build */
+var REV="r10"; /* bump REV on every build */
 var S={voice:false,vwho:"",vgen:0,jobs:[],jid:0,sess:null,hits:[],busy:false,last:""};
 var STAGES=["Brief","Image","3D mesh","Cleanup","Import","Demo link"];
 function sha(){return Math.random().toString(16).slice(2,9)}
@@ -838,23 +838,22 @@ function bits(pw,salt,it){return crypto.subtle.importKey("raw",TE.encode(pw),"PB
 function gmsg(t,bad){var m=$("gmsg");m.textContent=t;m.className="why"+(bad?" err":"")}
 function vmsg(t){$("vmsg").textContent=t}
 function enter(a){ME=a;$("gate").hidden=true;$("who").textContent=a.handle;$("who").hidden=false;$("out").hidden=false;$("gp").value="";try{if($("rem").checked)localStorage.setItem("maistro.me",JSON.stringify({handle:a.handle,uid:a.uid||UID||null}));else localStorage.removeItem("maistro.me")}catch(e){}paintSess();say("Signed in as "+a.handle+(a.handle==="local"?" (this device only).":"."),"sys")}
-function ready(){var ok=!!(DB&&UID);$("gform").hidden=!ok;$("gskip").hidden=ok;gmsg(ok?"Create an account or sign in. Accounts are shared with everyone who opens this page.":"The shared account database is not available here. Open this page from claude.ai while signed in, or continue on this device only.",!ok)}
+function loadUsers(){return ghGet("lists/users.json").then(function(d){return (d&&d.users)||[]}).catch(function(){return []})}
+function saveUsers(users){return ghPut("lists/users.json",{users:users,updated:Date.now()},"users")}
+function ready(){$("gform").hidden=false;$("gskip").hidden=false;gmsg("Sign in. Accounts are shared.")}
 if(window.claude&&claude.use){Promise.all([claude.use("db"),claude.use("user")]).then(function(r){DB=r[0];return r[1]?r[1].id():null}).then(function(id){UID=id;ready();auto()},function(){ready();auto()})}else{ready();auto()}
-function auto(){if(!SAVED||!SAVED.handle||ME)return;if(SAVED.handle==="local")return enter({handle:"local"});
- if(!(DB&&UID&&SAVED.uid===UID)){$("gate").hidden=false;return}
- DB.doc("accounts/"+UID).get().then(function(d){if(d.exists&&d.data().handle===SAVED.handle)enter({handle:SAVED.handle,uid:UID});else $("gate").hidden=false}).catch(function(){$("gate").hidden=false})}
+function auto(){if(!SAVED||!SAVED.handle||ME)return;if(SAVED.handle==="local")return enter({handle:"local"});enter({handle:SAVED.handle,uid:SAVED.uid||null})}
 $("gskip").onclick=function(){enter({handle:"local"})};
-$("out").onclick=function(){ME=null;SAVED=null;try{localStorage.removeItem("maistro.me")}catch(e){}paintSess();$("gate").hidden=false;$("who").hidden=true;$("out").hidden=true;gmsg("Signed out.")};
+$("out").onclick=function(){ME=null;SAVED=null;try{localStorage.removeItem("maistro.me")}catch(e){}paintSess();$("gate").hidden=false;$("who").hidden=true;$("out").hidden=true;gmsg("Signed out. Sign in.")};
 $("gnew").onclick=function(){var h=$("gh").value.trim().toLowerCase(),p=$("gp").value;
  if(!/^[a-z0-9_]{3,20}$/.test(h))return gmsg("Use 3 to 20 letters, numbers or underscores for the username.",1);
  if(p.length<8)return gmsg("Use a passphrase of at least 8 characters.",1);
- DB.collection("accounts").where("handle","==",h).get().then(function(s){if(!s.empty)throw"That username is taken.";return DB.doc("accounts/"+UID).get()}).then(function(d){
-  if(d.exists)throw"This viewer already has the account "+d.data().handle+". Sign in instead.";var salt=rnd(16);
-  return bits(p,salt,250000).then(function(x){return DB.doc("accounts/"+UID).set({handle:h,salt:b64(salt),hash:b64(x),iter:250000,role:"member",created:Date.now()})})}).then(function(){enter({handle:h,uid:UID})}).catch(function(e){gmsg(typeof e==="string"?e:"Could not create the account. Try again.",1)})};
+ if(!ghTok())return gmsg("Paste a GitHub token in Ask to create an account.",1);
+ loadUsers().then(function(users){if(users.some(function(u){return u.handle===h}))throw"That username is taken.";var salt=rnd(16);return bits(p,salt,250000).then(function(x){users.push({handle:h,salt:b64(salt),hash:b64(x),iter:250000,role:"member",created:Date.now()});return saveUsers(users)})}).then(function(){enter({handle:h})}).catch(function(e){gmsg(typeof e==="string"?e:"Could not create the account. Try again.",1)})};
 $("gin").onclick=function(){var h=$("gh").value.trim().toLowerCase(),p=$("gp").value;
  if(Date.now()<lock)return gmsg("Too many tries. Wait "+Math.ceil((lock-Date.now())/1000)+" seconds.",1);
- DB.collection("accounts").where("handle","==",h).limit(1).get().then(function(s){var bad=function(){fails++;if(fails>=5){lock=Date.now()+30000;fails=0}throw"Wrong username or passphrase."};
-  if(s.empty)return bad();var a=s.docs[0].data();return bits(p,ub(a.salt),a.iter).then(function(x){if(b64(x)!==a.hash)return bad();fails=0;enter({handle:a.handle,uid:s.docs[0].id})})}).catch(function(e){gmsg(typeof e==="string"?e:"Could not sign in. Try again.",1)})};
+ var bad=function(){fails++;if(fails>=5){lock=Date.now()+30000;fails=0}throw"Wrong username or passphrase."};
+ loadUsers().then(function(users){var a=users.filter(function(u){return u.handle===h})[0];if(!a)return bad();return bits(p,ub(a.salt),a.iter||250000).then(function(x){if(b64(x)!==a.hash)return bad();fails=0;enter({handle:a.handle})})}).catch(function(e){gmsg(typeof e==="string"?e:"Could not sign in. Try again.",1)})};
 function vkey(tp,salt,use){return bits(tp,salt,250000).then(function(b){return crypto.subtle.importKey("raw",b,"AES-GCM",false,[use])})}
 $("vsave").onclick=function(){var tp=$("vtp").value;if(!DB||!ME||!UID)return vmsg("Sign in with a shared account first.");if(tp.length<8)return vmsg("Use a team passphrase of at least 8 characters.");
  var salt=rnd(16),iv=rnd(12);vkey(tp,salt,"encrypt").then(function(k){return crypto.subtle.encrypt({name:"AES-GCM",iv:iv},k,TE.encode(JSON.stringify({gk:$("gk").value,ok:$("ok").value})))})

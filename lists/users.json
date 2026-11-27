@@ -1,0 +1,28 @@
+{
+  "users": [
+    {
+      "handle": "jato",
+      "salt": "3JEY9q4INlT1dcW5Rj2bNQ==",
+      "hash": "MazsPwsx/993pOirZBShieTAygNi8xuKi1OodpJtb7E=",
+      "iter": 250000,
+      "role": "member",
+      "created": 1795773786395
+    },
+    {
+      "handle": "kreatch",
+      "salt": "dZJICDjrsJIpWWQAUP//Xw==",
+      "hash": "LfuA69YUy91aue+z8Ago6jCTf1gjpsYipzbrwEuaen0=",
+      "iter": 250000,
+      "role": "member",
+      "created": 1795773786495
+    },
+    {
+      "handle": "rafael",
+      "salt": "Nze1Rc5n/GhzGtYF1o0zVg==",
+      "hash": "fTZppWwItHkDiaSc5ddeYePw+LjkFzXtL0RU+EIufOA=",
+      "iter": 250000,
+      "role": "member",
+      "created": 1795773786595
+    }
+  ]
+}
