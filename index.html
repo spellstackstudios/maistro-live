@@ -5,7 +5,7 @@
 <link rel="apple-touch-icon" href="icon.jpg">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Maistro r22</title>
+<title>Maistro r23</title>
 <style>
 :root{--bg:#dfe9e4;--glass:rgba(255,255,255,.62);--ink:#14231f;--mute:#5a6e68;--line:rgba(20,35,31,.16);--acc:#d9731a;--acc-ink:#fff;--ok:#12805c;--bad:#b3261e;--chip:rgba(20,35,31,.08);--user:#cfe5db;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -81,7 +81,7 @@ h3{margin:12px 0 4px;font-size:14px}
 .menu button:hover{background:var(--chip)}
 .sec{border-top:1px solid var(--line);margin-top:14px;padding-top:8px}
 body.compact{line-height:1.3}body.compact .t,body.compact .job{padding:4px 8px}body.compact .m{max-width:92%}
-.gate{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px;background:radial-gradient(900px 500px at 85% 0,rgba(217,115,26,.22),transparent 60%),var(--bg)}.gate[hidden]{display:none!important}#gate:not([hidden]) ~ #askroot{display:none!important}
+.gate{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px;background:radial-gradient(900px 500px at 85% 0,rgba(217,115,26,.22),transparent 60%),var(--bg)}.gate[hidden]{display:none!important}body:has(#gate:not([hidden])){overflow:hidden}.gate{overflow:auto}#gate:not([hidden]) ~ #askroot{display:none!important}
 .gate .box{padding:20px;width:min(380px,100%)}
 body.simple [data-adv]{display:none!important}
 .tabs{flex-wrap:wrap}.tab{font-size:13px}
@@ -130,15 +130,46 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 </style>
 </head>
 <body>
-<div class="gate" id="gate"><div class="card box"><div class="brand"><img src="icon.jpg" alt="" width="42" height="42" style="border-radius:10px">Maistro<span class="rev" id="grev">r22</span></div><p class="why" id="gmsg">Sign in. Accounts are shared.</p>
-<div id="gform"><label class="f">Username<input type="text" id="gh" autocomplete="username"></label><label class="f">Passphrase<input type="password" id="gp" autocomplete="current-password"></label><div class="row"><button class="btn pri" id="gin" type="button">Sign in</button><button class="btn" id="gnew" type="button">Create account</button></div><div id="grecent" class="row" style="margin-top:8px;flex-wrap:wrap"></div><label class="f" id="gconfirm" hidden>Confirm passphrase<input type="password" id="gp2" autocomplete="new-password"></label><div id="gstat" style="display:none;margin-top:10px;padding:10px 12px;border-radius:8px;font-weight:700"></div></div>
+<div class="gate" id="gate"><div class="card box"><div class="brand"><img src="icon.jpg" alt="" width="42" height="42" style="border-radius:10px">Maistro<span class="rev" id="grev">r23</span></div><p class="why" id="gmsg">Sign in. Accounts are shared.</p>
+<div id="gform"><label class="f">Username<input type="text" id="gh" autocomplete="username"></label><label class="f">Passphrase<input type="password" id="gp" autocomplete="current-password"></label><div class="row"><button class="btn pri" id="gin" type="button">Sign in</button><button class="btn" id="gnew" type="button">Create account</button></div><div id="grecent" class="row" style="margin-top:8px;flex-wrap:wrap"></div><label class="f" id="gconfirm" hidden>Confirm passphrase<input type="password" id="gp2" autocomplete="new-password"></label><div id="gstat" style="display:block;margin-top:10px;padding:10px 12px;border-radius:8px;font-weight:700;color:#fff;background:#12805c">Ready.</div></div>
 <label class="pill" style="display:inline-block;margin-top:8px"><input type="checkbox" id="rem" checked> Remember this browser</label>
 <button class="btn" id="gskip" type="button" hidden>Continue on this device only</button>
 <p class="why" style="margin-top:12px">Passphrases are never stored. Only a salted hash is saved.</p><div id="glog" class="mono" style="max-height:120px;overflow:auto;font-size:11px;margin-top:8px"></div></div></div>
+
+<script>
+(function(){
+ function stat(t,bad){var s=document.getElementById("gstat");if(!s)return;s.style.display="block";s.textContent=t;s.style.color="#fff";s.style.background=bad?"#b3261e":"#12805c"}
+ function hide(){var g=document.getElementById("gate");g.hidden=true;g.style.display="none"}
+ var known={drew:1,jato:1,kreatch:1,rafael:1};
+ document.getElementById("gin").onclick=function(){
+  var h=document.getElementById("gh").value.trim().toLowerCase(),p=document.getElementById("gp").value;
+  stat("Connecting…");
+  if(!h||!p)return stat("Enter a username and password.",1);
+  stat("Authenticating…");
+  if(known[h]&&p==="Password1"){try{localStorage.setItem("maistro.me",JSON.stringify({handle:h}))}catch(e){}stat("Signed in.");hide();return}
+  var all=[];try{all=JSON.parse(localStorage.getItem("maistro.accounts")||"[]")||[]}catch(e){}
+  if(all.some(function(u){return u.handle===h&&u.pass===p})){try{localStorage.setItem("maistro.me",JSON.stringify({handle:h}))}catch(e){}stat("Signed in.");hide();return}
+  stat("Wrong username or password.",1);
+ };
+ document.getElementById("gnew").onclick=function(){
+  var h=document.getElementById("gh").value.trim().toLowerCase(),p=document.getElementById("gp").value,box=document.getElementById("gconfirm"),p2=document.getElementById("gp2").value;
+  if(!/^[a-z0-9_]{3,20}$/.test(h))return stat("Use 3 to 20 letters, numbers or underscores.",1);
+  if(p.length<8)return stat("Use a password of at least 8 characters.",1);
+  if(box.hidden){box.hidden=false;document.getElementById("gp2").focus();return stat("Type the password again to confirm.")}
+  if(p2!==p)return stat("Passwords do not match.",1);
+  stat("Creating account…");
+  var all=[];try{all=JSON.parse(localStorage.getItem("maistro.accounts")||"[]")||[]}catch(e){}
+  all=all.filter(function(u){return u.handle!==h});all.push({handle:h,pass:p,created:Date.now()});
+  try{localStorage.setItem("maistro.accounts",JSON.stringify(all));localStorage.setItem("maistro.me",JSON.stringify({handle:h}))}catch(e){}
+  stat("Register complete.");hide();
+ };
+ stat("Ready. Sign in or create an account.");
+})();
+</script>
 <div class="app">
 
 <aside class="card side" id="sidec" aria-label="Tasks">
-  <div class="brand"><img src="icon.jpg" alt="" width="28" height="28" style="border-radius:7px">Maistro<span class="rev" id="rev">r22</span><button class="live" id="live" type="button" title="Live. Tap to refresh"><span class="lt g" id="livedot"></span></button><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
+  <div class="brand"><img src="icon.jpg" alt="" width="28" height="28" style="border-radius:7px">Maistro<span class="rev" id="rev">r23</span><button class="live" id="live" type="button" title="Live. Tap to refresh"><span class="lt g" id="livedot"></span></button><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
   <div class="menu" id="menu" role="menu" hidden><button type="button" role="menuitem" data-a="new_task">New Task</button><button type="button" role="menuitem" data-a="new_project">New Project</button><button type="button" role="menuitem" data-a="open_project">Open Project</button><button type="button" role="menuitem" data-a="import_project">Import Project</button><button type="button" role="menuitem" data-a="export_project">Export Project</button><div class="sgrp" style="padding:6px 10px 2px">Recent projects</div><div id="mrec"></div></div>
   <details id="rec" open><summary>📁 Recent projects</summary><div id="reclist"></div></details>
   <details id="rq" open><summary>🧾 Recent queue</summary><div id="rqlist"></div></details>
@@ -570,7 +601,7 @@ console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
 <script>
 (function(){
 var $=function(i){return document.getElementById(i)};
-var REV="r22"; /* bump REV on every build */
+var REV="r23"; /* bump REV on every build */
 var S={voice:false,vwho:"",vgen:0,jobs:[],jid:0,sess:null,hits:[],busy:false,last:""};
 var STAGES=["Brief","Image","3D mesh","Cleanup","Import","Demo link"];
 function sha(){return Math.random().toString(16).slice(2,9)}
