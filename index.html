@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Maistro r1</title>
+<title>Maistro r2</title>
 <style>
 :root{--bg:#dfe9e4;--glass:rgba(255,255,255,.62);--ink:#14231f;--mute:#5a6e68;--line:rgba(20,35,31,.16);--acc:#d9731a;--acc-ink:#fff;--ok:#12805c;--bad:#b3261e;--chip:rgba(20,35,31,.08);--user:#cfe5db;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -133,7 +133,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 <div class="app">
 
 <aside class="card side" id="sidec" aria-label="Tasks">
-  <div class="brand"><canvas id="mini" width="28" height="28" aria-hidden="true"></canvas>Maistro<span class="rev" id="rev">r1</span><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
+  <div class="brand"><canvas id="mini" width="28" height="28" aria-hidden="true"></canvas>Maistro<span class="rev" id="rev">r2</span><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
   <div class="menu" id="menu" role="menu" hidden><button type="button" role="menuitem" data-a="new_task">New Task</button><button type="button" role="menuitem" data-a="new_project">New Project</button><button type="button" role="menuitem" data-a="open_project">Open Project</button><button type="button" role="menuitem" data-a="import_project">Import Project</button><button type="button" role="menuitem" data-a="export_project">Export Project</button><div class="sgrp" style="padding:6px 10px 2px">Recent projects</div><div id="mrec"></div></div>
   <details id="rec" open><summary>📁 Recent projects</summary><div id="reclist"></div></details>
   <details id="rq" open><summary>🧾 Recent queue</summary><div id="rqlist"></div></details>
@@ -536,6 +536,10 @@ console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
       <textarea id="askin" placeholder="Add a pause menu, footstep audio, and a health pickup"></textarea>
       <div class="row" style="margin-top:8px"><button class="btn" id="askadd" type="button">Add to list</button><button class="btn pri" id="askjobs" type="button">Create jobs</button></div>
       <div id="asklist"></div>
+      <p class="why" style="margin-top:12px">Lists live on GitHub Pages. Yours is per user. The shared list is everyone. Improvements come from what shows up most.</p>
+      <input type="password" id="ght" placeholder="GitHub token (public_repo) to save lists" autocomplete="off" style="margin-top:6px">
+      <div class="row" style="margin-top:6px"><button class="btn sm" id="asksync" type="button">Save lists</button><button class="btn sm" id="askmine" type="button">Load mine</button><button class="btn sm" id="askglob" type="button">Load shared</button><button class="btn sm" id="askimp" type="button">Improve from lists</button></div>
+      <div id="askimpbox"></div>
     </div>
   </section>
   <div id="askhold"><canvas id="askfx" width="180" height="180" aria-hidden="true"></canvas><button id="askorb" type="button" aria-expanded="false" aria-controls="askpop" title="Drag to move. Click to open.">Ask<span id="askbadge" hidden>0</span></button></div>
@@ -544,7 +548,7 @@ console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
 <script>
 (function(){
 var $=function(i){return document.getElementById(i)};
-var REV="r1"; /* bump REV on every build */
+var REV="r2"; /* bump REV on every build */
 var S={voice:false,vwho:"",vgen:0,jobs:[],jid:0,sess:null,hits:[],busy:false,last:""};
 var STAGES=["Brief","Image","3D mesh","Cleanup","Import","Demo link"];
 function sha(){return Math.random().toString(16).slice(2,9)}
@@ -1060,7 +1064,21 @@ function askParse(raw){
  else parts=[t];
  var items=parts.map(function(s){return s.replace(/^\s*(?:[-*•]|\d+[.)])\s*/,"").replace(/^(?:and|then)\s+/i,"").replace(/^(?:a|an)\s+/i,"").replace(/[.\s]+$/,"").trim()}).filter(function(s){return s.length>1&&!/^(please|thanks|thank you)$/i.test(s)}).slice(0,40);
  return{cmd:also?"add+jobs":"add",items:items}}
-function askAdd(items){var added=[],skip=[];items.forEach(function(text){text=text.slice(0,2000);var dup=ASK.items.some(function(it){return it.text.toLowerCase()===text.toLowerCase()&&!it.jobId});if(dup){skip.push(text);return}ASK.items.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),text:text});added.push(text)});return{added:added,skip:skip}}
+function askAdd(items){var added=[],skip=[];items.forEach(function(text){text=text.slice(0,2000);var dup=ASK.items.some(function(it){return it.text.toLowerCase()===text.toLowerCase()&&!it.jobId});if(dup){skip.push(text);return}ASK.items.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),text:text});added.push(text)});if(added.length)pushLists(added);return{added:added,skip:skip}}
+var GH={owner:"spellstackstudios",repo:"maistro-live",branch:"main"};
+function ghUser(){var h=ME&&ME.handle;if(h)return String(h).toLowerCase().replace(/[^a-z0-9_-]/g,"-").slice(0,40);try{h=localStorage.getItem("maistro.listuser")}catch(e){}if(!h){h="u"+Math.random().toString(36).slice(2,8);try{localStorage.setItem("maistro.listuser",h)}catch(e){}}return h}
+function ghB64(t){return btoa(unescape(encodeURIComponent(t)))}
+function ghGet(path){return fetch("https://raw.githubusercontent.com/"+GH.owner+"/"+GH.repo+"/"+GH.branch+"/"+path+"?t="+Date.now()).then(function(r){if(r.status===404)return null;if(!r.ok)throw new Error("read "+r.status);return r.json()})}
+function ghPut(path,obj,msg){var tok=($("ght").value||KEYS.ght||"").trim();if(!tok)return Promise.reject(new Error("Add a GitHub token to save lists."));return fetch("https://api.github.com/repos/"+GH.owner+"/"+GH.repo+"/contents/"+path+"?ref="+GH.branch,{headers:{Authorization:"Bearer "+tok,Accept:"application/vnd.github+json"}}).then(function(r){return r.status===404?{sha:""}:r.json()}).then(function(cur){var body={message:msg,content:ghB64(JSON.stringify(obj,null,2)),branch:GH.branch};if(cur&&cur.sha)body.sha=cur.sha;return fetch("https://api.github.com/repos/"+GH.owner+"/"+GH.repo+"/contents/"+path,{method:"PUT",headers:{Authorization:"Bearer "+tok,Accept:"application/vnd.github+json","Content-Type":"application/json"},body:JSON.stringify(body)})}).then(function(r){if(!r.ok)return r.json().then(function(j){throw new Error(j.message||("save "+r.status))});return r.json()})}
+function pushLists(texts){var tok=($("ght").value||KEYS.ght||"").trim();if(!tok)return Promise.resolve();var user=ghUser(),mine={user:user,items:ASK.items.slice(-80).map(function(it){return{text:it.text,t:it.t||Date.now(),job:!!it.jobId}}),updated:Date.now()};
+ return ghGet("lists/global.json").catch(function(){return null}).then(function(g){g=g||{items:[]};var items=g.items||[];(texts||[]).forEach(function(text){var k=text.toLowerCase(),hit=items.filter(function(it){return String(it.text).toLowerCase()===k})[0];if(hit){hit.n=(hit.n||1)+1;hit.by=hit.by||[];if(hit.by.indexOf(user)<0)hit.by.push(user);hit.t=Date.now()}else items.push({text:text,n:1,by:[user],t:Date.now()})});items.sort(function(a,b){return (b.n||0)-(a.n||0)});return ghPut("lists/u/"+user+".json",mine,"list: "+user).then(function(){return ghPut("lists/global.json",{items:items.slice(0,200),updated:Date.now()},"list: shared")})}).then(function(){say("Saved your list and the shared list.","sys")},function(e){say("Could not save lists. "+e.message,"sys")})}
+function loadMine(){ghGet("lists/u/"+ghUser()+".json").then(function(d){if(!d||!d.items){say("No saved list for "+ghUser()+" yet.","sys");return}d.items.forEach(function(it){if(it&&it.text&&!ASK.items.some(function(q){return q.text.toLowerCase()===it.text.toLowerCase()}))ASK.items.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),text:it.text})});saveAsk();paintAsk();say("Loaded your list ("+ghUser()+").","sys")}).catch(function(){say("Could not load your list.","sys")})}
+function loadGlobal(){return ghGet("lists/global.json").then(function(d){ASK.global=(d&&d.items)||[];paintImprove();return ASK.global})}
+function paintImprove(){var box=$("askimpbox");if(!box)return;box.innerHTML="";var items=(ASK.global||[]).slice(0,8);if(!items.length){var e=document.createElement("p");e.className="why";e.textContent="No shared asks yet.";box.appendChild(e);return}
+ var h=document.createElement("p");h.className="why";h.textContent="Often asked";box.appendChild(h);
+ items.forEach(function(it){var row=document.createElement("div");row.className="askrow";var tx=document.createElement("div");tx.appendChild(document.createElement("b")).textContent=it.text;var sm=document.createElement("small");sm.textContent=(it.n||1)+" ask"+(it.n===1?"":"s")+(it.by&&it.by.length?" · "+it.by.slice(0,4).join(", "):"");tx.appendChild(sm);row.appendChild(tx);
+  var b=document.createElement("button");b.type="button";b.className="btn sm";b.textContent="Add";b.onclick=function(){askAdd([it.text]);saveAsk();paintAsk()};row.appendChild(b);box.appendChild(row)})}
+function improveFromLists(){loadGlobal().then(function(items){if(!items.length){say("Nothing on the shared list yet.","sys");return}var top=items.slice(0,5).map(function(it){return it.text});var r=askAdd(top);saveAsk();paintAsk();say("Pulled "+(r.added.length||0)+" often-asked item"+(r.added.length===1?"":"s")+" into your list to improve from.","ask")}).catch(function(){say("Could not read the shared list.","sys")})}
 function askMake(){var n=0,bad=0;ASK.items.forEach(function(it){if(it.jobId)return;var j=queue(it.text);it.jobId=j.id;it.jobWhy=j.state==="refused"?j.why:"";if(j.state==="refused")bad++;else n++});saveAsk();paintAsk();
  if(!n&&!bad)say("Nothing new on the list. Add something first.","ask");
  else say("Created "+n+" job"+(n===1?"":"s")+" from your list."+(S.sess?" The queue is held while the session is open.":" Approve them on the board to run.")+(bad?" "+bad+" could not be queued.":""),"ask")}
@@ -1102,6 +1120,13 @@ function bootAsk(){
  tickFx();
  $("askadd").onclick=function(){askGo(false)};
  $("askjobs").onclick=function(){askGo(true)};
+ $("ght").value=KEYS.ght||"";
+ $("ght").oninput=function(){KEYS.ght=this.value;ksave()};
+ $("asksync").onclick=function(){pushLists(ASK.items.map(function(it){return it.text}))};
+ $("askmine").onclick=loadMine;
+ $("askglob").onclick=function(){loadGlobal().then(function(){say("Loaded the shared list.","sys")}).catch(function(){say("Could not load the shared list.","sys")})};
+ $("askimp").onclick=improveFromLists;
+ loadGlobal().catch(function(){});
  $("askin").addEventListener("keydown",function(e){if(e.key==="Enter"&&(e.metaKey||e.ctrlKey)){e.preventDefault();askGo(true)}else if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();askGo(false)}});
  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&ASK.open){ASK.open=false;saveAsk();paintAsk()}})}
 bootAsk();
