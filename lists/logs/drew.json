@@ -2,11 +2,6 @@
   "id": "drew",
   "items": [
     {
-      "t": "2026-11-27T17:39:06.667Z",
-      "msg": "sign in",
-      "extra": "drew len 8"
-    },
-    {
       "t": "2026-11-27T17:39:06.827Z",
       "msg": "users loaded",
       "extra": "4"
@@ -400,7 +395,12 @@
       "t": "2026-11-27T21:08:38.583Z",
       "msg": "entered",
       "extra": "drew"
+    },
+    {
+      "t": "2026-11-27T21:08:40.923Z",
+      "msg": "log sent",
+      "extra": ""
     }
   ],
-  "updated": 1795813719784
+  "updated": 1795813722123
 }
