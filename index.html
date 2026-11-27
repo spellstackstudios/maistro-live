@@ -5,12 +5,12 @@
 <link rel="apple-touch-icon" href="icon.jpg">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Maistro r24</title>
+<title>Maistro r25</title>
 <style>
-:root{--bg:#dfe9e4;--glass:rgba(255,255,255,.62);--ink:#14231f;--mute:#5a6e68;--line:rgba(20,35,31,.16);--acc:#d9731a;--acc-ink:#fff;--ok:#12805c;--bad:#b3261e;--chip:rgba(20,35,31,.08);--user:#cfe5db;
+:root{--bg:#dfe9e4;--glass:rgba(255,255,255,.62);--win:rgba(255,255,255,.16);--ink:#14231f;--mute:#5a6e68;--line:rgba(20,35,31,.16);--acc:#d9731a;--acc-ink:#fff;--ok:#12805c;--bad:#b3261e;--chip:rgba(20,35,31,.08);--user:#cfe5db;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#08130f;--glass:rgba(24,48,41,.62);--ink:#e3efe9;--mute:#8fa8a0;--line:rgba(227,239,233,.16);--acc:#ff9a3d;--acc-ink:#1a0e00;--ok:#4fd8a4;--bad:#ff7a70;--chip:rgba(227,239,233,.09);--user:#1f4a3d}}
-:root[data-theme="dark"]{--bg:#08130f;--glass:rgba(24,48,41,.62);--ink:#e3efe9;--mute:#8fa8a0;--line:rgba(227,239,233,.16);--acc:#ff9a3d;--acc-ink:#1a0e00;--ok:#4fd8a4;--bad:#ff7a70;--chip:rgba(227,239,233,.09);--user:#1f4a3d}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#08130f;--glass:rgba(24,48,41,.62);--win:rgba(8,19,15,.22);--ink:#e3efe9;--mute:#8fa8a0;--line:rgba(227,239,233,.16);--acc:#ff9a3d;--acc-ink:#1a0e00;--ok:#4fd8a4;--bad:#ff7a70;--chip:rgba(227,239,233,.09);--user:#1f4a3d}}
+:root[data-theme="dark"]{--bg:#08130f;--glass:rgba(24,48,41,.62);--win:rgba(8,19,15,.22);--ink:#e3efe9;--mute:#8fa8a0;--line:rgba(227,239,233,.16);--acc:#ff9a3d;--acc-ink:#1a0e00;--ok:#4fd8a4;--bad:#ff7a70;--chip:rgba(227,239,233,.09);--user:#1f4a3d}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;color:var(--ink);font:15px/1.5 system-ui,"Segoe UI",sans-serif;background:radial-gradient(900px 500px at 85% 0,rgba(217,115,26,.22),transparent 60%),radial-gradient(700px 500px at 0 100%,rgba(30,140,100,.25),transparent 60%),var(--bg)}
@@ -21,7 +21,7 @@ code,.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}
 .grip{cursor:col-resize;border-radius:6px;background:var(--line)}
 .grip:hover{background:var(--acc)}
 @media(max-width:1020px){.app{grid-template-columns:1fr;height:auto}.grip{display:none}}
-.card{background:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.35);border-radius:16px;backdrop-filter:blur(22px) saturate(1.4);-webkit-backdrop-filter:blur(22px) saturate(1.4);box-shadow:0 8px 32px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.35);display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.card{background:var(--win);border:1px solid rgba(255,255,255,.32);border-radius:16px;backdrop-filter:blur(22px) saturate(1.5);-webkit-backdrop-filter:blur(22px) saturate(1.5);box-shadow:0 8px 32px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.28);display:flex;flex-direction:column;min-height:0;overflow:hidden}body.noglass .card,body.noglass .float,body.noglass #term{background:var(--glass);backdrop-filter:none;-webkit-backdrop-filter:none}
 .side{padding:12px}
 .brand{display:flex;gap:8px;align-items:center;font-weight:700;font-size:17px}.rev{font-weight:600;font-size:11px;color:var(--mute);border:1px solid var(--line);border-radius:99px;padding:1px 6px;letter-spacing:.03em}.live{display:inline-flex;align-items:center;border:1px solid var(--line);background:var(--chip);border-radius:99px;padding:3px 7px}.live .lt{margin:0}
 .sp{flex:1}
@@ -85,7 +85,7 @@ body.compact{line-height:1.3}body.compact .t,body.compact .job{padding:4px 8px}b
 .gate .box{padding:20px;width:min(380px,100%)}
 body.simple [data-adv]{display:none!important}
 .tabs{flex-wrap:wrap}.tab{font-size:13px}
-.float,#term{position:fixed!important;z-index:30;resize:both;overflow:auto;min-width:260px;min-height:180px;max-width:100vw;max-height:100vh;background:rgba(12,24,20,.55);backdrop-filter:blur(24px) saturate(1.4);-webkit-backdrop-filter:blur(24px) saturate(1.4);border:1px solid rgba(255,255,255,.28);box-shadow:0 16px 48px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.3)}.float.pane{display:flex!important;flex-direction:column}
+.float,#term{position:fixed!important;z-index:30;resize:both;overflow:auto;min-width:260px;min-height:180px;max-width:100vw;max-height:100vh;background:var(--win);backdrop-filter:blur(24px) saturate(1.5);-webkit-backdrop-filter:blur(24px) saturate(1.5);border:1px solid rgba(255,255,255,.28);box-shadow:0 16px 48px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.3)}.float.pane{display:flex!important;flex-direction:column}
 #term{right:16px;bottom:16px;width:min(580px,94vw);height:300px}
 .sset{display:flex;gap:16px;align-items:flex-start}.snav{flex:0 0 190px;display:flex;flex-direction:column;gap:2px;position:sticky;top:0}.spane{flex:1;min-width:0}
 .sgrp{margin:12px 0 4px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}.sgrp:first-child{margin-top:0}
@@ -130,7 +130,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 </style>
 </head>
 <body>
-<div class="gate" id="gate"><div class="card box"><div class="brand"><img src="icon.jpg" alt="" width="42" height="42" style="border-radius:10px">Maistro<span class="rev" id="grev">r24</span></div><p class="why" id="gmsg">Sign in. Accounts are shared.</p>
+<div class="gate" id="gate"><div class="card box"><div class="brand"><img src="icon.jpg" alt="" width="42" height="42" style="border-radius:10px">Maistro<span class="rev" id="grev">r25</span></div><p class="why" id="gmsg">Sign in. Accounts are shared.</p>
 <div id="gform"><label class="f">Username<input type="text" id="gh" autocomplete="username"></label><label class="f">Passphrase<input type="password" id="gp" autocomplete="current-password"></label><div class="row"><button class="btn pri" id="gin" type="button">Sign in</button><button class="btn" id="gnew" type="button">Create account</button></div><div id="grecent" class="row" style="margin-top:8px;flex-wrap:wrap"></div><label class="f" id="gconfirm" hidden>Confirm passphrase<input type="password" id="gp2" autocomplete="new-password"></label><div id="gstat" style="display:block;margin-top:10px;padding:10px 12px;border-radius:8px;font-weight:700;color:#fff;background:#12805c">Ready.</div></div>
 <label class="pill" style="display:inline-block;margin-top:8px"><input type="checkbox" id="rem" checked> Remember this browser</label>
 <button class="btn" id="gskip" type="button" hidden>Continue on this device only</button>
@@ -169,7 +169,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 <div class="app">
 
 <aside class="card side" id="sidec" aria-label="Tasks">
-  <div class="brand"><canvas id="mini" width="28" height="28" aria-hidden="true"></canvas>Maistro<span class="rev" id="rev">r24</span><button class="live" id="live" type="button" title="Live. Tap to refresh"><span class="lt g" id="livedot"></span></button><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
+  <div class="brand"><canvas id="mini" width="28" height="28" aria-hidden="true"></canvas>Maistro<span class="rev" id="rev">r25</span><button class="live" id="live" type="button" title="Live. Tap to refresh"><span class="lt g" id="livedot"></span></button><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
   <div class="menu" id="menu" role="menu" hidden><button type="button" role="menuitem" data-a="new_task">New Task</button><button type="button" role="menuitem" data-a="new_project">New Project</button><button type="button" role="menuitem" data-a="open_project">Open Project</button><button type="button" role="menuitem" data-a="import_project">Import Project</button><button type="button" role="menuitem" data-a="export_project">Export Project</button><div class="sgrp" style="padding:6px 10px 2px">Recent projects</div><div id="mrec"></div></div>
   <details id="rec" open><summary>📁 Recent projects</summary><div id="reclist"></div></details>
   <details id="rq" open><summary>🧾 Recent queue</summary><div id="rqlist"></div></details>
@@ -269,9 +269,15 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
     <div id="usrlist"></div>
   </div>
   <div class="pane" id="askset" data-adv>
-    <p class="why">Ask Maistro settings. The bubble stays on screen. This tab is for the options.</p>
+    <p class="why">Ask Maistro settings. The bubble stays on screen.</p>
     <button class="btn" id="askopen" type="button">Open Ask Maistro</button>
-    <label class="f" style="margin-top:8px">Auto-send after silence (seconds)<input type="number" id="askwait2" min="1" max="30" value="3"></label>
+    <label class="f" style="margin-top:8px">Auto-send after silence (seconds)<input type="number" id="askwait" min="1" max="30" value="3"></label>
+    <input type="password" id="ght" placeholder="Token shows here after generate or import" autocomplete="off" style="margin-top:6px">
+    <div class="row" style="margin-top:6px"><button class="btn sm pri" id="ghtgen" type="button">Generate token</button><button class="btn sm" id="ghtpaste" type="button">Paste</button><button class="btn sm" id="ghtimp" type="button">Import file</button><input type="file" id="ghtfile" accept=".txt,.token,text/plain" hidden></div>
+    <div id="askrestore" hidden></div>
+    <p class="why" id="askstat">No token yet. Generate opens GitHub with the right scope. Paste or Import brings it in. It stays on this device.</p>
+    <div class="row" style="margin-top:6px"><button class="btn sm" id="asksync" type="button">Save lists</button><button class="btn sm" id="askmine" type="button">Load mine</button><button class="btn sm" id="askglob" type="button">Load today</button><button class="btn sm" id="askmain" type="button">Load main</button><button class="btn sm" id="askimp" type="button">Improve from lists</button></div>
+    <div id="askimpbox"></div>
   </div>
   <div class="pane" id="ai" data-adv>
     <p class='why'>One click connects every provider below. Open a card to pick the submodel and reasoning strength; your pick appears under Own model in Route. One OpenRouter key can stand in for any provider you have no key for. Keys are saved on this device in plain text. Model names are taken from your list and are not checked against the providers.</p>
@@ -584,15 +590,8 @@ console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
       <div class="row" style="margin-top:8px"><button class="btn" id="askadd" type="button">Add to list</button><button class="btn pri" id="askjobs" type="button">Create jobs</button></div>
       <div id="askdup" hidden></div>
       <div id="asklist"></div>
-      <label class="f" style="margin-top:8px">Auto-send after silence (seconds)<input type="number" id="askwait" min="1" max="30" value="3"></label>
-      <p class="why" style="margin-top:12px"><span class="lt g"></span>Live. Yours stays on this device. Adds go to today's list, then once a day into main.</p>
+      <p class="why" style="margin-top:12px"><span class="lt g"></span>Live. Token and Ask settings are in the Ask tab.</p>
       <button class="btn sm pri" id="askupd" type="button" hidden style="margin-top:6px">Update ready. Tap to reload</button>
-      <input type="password" id="ght" placeholder="Token shows here after generate or import" autocomplete="off" style="margin-top:6px">
-      <div class="row" style="margin-top:6px"><button class="btn sm pri" id="ghtgen" type="button">Generate token</button><button class="btn sm" id="ghtpaste" type="button">Paste</button><button class="btn sm" id="ghtimp" type="button">Import file</button><input type="file" id="ghtfile" accept=".txt,.token,text/plain" hidden></div>
-      <div id="askrestore" hidden></div>
-      <p class="why" id="askstat">No token yet. Generate opens GitHub with the right scope. Paste or Import brings it in. It stays on this device.</p>
-      <div class="row" style="margin-top:6px"><button class="btn sm" id="asksync" type="button">Save lists</button><button class="btn sm" id="askmine" type="button">Load mine</button><button class="btn sm" id="askglob" type="button">Load today</button><button class="btn sm" id="askmain" type="button">Load main</button><button class="btn sm" id="askimp" type="button">Improve from lists</button></div>
-      <div id="askimpbox"></div>
     </div>
   </section>
   <div id="askhold"><canvas id="askfx" width="180" height="180" aria-hidden="true"></canvas><button id="askorb" type="button" aria-expanded="false" aria-controls="askpop" title="Drag to move. Click to open.">Ask<span id="askbadge" hidden>0</span></button></div>
@@ -601,7 +600,7 @@ console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
 <script>
 (function(){
 var $=function(i){return document.getElementById(i)};
-var REV="r24"; /* bump REV on every build */
+var REV="r25"; /* bump REV on every build */
 var S={voice:false,vwho:"",vgen:0,jobs:[],jid:0,sess:null,hits:[],busy:false,last:""};
 var STAGES=["Brief","Image","3D mesh","Cleanup","Import","Demo link"];
 function sha(){return Math.random().toString(16).slice(2,9)}
@@ -751,7 +750,7 @@ $('pfile').onchange=function(){var f=this.files[0];this.value='';if(!f)return;f.
  var jobs=p.jobs.slice(0,200).filter(function(j){return j&&typeof j.text==='string'&&j.r&&LANE[j.r.lane]&&typeof j.r.model==='string'}).map(function(j){var s=OKS.indexOf(j.state)>-1?j.state:'waiting';return{id:+j.id||0,text:j.text,r:{model:j.r.model,lane:j.r.lane,why:String(j.r.why||'')},i:Math.min(+j.i||0,STAGES.length),state:s==='running'?'waiting':s,why:String(j.why||''),t:+j.t||Date.now()}});
  curSave();PR.push({name:n,root:String(p.root||'~/maistro/'+n),jobs:jobs,jid:Math.max(+p.jid||0,jobs.length)});switchTo(PR.length-1)}).catch(function(){say('That file is not a Maistro project export.','sys')})};
 function R(k,l,t,o,d,b){return{k:k,l:l,t:t,o:o,d:d,b:b}}
-var SCH=['General',R('theme','Theme','select',['auto','light','dark'],'auto'),R('fsize','Text size','range',[13,19,1],15),R('compact','Compact layout','check',0,0),R('still','Reduce motion','check',0,0),
+var SCH=['General',R('theme','Theme','select',['auto','light','dark'],'auto'),R('fsize','Text size','range',[13,19,1],15),R('compact','Compact layout','check',0,0),R('still','Reduce motion','check',0,0),R('glass','See-through windows','check',0,1),
 'Voice',R('vlang','Speech language','text',0,'en-US'),R('spk','Speak replies','check',0,0,'spk'),R('rate','Speaking speed','range',[.6,1.6,.1],1),
 'Ask Maistro',R('askwait','Auto-send after silence (seconds)','number',0,3),
 'Routing',R('prio','Route by','select',0,'auto','prio'),R('runon','Run on','select',0,'auto','runon'),R('own','Own model (always wins)','select',0,'','own'),R('cheap','Cheap routing for small jobs','check',0,1,'cheap'),R('maxc','Longest small job (characters)','number',0,1500),
@@ -767,6 +766,7 @@ function apply(k,v){var d=document.documentElement;
  else if(k==='fsize')document.body.style.fontSize=v+'px';
  else if(k==='compact')document.body.classList.toggle('compact',!!v);
  else if(k==='still'){var was=still;still=!!v||matchMedia('(prefers-reduced-motion: reduce)').matches;if(was&&!still)mloop()}
+ else if(k==='glass')document.body.classList.toggle('noglass',v===false)
  else if(k==='limit'){$('lim').textContent=+v||20;meter()}
  else if(k==='pname'&&v)PR[PI].name=String(v).slice(0,60);
  save()}
@@ -1255,8 +1255,6 @@ function bootAsk(){
  $("askupd").onclick=function(){location.reload()};
  $("live").onclick=function(){if($("askupd")&&!$("askupd").hidden){location.reload();return}liveTick();askStat("Refreshed.")};
  $("askopen").onclick=function(){ASK.off=false;ASK.open=true;saveAsk();paintAsk()};
- $("askwait2").value=+CFG.askwait||3;
- $("askwait2").oninput=function(){CFG.askwait=Math.max(1,+this.value||3);if($("askwait"))$("askwait").value=CFG.askwait;save()};
 
  loadGlobal().catch(function(){});
  loadMain().catch(function(){});
