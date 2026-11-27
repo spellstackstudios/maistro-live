@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="icon" href="icon.jpg">
+<link rel="apple-touch-icon" href="icon.jpg">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Maistro r10</title>
+<title>Maistro r11</title>
 <style>
 :root{--bg:#dfe9e4;--glass:rgba(255,255,255,.62);--ink:#14231f;--mute:#5a6e68;--line:rgba(20,35,31,.16);--acc:#d9731a;--acc-ink:#fff;--ok:#12805c;--bad:#b3261e;--chip:rgba(20,35,31,.08);--user:#cfe5db;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -133,7 +135,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 <div class="app">
 
 <aside class="card side" id="sidec" aria-label="Tasks">
-  <div class="brand"><canvas id="mini" width="28" height="28" aria-hidden="true"></canvas>Maistro<span class="rev" id="rev">r10</span><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
+  <div class="brand"><img src="icon.jpg" alt="" width="28" height="28" style="border-radius:7px">Maistro<span class="rev" id="rev">r11</span><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
   <div class="menu" id="menu" role="menu" hidden><button type="button" role="menuitem" data-a="new_task">New Task</button><button type="button" role="menuitem" data-a="new_project">New Project</button><button type="button" role="menuitem" data-a="open_project">Open Project</button><button type="button" role="menuitem" data-a="import_project">Import Project</button><button type="button" role="menuitem" data-a="export_project">Export Project</button><div class="sgrp" style="padding:6px 10px 2px">Recent projects</div><div id="mrec"></div></div>
   <details id="rec" open><summary>📁 Recent projects</summary><div id="reclist"></div></details>
   <details id="rq" open><summary>🧾 Recent queue</summary><div id="rqlist"></div></details>
@@ -553,7 +555,7 @@ console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
 <script>
 (function(){
 var $=function(i){return document.getElementById(i)};
-var REV="r10"; /* bump REV on every build */
+var REV="r11"; /* bump REV on every build */
 var S={voice:false,vwho:"",vgen:0,jobs:[],jid:0,sess:null,hits:[],busy:false,last:""};
 var STAGES=["Brief","Image","3D mesh","Cleanup","Import","Demo link"];
 function sha(){return Math.random().toString(16).slice(2,9)}
