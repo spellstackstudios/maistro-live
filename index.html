@@ -5,7 +5,7 @@
 <link rel="apple-touch-icon" href="icon.jpg">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Maistro r13</title>
+<title>Maistro r14</title>
 <style>
 :root{--bg:#dfe9e4;--glass:rgba(255,255,255,.62);--ink:#14231f;--mute:#5a6e68;--line:rgba(20,35,31,.16);--acc:#d9731a;--acc-ink:#fff;--ok:#12805c;--bad:#b3261e;--chip:rgba(20,35,31,.08);--user:#cfe5db;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -138,7 +138,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 <div class="app">
 
 <aside class="card side" id="sidec" aria-label="Tasks">
-  <div class="brand"><img src="icon.jpg" alt="" width="28" height="28" style="border-radius:7px">Maistro<span class="rev" id="rev">r13</span><button class="live" id="live" type="button" title="Live. Tap to refresh"><span class="lt g" id="livedot"></span></button><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
+  <div class="brand"><img src="icon.jpg" alt="" width="28" height="28" style="border-radius:7px">Maistro<span class="rev" id="rev">r14</span><button class="live" id="live" type="button" title="Live. Tap to refresh"><span class="lt g" id="livedot"></span></button><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
   <div class="menu" id="menu" role="menu" hidden><button type="button" role="menuitem" data-a="new_task">New Task</button><button type="button" role="menuitem" data-a="new_project">New Project</button><button type="button" role="menuitem" data-a="open_project">Open Project</button><button type="button" role="menuitem" data-a="import_project">Import Project</button><button type="button" role="menuitem" data-a="export_project">Export Project</button><div class="sgrp" style="padding:6px 10px 2px">Recent projects</div><div id="mrec"></div></div>
   <details id="rec" open><summary>📁 Recent projects</summary><div id="reclist"></div></details>
   <details id="rq" open><summary>🧾 Recent queue</summary><div id="rqlist"></div></details>
@@ -570,7 +570,7 @@ console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
 <script>
 (function(){
 var $=function(i){return document.getElementById(i)};
-var REV="r13"; /* bump REV on every build */
+var REV="r14"; /* bump REV on every build */
 var S={voice:false,vwho:"",vgen:0,jobs:[],jid:0,sess:null,hits:[],busy:false,last:""};
 var STAGES=["Brief","Image","3D mesh","Cleanup","Import","Demo link"];
 function sha(){return Math.random().toString(16).slice(2,9)}
@@ -855,7 +855,35 @@ function bits(pw,salt,it){return crypto.subtle.importKey("raw",TE.encode(pw),"PB
 function gmsg(t,bad){var m=$("gmsg");m.textContent=t;m.className="why"+(bad?" err":"")}
 function vmsg(t){$("vmsg").textContent=t}
 function enter(a){ME=a;$("gate").hidden=true;$("who").textContent=a.handle;$("who").hidden=false;$("out").hidden=false;$("gp").value="";try{if($("rem").checked)localStorage.setItem("maistro.me",JSON.stringify({handle:a.handle,uid:a.uid||UID||null}));else localStorage.removeItem("maistro.me")}catch(e){}paintSess();say("Signed in as "+a.handle+(a.handle==="local"?" (this device only).":"."),"sys")}
-function loadUsers(){return ghGet("lists/users.json").then(function(d){return (d&&d.users)||[]}).catch(function(){return []})}
+var SEED={
+  "users": [
+    {
+      "handle": "jato",
+      "salt": "3JEY9q4INlT1dcW5Rj2bNQ==",
+      "hash": "MazsPwsx/993pOirZBShieTAygNi8xuKi1OodpJtb7E=",
+      "iter": 250000,
+      "role": "member",
+      "created": 1795773786395
+    },
+    {
+      "handle": "kreatch",
+      "salt": "dZJICDjrsJIpWWQAUP//Xw==",
+      "hash": "LfuA69YUy91aue+z8Ago6jCTf1gjpsYipzbrwEuaen0=",
+      "iter": 250000,
+      "role": "member",
+      "created": 1795773786495
+    },
+    {
+      "handle": "rafael",
+      "salt": "Nze1Rc5n/GhzGtYF1o0zVg==",
+      "hash": "fTZppWwItHkDiaSc5ddeYePw+LjkFzXtL0RU+EIufOA=",
+      "iter": 250000,
+      "role": "member",
+      "created": 1795773786595
+    }
+  ]
+};
+function loadUsers(){return ghGet("lists/users.json").then(function(d){var remote=(d&&d.users)||[],by={};(SEED.users||[]).forEach(function(u){by[u.handle]=u});remote.forEach(function(u){if(u&&u.handle)by[u.handle]=u});return Object.keys(by).map(function(k){return by[k]})}).catch(function(){return (SEED.users||[]).slice()})}
 function saveUsers(users){return ghPut("lists/users.json",{users:users,updated:Date.now()},"users")}
 function ready(){$("gform").hidden=false;$("gskip").hidden=false;gmsg("Sign in. Accounts are shared.")}
 if(window.claude&&claude.use){Promise.all([claude.use("db"),claude.use("user")]).then(function(r){DB=r[0];return r[1]?r[1].id():null}).then(function(id){UID=id;ready();auto()},function(){ready();auto()})}else{ready();auto()}
@@ -868,8 +896,10 @@ $("gnew").onclick=function(){var h=$("gh").value.trim().toLowerCase(),p=$("gp").
  if(!ghTok())return gmsg("Paste a GitHub token in Ask to create an account.",1);
  loadUsers().then(function(users){if(users.some(function(u){return u.handle===h}))throw"That username is taken.";var salt=rnd(16);return bits(p,salt,250000).then(function(x){users.push({handle:h,salt:b64(salt),hash:b64(x),iter:250000,role:"member",created:Date.now()});return saveUsers(users)})}).then(function(){enter({handle:h})}).catch(function(e){gmsg(typeof e==="string"?e:"Could not create the account. Try again.",1)})};
 $("gin").onclick=function(){var h=$("gh").value.trim().toLowerCase(),p=$("gp").value;
+ if(!h||!p)return gmsg("Enter a username and password.",1);
  if(Date.now()<lock)return gmsg("Too many tries. Wait "+Math.ceil((lock-Date.now())/1000)+" seconds.",1);
- var bad=function(){fails++;if(fails>=5){lock=Date.now()+30000;fails=0}throw"Wrong username or passphrase."};
+ gmsg("Signing in…");
+ var bad=function(){fails++;if(fails>=5){lock=Date.now()+30000;fails=0}throw"Wrong username or password."};
  loadUsers().then(function(users){var a=users.filter(function(u){return u.handle===h})[0];if(!a)return bad();return bits(p,ub(a.salt),a.iter||250000).then(function(x){if(b64(x)!==a.hash)return bad();fails=0;enter({handle:a.handle})})}).catch(function(e){gmsg(typeof e==="string"?e:"Could not sign in. Try again.",1)})};
 function vkey(tp,salt,use){return bits(tp,salt,250000).then(function(b){return crypto.subtle.importKey("raw",b,"AES-GCM",false,[use])})}
 $("vsave").onclick=function(){var tp=$("vtp").value;if(!DB||!ME||!UID)return vmsg("Sign in with a shared account first.");if(tp.length<8)return vmsg("Use a team passphrase of at least 8 characters.");
@@ -1113,7 +1143,7 @@ function dayKey(t){return new Date(t||Date.now()).toISOString().slice(0,10)}
 function mergeItems(items,texts,user){items=items||[];(texts||[]).forEach(function(text){var k=String(text).toLowerCase(),hit=items.filter(function(it){return String(it.text).toLowerCase()===k})[0];if(hit){hit.n=(hit.n||1)+1;hit.by=hit.by||[];if(hit.by.indexOf(user)<0)hit.by.push(user);hit.t=Date.now()}else items.push({text:text,n:1,by:[user],t:Date.now()})});items.sort(function(a,b){return (b.n||0)-(a.n||0)});return items.slice(0,300)}
 function ghB64(t){return btoa(unescape(encodeURIComponent(t)))}
 function ghTok(){return ($("ght")&&$("ght").value||KEYS.ght||"").trim()}
-function ghGet(path){var h={Accept:"application/vnd.github+json"};var tok=ghTok();if(tok)h.Authorization="Bearer "+tok;return fetch("https://api.github.com/repos/"+GH.owner+"/"+GH.repo+"/contents/"+path+"?ref="+GH.branch+"&t="+Date.now(),{headers:h,cache:"no-store"}).then(function(r){if(r.status===404)return null;if(!r.ok)throw new Error("read "+r.status);return r.json()}).then(function(j){if(!j)return null;if(j.content){try{return JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,"")))))}catch(e){return null}}return j})}
+function ghGet(path){var raw="https://raw.githubusercontent.com/"+GH.owner+"/"+GH.repo+"/"+GH.branch+"/"+path+"?t="+Date.now();return fetch(raw,{cache:"no-store"}).then(function(r){if(r.status===404)return null;if(!r.ok)throw new Error("read "+r.status);return r.json()}).catch(function(){var h={Accept:"application/vnd.github+json"};var tok=ghTok();if(tok)h.Authorization="Bearer "+tok;return fetch("https://api.github.com/repos/"+GH.owner+"/"+GH.repo+"/contents/"+path+"?ref="+GH.branch,{headers:h,cache:"no-store"}).then(function(r){if(r.status===404)return null;if(!r.ok)throw new Error("read "+r.status);return r.json()}).then(function(j){if(!j||!j.content)return j;return JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,"")))))})})}
 function ghPut(path,obj,msg,attempt){var tok=ghTok();if(!tok)return Promise.reject(new Error("Add a GitHub token to save lists."));attempt=attempt||0;return fetch("https://api.github.com/repos/"+GH.owner+"/"+GH.repo+"/contents/"+path+"?ref="+GH.branch+"&t="+Date.now(),{headers:{Authorization:"Bearer "+tok,Accept:"application/vnd.github+json"},cache:"no-store"}).then(function(r){return r.status===404?{}:r.json()}).then(function(cur){var body={message:msg,content:ghB64(JSON.stringify(obj,null,2)),branch:GH.branch};if(cur&&cur.sha)body.sha=cur.sha;return fetch("https://api.github.com/repos/"+GH.owner+"/"+GH.repo+"/contents/"+path,{method:"PUT",headers:{Authorization:"Bearer "+tok,Accept:"application/vnd.github+json","Content-Type":"application/json"},body:JSON.stringify(body)})}).then(function(r){if(r.ok)return r.json();return r.json().then(function(j){var m=j.message||("save "+r.status);if(attempt<3&&/does not match|sha/i.test(m))return ghPut(path,obj,msg,attempt+1);throw new Error(m)})})}
 function askStat(t,bad){var e=$("askstat");if(!e)return;e.textContent=t;e.className=bad?"why err":"why"}
 var GHLOCK=Promise.resolve();
@@ -1208,7 +1238,7 @@ function bootAsk(){
  function paintUsers(list){var box=$("usrlist");if(!box)return;box.innerHTML="";var now=Date.now();var on=(list||[]).filter(function(u){return now-(u.t||0)<60000});if(!on.length){var e=document.createElement("p");e.className="why";e.textContent="No one else is online.";box.appendChild(e);return}on.forEach(function(u){var row=document.createElement("div");row.className="askrow";var t=document.createElement("div");var b=document.createElement("b");b.textContent=u.handle||u.id;t.appendChild(b);var sm=document.createElement("small");sm.textContent=(u.id===ghUser()?"you · ":"")+u.id;t.appendChild(sm);row.appendChild(t);box.appendChild(row)})}
 function beat(){var id=ghUser(),me={id:id,handle:(ME&&ME.handle)||id,t:Date.now()};return ghGet("lists/online.json").catch(function(){return null}).then(function(d){var users=((d&&d.users)||[]).filter(function(u){return u.id!==id&&Date.now()-(u.t||0)<60000});users.push(me);paintUsers(users);if(!ghTok())return;return ghPut("lists/online.json",{users:users,updated:Date.now()},"online")})}
 function liveTick(){var dot=$("livedot");loadGlobal().then(function(){if(dot&&$("askupd").hidden)dot.className="lt g"}).catch(function(){if(dot)dot.className="lt r"});loadMain().catch(function(){});loadMine(true);beat().catch(function(){})}
- setInterval(liveTick,15000);
+ setInterval(liveTick,30000);
  setInterval(function(){fetch("index.html?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var REV="(r\d+)"/);if(m&&m[1]!==REV){askStat("Update "+m[1]+" is ready.");var b=$("askupd");if(b)b.hidden=false;var d=$("livedot");if(d)d.className="lt r"}}).catch(function(){})},60000);
  $("askwait").value=+CFG.askwait||3;
  $("askwait").oninput=function(){CFG.askwait=Math.max(1,+this.value||3);save()};
