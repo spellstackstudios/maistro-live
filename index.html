@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Maistro r1</title>
+<style>
+:root{--bg:#dfe9e4;--glass:rgba(255,255,255,.62);--ink:#14231f;--mute:#5a6e68;--line:rgba(20,35,31,.16);--acc:#d9731a;--acc-ink:#fff;--ok:#12805c;--bad:#b3261e;--chip:rgba(20,35,31,.08);--user:#cfe5db;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#08130f;--glass:rgba(24,48,41,.62);--ink:#e3efe9;--mute:#8fa8a0;--line:rgba(227,239,233,.16);--acc:#ff9a3d;--acc-ink:#1a0e00;--ok:#4fd8a4;--bad:#ff7a70;--chip:rgba(227,239,233,.09);--user:#1f4a3d}}
+:root[data-theme="dark"]{--bg:#08130f;--glass:rgba(24,48,41,.62);--ink:#e3efe9;--mute:#8fa8a0;--line:rgba(227,239,233,.16);--acc:#ff9a3d;--acc-ink:#1a0e00;--ok:#4fd8a4;--bad:#ff7a70;--chip:rgba(227,239,233,.09);--user:#1f4a3d}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--ink);font:15px/1.5 system-ui,"Segoe UI",sans-serif;background:radial-gradient(900px 500px at 85% 0,rgba(217,115,26,.22),transparent 60%),radial-gradient(700px 500px at 0 100%,rgba(30,140,100,.25),transparent 60%),var(--bg)}
+button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+code,.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}
+.app{display:grid;grid-template-columns:250px minmax(0,1fr) 330px;gap:10px;padding:10px;height:100vh;min-height:560px}
+@media(max-width:1020px){.app{grid-template-columns:1fr;height:auto}}
+.card{background:var(--glass);border:1px solid var(--line);border-radius:14px;backdrop-filter:blur(14px);display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.side{padding:12px}
+.brand{display:flex;gap:8px;align-items:center;font-weight:700;font-size:17px}.rev{font-weight:600;font-size:11px;color:var(--mute);border:1px solid var(--line);border-radius:99px;padding:1px 6px;letter-spacing:.03em}
+.sp{flex:1}
+.btn{border:1px solid var(--line);background:var(--chip);border-radius:9px;padding:5px 11px}
+.btn:hover{border-color:var(--acc)}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:var(--acc-ink);font-weight:600}
+.btn.sm{padding:2px 8px;font-size:13px}
+.btn.bad{color:var(--bad)}
+.vbtn{display:inline-flex;align-items:center;gap:7px;border:1px solid #c4841f;background:linear-gradient(#ffe08a,#e8a23a);color:#1a1204;border-radius:8px;padding:5px 12px;font-weight:700;font-size:13px;letter-spacing:.01em;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 2px rgba(0,0,0,.22)}
+.vbtn::before{content:"";width:9px;height:9px;border-radius:50%;background:#1a1204;box-shadow:inset 0 0 0 2px #e8a23a;flex:none}
+.vbtn:hover{filter:brightness(1.05)}
+.vbtn.on{background:linear-gradient(#fff1c2,#ffb347);border-color:#a86a10}
+.vbtn.on::before{background:#b3261e;box-shadow:0 0 0 3px rgba(179,38,30,.28)}
+.vbtn.spk::before{background:transparent;box-shadow:inset 0 0 0 2px #1a1204;border-radius:2px}
+.vbtn.spk.on::before{background:#1a1204;box-shadow:none}
+#tasks{flex:1;overflow-y:auto;margin:10px -4px;display:flex;flex-direction:column;gap:6px}
+.t{padding:8px 10px;border:1px solid transparent;border-radius:10px}
+.t:hover{border-color:var(--line)}
+.t b{display:flex;gap:6px;align-items:center;font-size:14px}
+.t b span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.t small{color:var(--mute);display:block;font-size:12px}
+.dot{width:9px;height:9px;border-radius:50%;border:2px solid var(--mute);flex:none}
+.dot.running{border-color:var(--acc);background:var(--acc)}.dot.done{border-color:var(--ok);background:var(--ok)}.dot.refused,.dot.rejected{border-color:var(--bad)}
+.foot{font-size:12px;color:var(--mute);border-top:1px solid var(--line);padding-top:8px}
+.meter{height:5px;background:var(--chip);border-radius:3px;overflow:hidden;margin:4px 0}.meter i{display:block;height:100%;background:var(--acc);width:0}
+.top{display:flex;gap:8px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.crumb{color:var(--mute)}
+.stage{text-align:center;padding:8px 0 0}
+#av{width:150px;height:150px}
+.state{color:var(--mute);font-size:13px}
+#log{flex:1;overflow-y:auto;padding:8px 18px;display:flex;flex-direction:column;gap:10px;min-height:150px}
+.m{max-width:80%;white-space:pre-wrap;word-wrap:break-word}
+.m.u{align-self:flex-end;background:var(--user);padding:8px 12px;border-radius:12px}
+.m.a small,.m.u small{display:block;color:var(--mute);font-size:11px}
+.m.sys{align-self:center;color:var(--mute);font-size:13px}
+.comp{margin:0 14px 12px;border:1px solid var(--line);border-radius:12px;padding:8px;background:var(--chip)}
+textarea{width:100%;min-height:58px;resize:vertical;border:0;background:transparent;outline:0}
+.row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.pill{background:var(--chip);border-radius:999px;padding:2px 10px;font-size:12px}
+.tabs{display:flex;border-bottom:1px solid var(--line)}
+.tab{flex:1;border:0;background:none;padding:9px 4px;color:var(--mute);border-bottom:2px solid transparent}
+.tab[aria-selected=true]{color:var(--ink);border-bottom-color:var(--acc);font-weight:600}
+.pane{display:none;padding:12px;overflow-y:auto}.pane.on{display:block}
+label.f{display:flex;flex-direction:column;gap:2px;font-size:12.5px;color:var(--mute);margin-bottom:8px}
+input[type=text],input[type=password],select,.pane textarea{width:100%;border:1px solid var(--line);background:var(--chip);border-radius:8px;padding:5px 8px}
+.pane textarea{min-height:64px}
+.job{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:8px}
+.why{color:var(--mute);font-size:12.5px}
+.ok{color:var(--ok)}.err{color:var(--bad)}
+iframe{width:100%;height:230px;border:1px solid var(--line);border-radius:10px;background:#000}
+h3{margin:12px 0 4px;font-size:14px}
+[hidden]{display:none!important}
+.side{position:relative}
+.menu{position:absolute;top:46px;left:12px;z-index:20;min-width:190px;padding:6px;border:1px solid var(--line);border-radius:10px;background:var(--bg);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.menu button{display:block;width:100%;text-align:left;border:0;background:none;padding:7px 10px;border-radius:7px}
+.menu button:hover{background:var(--chip)}
+.sec{border-top:1px solid var(--line);margin-top:14px;padding-top:8px}
+body.compact{line-height:1.3}body.compact .t,body.compact .job{padding:4px 8px}body.compact .m{max-width:92%}
+.gate{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px;background:radial-gradient(900px 500px at 85% 0,rgba(217,115,26,.22),transparent 60%),var(--bg)}
+.gate .box{padding:20px;width:min(380px,100%)}
+body.simple [data-adv]{display:none!important}
+.tabs{flex-wrap:wrap}.tab{font-size:13px}
+.float,#term{position:fixed!important;z-index:30;resize:both;min-width:260px;min-height:150px;max-width:100vw;max-height:100vh;background:var(--bg);box-shadow:0 12px 36px rgba(0,0,0,.4)}
+#term{right:16px;bottom:16px;width:min(580px,94vw);height:300px}
+.sset{display:flex;gap:16px;align-items:flex-start}.snav{flex:0 0 190px;display:flex;flex-direction:column;gap:2px;position:sticky;top:0}.spane{flex:1;min-width:0}
+.sgrp{margin:12px 0 4px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}.sgrp:first-child{margin-top:0}
+#rec{margin:8px 0 0;border-top:1px solid var(--line);padding-top:6px;max-height:34%;overflow-y:auto}#rec summary{cursor:pointer;font-weight:600;font-size:13px;padding:2px 0}#reclist button[aria-current=true]{border-color:var(--acc)}
+#rq{flex:1 1 0;min-height:90px;overflow-y:auto;margin:6px 0 0;border-top:1px solid var(--line);padding-top:6px}#rq:not([open]){flex:none;min-height:0}#rq summary{cursor:pointer;font-weight:600;font-size:13px;padding:2px 0}
+a.btn{text-decoration:none;display:inline-block;color:inherit}
+.lt{display:inline-block;width:10px;height:10px;border-radius:50%;background:#888;margin-right:6px;flex:none}.lt.g{background:#2fd17a;box-shadow:0 0 8px #2fd17a}.lt.r{background:#e5484d;box-shadow:0 0 8px #e5484d}.lt.a{background:#f5a524;box-shadow:0 0 6px #f5a524}#ailist summary{cursor:pointer}#ailist details{margin-bottom:6px}
+.snav button{text-align:left;border:0;background:none;padding:7px 10px;border-radius:8px}.snav button:hover{background:var(--chip)}.snav button[aria-current=true]{background:var(--chip);box-shadow:inset 3px 0 0 var(--acc);font-weight:600}
+@media(max-width:620px){.sset{flex-direction:column}.snav{flex:none;position:static;width:100%}}
+.tb{display:flex;gap:6px;align-items:center;padding:5px 8px;border-bottom:1px solid var(--line);cursor:move;touch-action:none;user-select:none;font-size:13px;font-weight:600;background:var(--chip)}
+.ph{align-items:center;justify-content:center;gap:8px;color:var(--mute);border-style:dashed;text-align:center;padding:12px}
+#tout{flex:1;overflow:auto;padding:6px 10px;background:#05100c;color:#cfe}
+#tout div{white-space:pre-wrap;word-break:break-word;font:12px/1.45 ui-monospace,Menlo,Consolas,monospace}
+.k-dlg{color:#8fd0ff}.k-think{color:#c9a7ff;font-style:italic}.k-out{color:#7dffc0}.k-err{color:#ff8a80}.k-sys{color:#9db5ac}.k-mem{color:#ffcf6b}
+#askroot{position:fixed;z-index:56;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:flex-end;font:15px/1.45 system-ui,"Segoe UI",sans-serif;color:var(--ink)}
+#askroot.up{bottom:max(328px,env(safe-area-inset-bottom))}
+#askroot.off{right:0;bottom:max(120px,env(safe-area-inset-bottom))}
+#askroot.off.up{bottom:max(340px,env(safe-area-inset-bottom))}
+#askpop{position:absolute;right:0;bottom:68px;width:min(360px,calc(100vw - 28px));max-height:min(72vh,540px);overflow:auto}
+#askpop .ah{position:sticky;top:0;z-index:1;display:flex;gap:6px;align-items:center;padding:8px 8px 8px 12px;border-bottom:1px solid var(--line);background:var(--bg);font-weight:700}#askx{margin-left:10px;width:30px;height:30px;padding:0;flex:none;font-size:18px;line-height:1;border-radius:8px}
+#askbody{padding:10px 12px 12px}
+#askin{width:100%;min-height:72px;resize:vertical;border:1px solid var(--line);background:var(--chip);border-radius:10px;padding:8px 10px}
+#asklist{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.askrow{display:flex;gap:8px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:7px 8px;background:var(--chip)}
+.askrow b{font-weight:600;font-size:14px}
+.askrow small{display:block;color:var(--mute);font-size:12px}
+#askorb{position:relative;width:62px;height:62px;border-radius:50%;border:1px solid var(--acc);background:var(--acc);color:var(--acc-ink);font-weight:750;font-size:14px;box-shadow:0 10px 28px rgba(0,0,0,.28);padding:0}
+#askorb:hover{filter:brightness(1.06)}
+#askorb.has{animation:askpulse 2.4s ease-in-out infinite}
+@keyframes askpulse{0%,100%{box-shadow:0 10px 28px rgba(0,0,0,.28)}50%{box-shadow:0 0 0 6px rgba(217,115,26,.28),0 10px 28px rgba(0,0,0,.28)}}
+#askbadge{position:absolute;top:-2px;right:-2px;min-width:18px;height:18px;padding:0 4px;border-radius:99px;background:var(--ink);color:var(--bg);font-size:11px;line-height:18px;font-weight:700}
+#asktab{display:none;border:1px solid var(--line);border-right:0;background:var(--glass);color:var(--ink);border-radius:12px 0 0 12px;padding:12px 8px;writing-mode:vertical-rl;font-weight:700;letter-spacing:.02em;backdrop-filter:blur(14px);box-shadow:0 8px 24px rgba(0,0,0,.28)}
+#askroot.off #askorb,#askroot.off #askpop{display:none!important}
+#askroot.off #asktab{display:block}
+@media (prefers-reduced-motion:reduce){#askorb.has{animation:none}}
+#askhold{position:relative;width:62px;height:62px;flex:none}
+#askfx{position:absolute;left:50%;top:50%;width:180px;height:180px;transform:translate(-50%,-50%);pointer-events:none;z-index:0}
+#askorb{z-index:1;cursor:grab;touch-action:none}
+#askorb.drag{cursor:grabbing}
+#askroot.placed,#askroot.off.placed,#askroot.placed.up,#askroot.off.placed.up{right:auto!important;bottom:auto!important}
+
+</style>
+</head>
+<body>
+<div class="gate" id="gate"><div class="card box"><div class="brand">Maistro</div><p class="why" id="gmsg">Connecting to the shared account database…</p>
+<div id="gform" hidden><label class="f">Username<input type="text" id="gh" autocomplete="username"></label><label class="f">Passphrase<input type="password" id="gp" autocomplete="current-password"></label><div class="row"><button class="btn pri" id="gin" type="button">Sign in</button><button class="btn" id="gnew" type="button">Create account</button></div></div>
+<label class="pill" style="display:inline-block;margin-top:8px"><input type="checkbox" id="rem" checked> Remember this browser</label>
+<button class="btn" id="gskip" type="button" hidden>Continue on this device only</button>
+<p class="why" style="margin-top:12px">Passphrases are never stored. Only a salted hash is saved, and everyone using this page can read it, so pick a long passphrase.</p></div></div>
+<div class="app">
+
+<aside class="card side" id="sidec" aria-label="Tasks">
+  <div class="brand"><canvas id="mini" width="28" height="28" aria-hidden="true"></canvas>Maistro<span class="rev" id="rev">r1</span><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
+  <div class="menu" id="menu" role="menu" hidden><button type="button" role="menuitem" data-a="new_task">New Task</button><button type="button" role="menuitem" data-a="new_project">New Project</button><button type="button" role="menuitem" data-a="open_project">Open Project</button><button type="button" role="menuitem" data-a="import_project">Import Project</button><button type="button" role="menuitem" data-a="export_project">Export Project</button><div class="sgrp" style="padding:6px 10px 2px">Recent projects</div><div id="mrec"></div></div>
+  <details id="rec" open><summary>📁 Recent projects</summary><div id="reclist"></div></details>
+  <details id="rq" open><summary>🧾 Recent queue</summary><div id="rqlist"></div></details>
+  <div id="tasks"><p class="why" style="padding:8px">Nothing queued. Describe a task and press Queue.</p></div>
+  <div class="foot">
+    <div class="mono" id="branch">signed out on main</div>
+    <div>Free enhances this hour: <span id="hits">0</span> of <span id="lim">20</span></div><div class="meter"><i id="hbar"></i></div>
+  </div>
+</aside>
+
+<main class="card" id="mainc" aria-label="Conversation">
+  <div class="top">
+    <span class="crumb mono" id="crumb">this machine / project</span><span class="sp"></span>
+    <button class="vbtn" id="mute" type="button" aria-pressed="false">Unmute</button>
+    <button class="vbtn spk" id="spkb" type="button" aria-pressed="false">Speak replies</button>
+    <input type="checkbox" id="spk" hidden>
+    <span class="pill" id="who" hidden></span><button class="btn sm" id="out" type="button" hidden>Sign out</button><button class="btn sm" id="vw" type="button">View</button><button class="btn sm" id="sbtn" type="button" data-adv>Status</button><button class="btn sm" id="tbtn" type="button" data-adv>Terminal</button><button class="btn sm" id="theme" type="button">Theme</button>
+  </div>
+  <div class="stage"><canvas id="av" width="150" height="150" aria-hidden="true"></canvas><div class="state" id="state" role="status">Muted. You can still write.</div></div>
+  <div id="log" aria-live="polite"></div>
+  <div class="comp">
+    <textarea id="in" placeholder="Describe the task. Press Enhance to tidy it for free, then Queue or Send."></textarea>
+    <div class="row">
+      <span class="pill" id="rt" data-adv>Route: auto</span><span class="sp"></span>
+      <button class="btn" id="enh" type="button" data-adv>Enhance (free)</button>
+      <button class="btn" id="q" type="button">Queue</button>
+      <button class="btn pri" id="send" type="button">Send</button>
+    </div>
+  </div>
+</main>
+
+<aside class="card" id="ctl" aria-label="Controls">
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-p="ses">Session</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="rte" data-adv>Route</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="dem" data-adv>Demo</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="set" data-adv>Setup</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="app" data-adv>Apps</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="mem" data-adv>Memory</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="ai" data-adv>Models</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="stat" data-adv>Status</button>
+  </div>
+
+  <div class="pane on" id="ses">
+    <p class="why">Live mode. Each message goes straight to the AI on a session branch and is committed. The queue is held until you end the session, which queues one proving job.</p>
+    <div class="row"><button class="btn pri" id="s1" type="button">Start session</button><button class="btn" id="s2" type="button">Undo last change</button><button class="btn bad" id="s3" type="button">End session</button></div>
+    <p class="mono" id="sinfo">No session open.</p>
+    <div id="turns"></div>
+  </div>
+
+  <div class="pane" id="rte">
+    <label class="f">Route by<select id="prio"><option value="auto">Auto</option><option>cost</option><option>speed</option><option>privacy</option><option>quality</option></select></label>
+    <label class="f">Run on<select id="runon"><option value="auto">Auto</option><option value="agy">Agy lane</option><option value="grok">Grok lane</option><option value="groq">Groq free</option><option value="local">Local (Ollama)</option><option value="glm">GLM lane</option></select></label>
+    <label class="f">Own model for this job (always wins)<select id="own"><option value="">None</option><option>Gemini 4 Neon</option><option>Gemini 4 Carbon</option><option>Claude Opus 5.5</option><option>Claude Sonnet 5.5</option><option>Grok 4.7</option><option>GLM 5.2</option><option>GLM 5.4</option></select></label>
+    <label class="pill"><input type="checkbox" id="cheap" checked> Cheap routing for small jobs</label>
+    <p class="why" id="rwhy">Small jobs (docs, typos, tiny fixes) go to a fast model. Hard or long jobs never do.</p>
+    <h3>Not used from Nov 30, 2026</h3>
+    <p class="why">Gemini 4 Argon, Gemini 3.8 Flash, Claude 4.6 models, GPT-OSS on Agy. Routes skip them.</p>
+  </div>
+
+  <div class="pane" id="dem">
+    <div class="row"><select id="src" style="width:auto"><option>Git repo</option><option>Local project</option></select><input type="text" id="loc" placeholder="Repo URL or folder"></div>
+    <div class="row" style="margin:8px 0"><button class="btn pri" id="run" type="button">Run demo</button><button class="btn" id="stop" type="button">Stop</button></div>
+    <p class="why" id="dnote">Shows a built-in sample. A real repo needs a runner.</p>
+    <iframe id="fr" title="Playable demo" sandbox="allow-scripts"></iframe>
+  </div>
+
+  <div class="pane" id="set">
+    <label class="f">Engine target<select id="eng"><option value="web">Web (HTML5)</option><option value="ue">Unreal Engine 5.8</option><option value="unity">Unity</option></select></label>
+    <label class="f">Project folder<input type="text" id="root" value="~/maistro/project"></label>
+    <label class="f">Session rules (sent with every message)<textarea id="rules">Work only on this session branch. Keep changes small. Commit after each message. Run tests when the session ends.</textarea></label>
+    <h3>Free enhance chain</h3>
+    <label class="f">Ollama address<input type="text" id="ol" value="http://localhost:11434"></label>
+    <label class="f">Ollama model<input type="text" id="olm" value="qwen2.5:7b"></label>
+    <label class="f">Groq key (free tier)<input type="password" id="gk" autocomplete="off"></label>
+    <label class="f">OpenRouter key (:free models)<input type="password" id="ok" autocomplete="off"></label>
+    <div class='row' id='slinks' style='margin-bottom:8px'></div>
+    <h3>Team vault</h3>
+    <label class="f">Team passphrase<input type="password" id="vtp" autocomplete="off"></label>
+    <div class="row"><button class="btn sm" id="vsave" type="button">Save my keys</button><button class="btn sm" id="vload" type="button">Load team keys</button></div>
+    <p class="why" id="vmsg">Keys are encrypted in your browser with the team passphrase before they are stored. Teammates who know it can load them. Share the passphrase outside this page.</p>
+    <p class="why">Keys are saved on this device in plain text so free use sticks. Anyone with this browser can read them. The team vault still encrypts a copy if you want to share. Paid models are never used for Enhance. Browsers block these calls from a hosted page, so download the file and open it locally for live models; otherwise the built-in rewrite runs.</p>
+  </div>
+  <div class="pane" id="app" data-adv>
+    <p class="why">Connect other tools. Address, command, model and keys are remembered on this device in plain text. Command line tools (Video2X, Upscayl) run on your runner, so this page copies or queues the command for it.</p>
+    <div id="alist"></div><h3>Pipeline tools</h3><div id='tlinks'></div>
+  </div>
+  <div class="pane" id="stat" data-adv>
+    <p class="why" id="bmsg">Live status of the bridge, Unreal, Unity, MCP servers, tools and connected AIs. Checked every few seconds.</p>
+    <div class="row" style="margin-bottom:8px"><button class="btn sm" id="srf" type="button">Check now</button><button class="btn sm" id="sset" type="button">Local setup</button></div>
+    <div id="slist"></div>
+  </div>
+  <div class="pane" id="ai" data-adv>
+    <p class='why'>One click connects every provider below. Open a card to pick the submodel and reasoning strength; your pick appears under Own model in Route. One OpenRouter key can stand in for any provider you have no key for. Keys are saved on this device in plain text. Model names are taken from your list and are not checked against the providers.</p>
+    <label class='f'>One key for everything (OpenRouter, optional)<input type='password' id='aior' autocomplete='off'></label>
+    <div class='row'><button class='btn pri' id='aiall' type='button'>Connect all</button><button class='btn' id='aioff' type='button'>Disconnect all</button><span class='row' id='aiolk'></span></div>
+    <p class='why' id='aimsg'></p><div id='ailist'></div>
+  </div>
+  <div class="pane" id="mem" data-adv>
+    <p class="why">Maistro remembers what worked and what failed. A similar job reuses the winning model and saved context, skips Enhance, avoids models that failed, and replays a near-identical job for free.</p>
+    <div class="row"><label class="pill"><input type="checkbox" id="umem" checked> Use memory</label><label class="pill"><input type="checkbox" id="bud" checked> Super budget</label></div>
+    <label class="f" style="margin-top:8px">Paid jobs per day<input type="number" id="capn" min="0" value="5"></label>
+    <p class="mono" id="mst"></p>
+    <div class="row" style="margin:8px 0"><button class="btn sm" id="mex" type="button">Export</button><button class="btn sm bad" id="mcl" type="button">Forget all</button></div>
+    <div id="mlist"></div>
+  </div>
+</aside>
+</div>
+<section class="card" id="term" hidden aria-label="Terminal"><div class="row" style="padding:6px 10px"><span class="mono">Live output</span><span class="sp"></span><label class="pill"><input type="checkbox" id="tth" checked> thinking</label><button class="btn sm" id="tcl" type="button">Clear</button><button class="btn sm" id="tcp" type="button">Copy</button></div><div id="tout" role="log" aria-live="off"></div></section>
+
+<div class="gate" id="modal" hidden style="z-index:60;background:rgba(0,0,0,.5)"><div class="card box" id="mbox" style="width:min(640px,100%);max-height:90vh;overflow:auto"></div></div>
+<input type="file" id="pfile" accept=".json,application/json" hidden><input type="file" id="sfile" accept=".json,application/json" hidden>
+<script type="text/plain" id="f-bridge">// Maistro local bridge. Run: node maistro-bridge.mjs   (Node 18 or newer)
+// Listens on 127.0.0.1 only. Every call except /ping and / needs the token from maistro.config.json.
+import http from 'node:http';
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import { spawn, spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+const D = path.dirname(fileURLToPath(import.meta.url)), CF = path.join(D, 'maistro.config.json');
+let C = { port: 8787, token: '', unreal: 'http://127.0.0.1:30010', unity: 'http://127.0.0.1:8765', ollama: 'http://127.0.0.1:11434', mcp: {} };
+try { C = { ...C, ...JSON.parse(fs.readFileSync(CF, 'utf8')) }; } catch {}
+const save = () => fs.writeFileSync(CF, JSON.stringify(C, null, 2));
+if (!C.token) { C.token = crypto.randomBytes(16).toString('hex'); save(); }
+
+const J = async (u, o = {}, ms = 4000) => {
+  const c = new AbortController(), t = setTimeout(() => c.abort(), ms);
+  try { const r = await fetch(u, { ...o, signal: c.signal }); const x = await r.text(); let j; try { j = JSON.parse(x); } catch { j = x; } return { ok: r.ok, status: r.status, body: j }; }
+  catch (e) { return { ok: false, status: 0, body: String(e.message || e) }; }
+  finally { clearTimeout(t); }
+};
+
+class Mcp {
+  constructor(c) { this.c = c; this.id = 0; this.w = new Map(); this.tools = []; this.up = false; this.err = 'not configured'; }
+  send(m) { if (this.ch) this.ch.stdin.write(JSON.stringify(m) + '\n'); }
+  async rpc(method, params) {
+    const id = ++this.id;
+    if (this.c.url) {
+      const r = await fetch(this.c.url, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream', ...(this.sid ? { 'Mcp-Session-Id': this.sid } : {}) }, body: JSON.stringify({ jsonrpc: '2.0', id, method, params }) });
+      this.sid = r.headers.get('mcp-session-id') || this.sid;
+      const t = await r.text(), l = t.trim().startsWith('{') ? t : (t.split('\n').filter(x => x.startsWith('data:')).pop() || '').slice(5);
+      const m = JSON.parse(l); if (m.error) throw new Error(m.error.message); return m.result;
+    }
+    return new Promise((ok, no) => { this.w.set(id, { ok, no }); this.send({ jsonrpc: '2.0', id, method, params }); setTimeout(() => { if (this.w.delete(id)) no(new Error('mcp timeout')); }, 30000); });
+  }
+  async start() {
+    try {
+      if (!this.c.url && !this.c.command) throw new Error('not configured');
+      if (this.ch) this.ch.kill();
+      if (!this.c.url) {
+        this.ch = spawn(this.c.command, this.c.args || [], { stdio: ['pipe', 'pipe', 'inherit'], shell: process.platform === 'win32' });
+        let b = ''; this.ch.stdout.on('data', d => { b += d; let i; while ((i = b.indexOf('\n')) >= 0) { const l = b.slice(0, i).trim(); b = b.slice(i + 1); if (!l) continue; try { const m = JSON.parse(l), p = this.w.get(m.id); if (p) { this.w.delete(m.id); m.error ? p.no(new Error(m.error.message)) : p.ok(m.result); } } catch {} } });
+        this.ch.on('exit', () => { this.up = false; this.err = 'process exited'; }); this.ch.on('error', e => { this.up = false; this.err = e.message; });
+      }
+      await this.rpc('initialize', { protocolVersion: '2025-03-26', capabilities: {}, clientInfo: { name: 'maistro', version: '1' } });
+      if (this.c.url) await fetch(this.c.url, { method: 'POST', headers: { 'Content-Type': 'application/json', ...(this.sid ? { 'Mcp-Session-Id': this.sid } : {}) }, body: JSON.stringify({ jsonrpc: '2.0', method: 'notifications/initialized' }) }).catch(() => {});
+      else this.send({ jsonrpc: '2.0', method: 'notifications/initialized' });
+      this.tools = (await this.rpc('tools/list', {})).tools || []; this.up = true; this.err = '';
+    } catch (e) { this.up = false; this.err = e.message; }
+  }
+  call(name, args) { return this.rpc('tools/call', { name, arguments: args || {} }); }
+}
+const M = { unreal: new Mcp(C.mcp.unreal || {}), unity: new Mcp(C.mcp.unity || {}) };
+const boot = () => Object.values(M).forEach(m => { if (!m.up && (m.c.command || m.c.url) && !m.busy) { m.busy = 1; m.start().finally(() => { m.busy = 0; }); } });
+boot(); setInterval(boot, 15000);
+
+const OKCMD = ['video2x', 'upscayl-bin', 'git', 'ollama', 'node'];
+async function probe(p) {
+  if (p.type === 'cmd') { if (!OKCMD.includes(p.cmd)) return { ok: false, detail: 'not allowed' }; const r = spawnSync(process.platform === 'win32' ? 'where' : 'which', [p.cmd]); return { ok: r.status === 0, detail: r.status === 0 ? 'installed' : 'not found on PATH' }; }
+  const r = await J(p.url, { headers: p.headers || {} }, 5000);
+  return { ok: r.ok, detail: r.status ? 'HTTP ' + r.status : 'unreachable' };
+}
+async function status() {
+  const [u, y, o] = await Promise.all([J(C.unreal + '/remote/info'), J(C.unity + '/status'), J(C.ollama + '/api/version')]);
+  return {
+    unreal: { ok: u.ok, detail: u.ok ? 'Remote Control answering' : 'Remote Control not answering' },
+    unity: { ok: y.ok, detail: y.ok ? 'Unity ' + (y.body.unity || '') : 'editor bridge not answering' },
+    ollama: { ok: o.ok, detail: o.ok ? 'v' + (o.body.version || '') : 'not running' },
+    mcp: Object.fromEntries(Object.entries(M).map(([k, m]) => [k, { ok: m.up, detail: m.up ? m.tools.length + ' tools' : m.err }]))
+  };
+}
+
+const BT = [
+  { type: 'function', function: { name: 'unreal_rc', description: 'Call the Unreal Remote Control HTTP API', parameters: { type: 'object', properties: { method: { type: 'string' }, path: { type: 'string' }, body: { type: 'object' } }, required: ['path'] } } },
+  { type: 'function', function: { name: 'unity', description: 'Unity editor action', parameters: { type: 'object', properties: { action: { type: 'string', enum: ['play', 'stop', 'refresh', 'save', 'menu', 'create', 'write'] }, arg: { type: 'string' }, content: { type: 'string' } }, required: ['action'] } } }
+];
+const SYS = 'You are an automation agent inside a game engine editor. Reach the goal with the fewest tool calls. Prefer MCP tools (names like unreal__x or unity__x) when listed. Otherwise use unreal_rc (Unreal Remote Control: paths start with /remote/, for example PUT /remote/object/call with {objectPath, functionName, parameters}; to run editor Python call objectPath /Script/PythonScriptPlugin.Default__PythonScriptLibrary, functionName ExecutePythonCommand, parameters {PythonCommand: "..."}) or unity (actions play, stop, refresh, save, menu, create, write; for write, arg is a path under Assets/ and content is the file text, then call refresh). Reply briefly when finished.';
+async function run(n, a) {
+  if (n === 'unreal_rc') { if (!String(a.path || '').startsWith('/remote/')) throw new Error('path must start with /remote/'); return J(C.unreal + a.path, { method: a.method || 'PUT', headers: { 'Content-Type': 'application/json' }, body: a.body ? JSON.stringify(a.body) : undefined }, 20000); }
+  if (n === 'unity') return J(C.unity + '/do?' + new URLSearchParams({ action: a.action || '', arg: a.arg || '' }), { method: 'POST', body: a.content || '' }, 20000);
+  const [s, t] = n.split('__'), m = M[s]; if (!m || !m.up) throw new Error('mcp ' + s + ' not connected'); return m.call(t, a);
+}
+async function agent(b, w) {
+  const e = (k, t) => w(JSON.stringify({ k, t }) + '\n'), eng = b.engine === 'unity' ? 'unity' : 'unreal';
+  const tools = [...BT.filter(t => t.function.name === (eng === 'unity' ? 'unity' : 'unreal_rc')), ...(M[eng].up ? M[eng].tools.map(t => ({ type: 'function', function: { name: eng + '__' + t.name, description: t.description || '', parameters: t.inputSchema || { type: 'object', properties: {} } } })) : [])];
+  const msgs = [{ role: 'system', content: SYS + ' Engine: ' + eng + '.' }, { role: 'user', content: b.goal }];
+  for (let i = 0; i < (b.steps || 8); i++) {
+    e('think', 'step ' + (i + 1) + ': asking ' + b.llm.model);
+    const r = await J(b.llm.url.replace(/\/+$/, '') + '/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(b.llm.key ? { Authorization: 'Bearer ' + b.llm.key } : {}) }, body: JSON.stringify({ model: b.llm.model, messages: msgs, tools }) }, 120000);
+    const m = r.body && r.body.choices && r.body.choices[0] && r.body.choices[0].message;
+    if (!m) { e('err', 'model error: ' + JSON.stringify(r.body).slice(0, 300)); return false; }
+    msgs.push(m); if (m.content) e('think', m.content);
+    if (!m.tool_calls || !m.tool_calls.length) { e('out', 'finished'); return true; }
+    for (const c of m.tool_calls) {
+      let a = {}; try { a = JSON.parse(c.function.arguments || '{}'); } catch {}
+      e('out', 'call ' + c.function.name + ' ' + JSON.stringify(a).slice(0, 200));
+      let res; try { res = await run(c.function.name, a); } catch (x) { res = 'error: ' + x.message; }
+      const t = typeof res === 'string' ? res : JSON.stringify(res); e('out', '-> ' + t.slice(0, 300));
+      msgs.push({ role: 'tool', tool_call_id: c.id, content: t.slice(0, 6000) });
+    }
+  }
+  e('err', 'step limit reached'); return false;
+}
+
+http.createServer(async (q, s) => {
+  const u = new URL(q.url, 'http://x'), h = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'Authorization,Content-Type', 'Access-Control-Allow-Methods': 'GET,POST,OPTIONS', 'Access-Control-Allow-Private-Network': 'true' };
+  if (q.method === 'OPTIONS') { s.writeHead(204, h); return s.end(); }
+  if (u.pathname === '/ping') { s.writeHead(200, { ...h, 'Content-Type': 'application/json' }); return s.end('{"maistro":1}'); }
+  if (u.pathname === '/') {
+    try { const t = fs.readFileSync(path.join(D, 'maistro.html'), 'utf8').replace('<head>', '<head><script>window.MAISTRO=' + JSON.stringify({ url: 'http://127.0.0.1:' + C.port, token: C.token }) + '<\/script>'); s.writeHead(200, { 'Content-Type': 'text/html' }); return s.end(t); }
+    catch { s.writeHead(200); return s.end('Maistro bridge is running. Put maistro.html next to this file and reload to open the app here.'); }
+  }
+  if (q.headers.authorization !== 'Bearer ' + C.token) { s.writeHead(401, h); return s.end('{"error":"bad token"}'); }
+  let body = ''; for await (const c of q) body += c; let b = {}; try { b = JSON.parse(body || '{}'); } catch {}
+  const send = o => { s.writeHead(200, { ...h, 'Content-Type': 'application/json' }); s.end(JSON.stringify(o)); };
+  try {
+    if (u.pathname === '/status') return send(await status());
+    if (u.pathname === '/probe') return send(await Promise.all((b.items || []).map(async i => ({ id: i.id, ...(await probe(i)) }))));
+    if (u.pathname === '/mcp/tools') return send(Object.fromEntries(Object.entries(M).map(([k, m]) => [k, m.tools])));
+    if (u.pathname === '/mcp/call') return send(await M[b.server].call(b.tool, b.args));
+    if (u.pathname === '/mcp/config' && M[b.server]) { C.mcp[b.server] = { command: b.command || '', args: b.args || [], url: b.url || '' }; save(); M[b.server] = new Mcp(C.mcp[b.server]); boot(); return send({ ok: true }); }
+    if (u.pathname === '/agent') { s.writeHead(200, { ...h, 'Content-Type': 'application/x-ndjson' }); const ok = await agent(b, x => s.write(x)); s.write(JSON.stringify({ k: 'done', t: ok ? 'ok' : 'fail' }) + '\n'); return s.end(); }
+  } catch (e) { return send({ error: e.message }); }
+  s.writeHead(404, h); s.end('{}');
+}).listen(C.port, '127.0.0.1', () => {
+  console.log('Maistro bridge running on http://127.0.0.1:' + C.port);
+  console.log('Token (paste into Maistro > Settings > Local setup if the app is not opened from here): ' + C.token);
+});
+</script>
+<script type="text/plain" id="f-unity">// Maistro Unity bridge. Goes in Assets/Editor. Editor only. Listens on 127.0.0.1:8765.
+using System;
+using System.Collections.Concurrent;
+using System.IO;
+using System.Net;
+using System.Text;
+using System.Threading;
+using UnityEditor;
+using UnityEngine;
+
+[InitializeOnLoad]
+public static class MaistroUnityBridge
+{
+    static HttpListener L;
+    static readonly ConcurrentQueue<Action> Q = new ConcurrentQueue<Action>();
+
+    static MaistroUnityBridge()
+    {
+        EditorApplication.update += () => { Action a; int n = 0; while (n++ < 8 && Q.TryDequeue(out a)) a(); };
+        AssemblyReloadEvents.beforeAssemblyReload += Stop;
+        EditorApplication.quitting += Stop;
+        Start();
+    }
+
+    static void Start()
+    {
+        try { L = new HttpListener(); L.Prefixes.Add("http://127.0.0.1:8765/"); L.Start(); new Thread(Loop) { IsBackground = true }.Start(); }
+        catch (Exception e) { Debug.LogWarning("Maistro bridge: " + e.Message); }
+    }
+
+    static void Stop() { try { if (L != null) { L.Stop(); L.Close(); } } catch { } L = null; }
+
+    static void Loop()
+    {
+        var l = L;
+        while (l != null && l.IsListening) { try { Handle(l.GetContext()); } catch { } }
+    }
+
+    static string OnMain(Func<string> f)
+    {
+        string r = null; var d = new ManualResetEventSlim();
+        Q.Enqueue(() => { try { r = f(); } catch (Exception e) { r = "error: " + e.Message; } d.Set(); });
+        return d.Wait(8000) ? r : "timeout";
+    }
+
+    static string Js(string s) { return "\"" + (s ?? "").Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\n", "\\n").Replace("\r", "") + "\""; }
+
+    static void Handle(HttpListenerContext c)
+    {
+        string p = c.Request.Url.AbsolutePath, act = c.Request.QueryString["action"], arg = c.Request.QueryString["arg"] ?? "", body = "", res;
+        try { using (var r = new StreamReader(c.Request.InputStream, Encoding.UTF8)) body = r.ReadToEnd(); } catch { }
+        if (p == "/status") res = OnMain(() => "{\"ok\":true,\"unity\":" + Js(Application.unityVersion) + ",\"playing\":" + (EditorApplication.isPlaying ? "true" : "false") + "}");
+        else if (p == "/do") res = "{\"result\":" + Js(Do(act, arg, body)) + "}";
+        else res = "{\"error\":\"not found\"}";
+        var b = Encoding.UTF8.GetBytes(res);
+        c.Response.ContentType = "application/json"; c.Response.ContentLength64 = b.Length;
+        c.Response.OutputStream.Write(b, 0, b.Length); c.Response.Close();
+    }
+
+    static string Do(string act, string arg, string body)
+    {
+        switch (act)
+        {
+            case "play": return OnMain(() => { EditorApplication.isPlaying = true; return "playing"; });
+            case "stop": return OnMain(() => { EditorApplication.isPlaying = false; return "stopped"; });
+            case "refresh": return OnMain(() => { AssetDatabase.Refresh(); return "refreshed"; });
+            case "save": return OnMain(() => { AssetDatabase.SaveAssets(); return "saved"; });
+            case "menu": return OnMain(() => EditorApplication.ExecuteMenuItem(arg) ? "ran " + arg : "menu item not found: " + arg);
+            case "create":
+                return OnMain(() =>
+                {
+                    PrimitiveType t;
+                    if (!Enum.TryParse<PrimitiveType>(arg, true, out t)) return "use Cube, Sphere, Capsule, Cylinder, Plane or Quad";
+                    var g = GameObject.CreatePrimitive(t);
+                    if (body.Length > 0) g.name = body;
+                    Undo.RegisterCreatedObjectUndo(g, "Maistro create");
+                    return "created " + g.name;
+                });
+            case "write":
+                if (!arg.StartsWith("Assets/") || arg.Contains("..")) return "path must be inside Assets/";
+                Directory.CreateDirectory(Path.GetDirectoryName(arg)); File.WriteAllText(arg, body); return "wrote " + arg;
+            default: return "unknown action";
+        }
+    }
+}
+</script>
+<script type="text/plain" id="f-unreal"># Maistro: starts the Unreal Remote Control web server (port 30010) once the editor is up.
+# Needs the Remote Control API and Python Editor Script plugins (the setup file enables them in your .uproject).
+import unreal
+
+_n = [0]
+
+def _maistro_go(dt):
+    _n[0] += 1
+    if _n[0] < 120:
+        return
+    unreal.unregister_slate_post_tick_callback(_maistro_h)
+    w = unreal.EditorLevelLibrary.get_editor_world()
+    for c in ("WebControl.EnableServerOnStartup 1", "WebControl.StartServer"):
+        unreal.SystemLibrary.execute_console_command(w, c)
+    unreal.log("Maistro: Remote Control web server requested on port 30010")
+
+_maistro_h = unreal.register_slate_post_tick_callback(_maistro_go)
+</script>
+<script type="text/plain" id="f-readme">MAISTRO LOCAL SETUP
+
+1. Install Node.js 18 or newer (https://nodejs.org).
+2. Run the setup file you downloaded:
+     node maistro-setup.mjs --unity C:/path/to/UnityProject --unreal C:/path/to/UnrealProject
+   Leave out --unity or --unreal if you only use one. It writes this folder, installs the Unity editor
+   script into Assets/Editor, adds init_unreal.py to Content/Python, and enables the RemoteControl and
+   PythonScriptPlugin plugins in your .uproject (a .maistro.bak backup is kept).
+3. Start the bridge:  node maistro-bridge/maistro-bridge.mjs
+   It prints a token and stores it in maistro.config.json.
+4. Open the app. Easiest: save the Maistro page as maistro.html next to the bridge, then open
+   http://127.0.0.1:8787 . The token is filled in for you. Otherwise paste the token in
+   Maistro > Settings > Local setup.
+5. Open your Unity or Unreal project. The Status tab shows red or green lights for everything.
+
+MCP servers: in Settings > Local setup choose Unreal or Unity MCP, paste the command that starts your
+MCP server (or its URL), and save. The bridge connects and lists its tools to the agent.
+
+Safety: the bridge only listens on this computer and every call needs the token. The agent can run Python
+in Unreal and write files under Assets/ in Unity when you approve a job, so use version control.
+This setup has not been tested against every Unreal or Unity version.
+</script>
+<script type="text/plain" id="f-setup">// Maistro setup. Usage: node maistro-setup.mjs [--out folder] [--unity UnityProjectPath] [--unreal UnrealProjectPath]
+import fs from 'node:fs';
+import path from 'node:path';
+const F = __FILES__;
+const a = process.argv.slice(2), g = k => { const i = a.indexOf(k); return i >= 0 ? a[i + 1] : null; };
+const out = path.resolve(g('--out') || 'maistro-bridge');
+fs.mkdirSync(out, { recursive: true });
+for (const [n, t] of Object.entries(F)) fs.writeFileSync(path.join(out, n), t);
+console.log('Wrote', Object.keys(F).join(', '), 'to', out);
+const un = g('--unity');
+if (un) { const d = path.join(un, 'Assets', 'Editor'); fs.mkdirSync(d, { recursive: true }); fs.writeFileSync(path.join(d, 'MaistroUnityBridge.cs'), F['MaistroUnityBridge.cs']); console.log('Unity: installed into', d); }
+const ue = g('--unreal');
+if (ue) {
+  const d = path.join(ue, 'Content', 'Python'), t = path.join(d, 'init_unreal.py');
+  fs.mkdirSync(d, { recursive: true });
+  if (!fs.existsSync(t)) fs.writeFileSync(t, F['init_unreal.py']);
+  else if (!fs.readFileSync(t, 'utf8').includes('Maistro')) fs.appendFileSync(t, '\n' + F['init_unreal.py']);
+  console.log('Unreal: startup script in', t);
+  const up = fs.readdirSync(ue).find(f => f.endsWith('.uproject'));
+  if (up) {
+    const p = path.join(ue, up); fs.copyFileSync(p, p + '.maistro.bak');
+    const j = JSON.parse(fs.readFileSync(p, 'utf8')); j.Plugins = j.Plugins || [];
+    for (const n of ['RemoteControl', 'PythonScriptPlugin']) if (!j.Plugins.some(x => x.Name === n)) j.Plugins.push({ Name: n, Enabled: true });
+    fs.writeFileSync(p, JSON.stringify(j, null, '\t')); console.log('Unreal: enabled plugins in', up, '(backup kept)');
+  } else console.log('No .uproject found in', ue, '- enable RemoteControl and PythonScriptPlugin yourself.');
+}
+console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
+</script>
+<div id="askroot">
+  <section class="card" id="askpop" hidden aria-label="Ask Maistro">
+    <div class="ah"><b>Ask Maistro</b><span class="sp"></span><button class="vbtn" id="askmic" type="button" aria-pressed="false">Unmute</button><button class="vbtn spk" id="askspk" type="button" aria-pressed="false">Speak</button><button class="btn sm" id="askoff" type="button">Turn off</button><button class="btn sm" id="askx" type="button" aria-label="Close">×</button></div>
+    <div id="askbody">
+      <p class="why">Tell me what to add. I keep the list, then make one job for each item. Enter adds. Ctrl+Enter creates the jobs.</p>
+      <textarea id="askin" placeholder="Add a pause menu, footstep audio, and a health pickup"></textarea>
+      <div class="row" style="margin-top:8px"><button class="btn" id="askadd" type="button">Add to list</button><button class="btn pri" id="askjobs" type="button">Create jobs</button></div>
+      <div id="asklist"></div>
+    </div>
+  </section>
+  <div id="askhold"><canvas id="askfx" width="180" height="180" aria-hidden="true"></canvas><button id="askorb" type="button" aria-expanded="false" aria-controls="askpop" title="Drag to move. Click to open.">Ask<span id="askbadge" hidden>0</span></button></div>
+  <button id="asktab" type="button">Ask Maistro</button>
+</div>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+var REV="r1"; /* bump REV on every build */
+var S={voice:false,vwho:"",vgen:0,jobs:[],jid:0,sess:null,hits:[],busy:false,last:""};
+var STAGES=["Brief","Image","3D mesh","Cleanup","Import","Demo link"];
+function sha(){return Math.random().toString(16).slice(2,9)}
+function ago(t){var m=Math.round((Date.now()-t)/60000);return m<1?"now":m+"m"}
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+
+/* ---------- early state: memory, terminal, budget ---------- */
+var CFG={},KEYS={},SAVED=null,MEM=[],MS={saved:0,paid:0,day:""},AC={};
+try{var _k=JSON.parse(localStorage.getItem("maistro.keys")||"null");if(_k&&typeof _k==="object")Object.assign(KEYS,_k)}catch(e){}
+function ksave(){try{localStorage.setItem("maistro.keys",JSON.stringify(KEYS))}catch(e){}}
+try{SAVED=JSON.parse(localStorage.getItem("maistro.me")||"null")}catch(e){}
+try{MEM=JSON.parse(localStorage.getItem("maistro.mem")||"[]")||[];Object.assign(MS,JSON.parse(localStorage.getItem("maistro.ms")||"{}"));AC=JSON.parse(localStorage.getItem("maistro.apps")||"{}")||{}}catch(e){}
+if(SAVED&&SAVED.handle)$("gate").hidden=true;
+var ALT=[["Ollama local","local"],["gpt-oss-120b","groq"],["GLM 5.2","glm"],["Gemini 4 Neon","agy"],["Gemini 4 Carbon","agy"]],RUNM={glm:"GLM 5.2",groq:"gpt-oss-120b",local:"Ollama local"};
+function msave(){try{localStorage.setItem("maistro.mem",JSON.stringify(MEM.slice(-300)));localStorage.setItem("maistro.ms",JSON.stringify(MS))}catch(e){}}
+function tlog(k,t){var d=document.createElement("div"),n=new Date(),o=$("tout"),p=function(x){return("0"+x).slice(-2)};d.className="k-"+k;
+ d.textContent=p(n.getHours())+":"+p(n.getMinutes())+":"+p(n.getSeconds())+" ["+k+"] "+t;d.hidden=k==="think"&&!$("tth").checked;o.appendChild(d);while(o.childNodes.length>500)o.firstChild.remove();o.scrollTop=1e9}
+function toks(t){var o={};(String(t).toLowerCase().match(/[a-z0-9_.+#-]{4,}/g)||[]).forEach(function(w){o[w]=1});return o}
+function sim(a,b){var n=0,ka=Object.keys(a);ka.forEach(function(k){if(b[k])n++});var u=ka.length+Object.keys(b).length-n;return u?n/u:0}
+function recall(text){var t=toks(text),ok=null,os=0,bad=[];MEM.forEach(function(e){var x=sim(t,toks(e.src));if(x<.5)return;if(e.ok){if(x>os){os=x;ok=e}}else bad.push(e.model)});return{ok:ok,s:os,bad:bad}}
+function remember(j,ok,why){var src=j.src||j.text,e=MEM.filter(function(x){return x.src===src&&x.model===j.r.model})[0];
+ if(e){e.ok=ok;e.n++;e.t=Date.now();e.why=why||"";e.enh=j.text}else MEM.push({src:src,enh:j.text,model:j.r.model,lane:j.r.lane,ok:ok,why:why||"",n:1,t:Date.now()});
+ msave();paintMem();tlog("mem",(ok?"remembered success: ":"remembered failure: ")+j.r.model+(why?" ("+why+")":""))}
+function startJob(j){var paid=j.r.lane==="agy"||j.r.lane==="grok"||j.r.lane==="api",d=new Date().toDateString(),cap=+CFG.cap;if(isNaN(cap)||CFG.cap===undefined)cap=5;if(MS.day!==d){MS.day=d;MS.paid=0}
+ if(paid&&!j.replay&&MS.paid>=cap){tlog("err","paid cap reached ("+MS.paid+"/"+cap+"); job "+j.id+" not started");return say("Daily paid-job cap reached ("+cap+"). Pick a free model for this job or raise the cap in Settings.","sys")}
+ if(paid&&!j.replay){MS.paid++;msave()}
+ if(!j.replay&&STB&&($("eng").value==="ue"||$("eng").value==="unity"))return runAgent(j);
+ j.state="running";if(j.replay){j.i=STAGES.length-1;MS.saved++;tlog("mem","job "+j.id+" replayed from memory: no model call, no credits")}paintMem();paint();tick(j)}
+
+/* chat */
+function say(t,who,meta){tlog(who==="sys"?"sys":"dlg",(who==="u"?"you> ":who==="a"?"maistro> ":"")+t);var d=document.createElement("div");d.className="m "+who;
+ if(who!=="sys")d.innerHTML="<small>"+(who==="u"?"You":"Maistro")+(meta?" \u2022 "+meta:"")+"</small>";
+ d.appendChild(document.createTextNode(t));$("log").appendChild(d);$("log").scrollTop=1e9;
+ if((who==="a"||who==="ask")&&$("spk").checked&&window.speechSynthesis){speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.rate=+CFG.rate||1;speechSynthesis.speak(u)}}
+say("Hi. Write or speak a task. Enhance rewrites it for free, Queue adds it to the board, and Start session lets us work live on a branch.","a");
+
+/* ---------- enhance (free chain, then built-in rewrite) ---------- */
+var G=[["models?|meshes|mesh","Static Mesh or Skeletal Mesh asset","Mesh asset with a MeshRenderer","THREE.Mesh with BufferGeometry","asset"],
+["textures?|images?|icons?|png","Texture2D","Texture2D or Sprite","texture loaded as a data URI","asset"],
+["animations?|anims?","Animation Sequence or Montage","AnimationClip on an Animator","AnimationMixer clip or tween","asset"],
+["effects?|vfx|particles?","Niagara System","Particle System or VFX Graph","particle pool","asset"],
+["sounds?|sfx|audio|music","Sound Wave or MetaSound","AudioClip on an AudioSource","WebAudio buffer or oscillator","asset"],
+["levels?|maps?|arenas?","Level (.umap)","Scene (.unity)","scene module","asset"],
+["buttons?|menus?|hud","UMG Widget Blueprint","uGUI Canvas or UI Toolkit","DOM overlay","asset"],
+["materials?|shaders?","Material Instance","Material or Shader Graph","MeshStandardMaterial or ShaderMaterial","asset"],
+["physics|collision|damage|health|score|speed","gameplay logic","gameplay logic","fixed-timestep game logic","logic"]]
+.map(function(g){return{rx:new RegExp("\\b(?:"+g[0]+")\\b","i"),t:{ue:g[1],unity:g[2],web:g[3]},kind:g[4]}});
+var ENG={ue:"Unreal Engine 5.8",unity:"Unity",web:"a browser (single HTML file)"};
+function render(g,w,s,d){var b=function(r){return r.map(function(x){return "- "+x}).join("\n")};return "Goal: "+g+"\nWhere:\n"+b(w)+"\nSteps:\n"+b(s)+"\nDone when:\n"+b(d)}
+function fine(t){return /^\s*Goal:/.test(t)&&t.indexOf("Done when:")>-1&&t.indexOf("Steps:")>-1}
+function sents(t){return t.split(/(?<=[.!?])\s+|\n+/).map(function(x){return x.trim()}).filter(Boolean)}
+function offline(text){var e=$("eng").value,ss=sents(text),hits=[],kinds={};
+ G.forEach(function(g){var m=text.match(g.rx);if(m){hits.push([m[0],g.t[e]]);kinds[g.kind]=1}});
+ var goal=ss[0].replace(/[.!?]+$/,"");if(goal.length>200)goal=goal.slice(0,197)+"...";
+ var where=hits.map(function(h){return h[0]+": probably "+h[1]});where.push("Find the existing files for this before making anything new.");
+ var own=ss.length>3?ss.slice(0,2).concat([ss.slice(2).join(" ")]):ss;
+ var steps=own.slice();
+ steps.push(kinds.logic?"Keep gameplay logic separate from presentation, and keep tunable numbers in data, not in code.":"Presentation reads game state and never writes it.");
+ if(kinds.asset){steps.push("Name assets with a version suffix (name_v001) and keep them in the project asset folders.");steps.push("Pipeline: image with "+(CFG.img||"ComfyUI")+", 3D with "+(CFG.m3d||"Meshy")+", export "+(CFG.exp||"GLB, STL")+".")}
+ steps.push("Work on the job or session branch, never directly on main.");
+ var done=["The project builds and its tests pass.","In "+ENG[e]+", you can see it: "+goal+"."];
+ return render(goal,where,steps,done)}
+function split(t){var n=0;G.forEach(function(g){if(g.rx.test(t))n++});return n>=4||t.length>700?"This covers several things. Send one job for each.":""}
+function allow(){var n=Date.now();S.hits=S.hits.filter(function(x){return n-x<3600000});if(S.hits.length>=(+CFG.limit||20))return Math.ceil((S.hits[0]+3600000-n)/60000);S.hits.push(n);meter();return 0}
+function meter(){$("hits").textContent=S.hits.length;$("hbar").style.width=S.hits.length*100/(+CFG.limit||20)+"%"}
+var SYS="Rewrite a rough request into a clear job request for an AI coding agent. Keep the user's intent and scope exactly; never add features, numbers or assets they did not ask for. If it is already clear, answer {\"fine\":true}. Otherwise answer ONLY JSON: {\"goal\":\"\",\"where\":[],\"steps\":[3 to 6],\"done_when\":[]}. At most 220 words.";
+function post(url,key,body,ms){var c=new AbortController();setTimeout(function(){c.abort()},ms);
+ return fetch(url,{method:"POST",signal:c.signal,headers:Object.assign({"Content-Type":"application/json"},key?{Authorization:"Bearer "+key}:{}),body:JSON.stringify(body)}).then(function(r){return r.json()})}
+function chain(prompt){var ms=(+CFG.timeout||8)*1000,t=[],m=function(p){return[{role:"system",content:SYS},{role:"user",content:p}]};
+ if($("ol").value)t.push(["Ollama (local)",function(){return post($("ol").value+"/api/chat",0,{model:$("olm").value,stream:false,messages:m(prompt)},ms).then(function(j){return j.message.content})}]);
+ if($("gk").value)t.push(["Groq (free tier)",function(){return post("https://api.groq.com/openai/v1/chat/completions",$("gk").value,{model:"openai/gpt-oss-20b",messages:m(prompt)},ms).then(function(j){return j.choices[0].message.content})}]);
+ if($("ok").value)t.push(["OpenRouter (free)",function(){return post("https://openrouter.ai/api/v1/chat/completions",$("ok").value,{model:"openrouter/free",messages:m(prompt)},ms).then(function(j){return j.choices[0].message.content})}]);
+ var i=0;return(function next(){if(i>=t.length)return Promise.reject();var x=t[i++];return x[1]().then(function(a){return{text:a,name:x[0]}},next)})()}
+function clean(a){var i=a.indexOf("{"),j=a.lastIndexOf("}"),d;try{d=JSON.parse(a.slice(i,j+1))}catch(e){return null}
+ var rows=function(v,n){return(Array.isArray(v)?v:[]).map(function(x){return String(x).replace(/^\s*[-*]\s+/,"").trim()}).filter(Boolean).slice(0,n)};
+ if(d.fine===true&&!d.goal)return{fine:1};
+ var g=typeof d.goal==="string"?d.goal.trim():"",w=rows(d.where,8),s=rows(d.steps,6),n=rows(d.done_when,4);
+ if(!g||g.length>300||s.length<3||!n.length)return null;
+ return{text:render(g,w.length?w:["Find the existing files for this in the project."],s,n)}}
+function enhance(text){text=text.trim().slice(0,6000);
+ if(!text)return Promise.resolve(null);
+ if(fine(text))return Promise.resolve({text:text,note:"Fine as written."});
+ var wait=allow();if(wait)return Promise.resolve({text:offline(text),note:"Free limit reached (20 an hour). Built-in rewrite used. Next slot in "+wait+" min."});
+ tlog("think","enhance: trying free models in order, then the built-in rewrite");return chain("The rough request:\n"+text+"\nEngine: "+ENG[$("eng").value]).then(function(r){var c=clean(r.text);
+  if(c&&c.fine)return{text:text,note:"Fine as written ("+r.name+")."};
+  if(c)return{text:c.text,note:"Rewritten by "+r.name+" (free). Check it still says what you meant.",split:split(text)};
+  throw 0}).catch(function(){return{text:offline(text),note:"No free model answered, so the built-in rewrite was used. It only reorganises your own words. Check the wording.",split:split(text)}})}
+$("enh").onclick=function(){var v=$("in").value;if(!v.trim())return;S.busy=true;paint();
+ enhance(v).then(function(r){S.busy=false;paint();$("in").value=r.text;say(r.note+(r.split?" "+r.split:""),"sys")})};
+
+/* ---------- cheap route + queue routing ---------- */
+var SMALL=/\b(docs?|documentation|readme|changelog|release notes?|typo|wording|rename (?:a )?label|comment|(?:small|minor|tiny|quick) (?:bug|fix|tweak)|one-line)\b/i;
+var HARD=["refactor","architecture","migration","netcode","rollback","compile","crash","determinis","new system","c++"];
+function isSmall(t){var l=t.toLowerCase();if(!l||l.length>(+CFG.maxc||1500))return false;if(HARD.some(function(w){return l.indexOf(w)>-1}))return false;return SMALL.test(l)}
+var LANE={api:"Connected API",glm:"GLM lane",agy:"Agy lane",grok:"Grok lane",groq:"Groq free",local:"Local (Ollama)",auto:"Auto"};
+function pick0(text){var own=$("own").value,p=$("prio").value,ro=$("runon").value;
+ if(own)return{model:own,lane:ro,why:"you picked this model for the job"};
+ if(ro==="auto"&&/\b(private|offline|confidential|secret)\b/i.test(text))return{model:"Ollama local",lane:"local",why:"private work stays on this machine"};
+ if(p==="privacy")return{model:"Ollama local",lane:"local",why:"privacy first"};
+ if(p==="cost")return{model:"gpt-oss-120b",lane:"groq",why:"free tier"};
+ if(p==="speed")return{model:"Gemini 4 Hydrogen",lane:"agy",why:"fast executor"};
+ if(p==="quality")return{model:"Gemini 4 Carbon",lane:"agy",why:"deepest reasoning"};
+ if($("cheap").checked&&isSmall(text))return{model:"Gemini 4 Hydrogen",lane:"agy",why:"small job, cheaper model"};
+ var l=text.toLowerCase();if(HARD.some(function(w){return l.indexOf(w)>-1}))return{model:"Gemini 4 Carbon",lane:"agy",why:"hard job, never cheap-routed"};
+ return{model:"Gemini 4 Neon",lane:"agy",why:"balanced default"}}
+function refusal(t){var root=$("root").value.trim(),m=t.match(/(?:[A-Za-z]:[\\\/]|\/(?:etc|usr|var|home)\/)[^\s"'`)\]>,;]*/g);
+ if(m&&/\b(edit|change|write|delete|remove|rename|update|fix)\b/i.test(t)){var out=m.filter(function(p){return p.indexOf(root)!==0});if(out.length)return "This edits outside the project ("+out[0]+"). Use a path inside "+root+" or change the project folder in Setup."}return""}
+function pick(text){var r=pick0(text),o=$("own").value,ro=$("runon").value;
+ if(o){if(/^GLM/.test(o))r.lane="glm";else if(AIOWN[o])r.lane="api";return r}
+ if(RUNM[ro]){r={model:ro==="glm"?((AC.glm&&AC.glm.m)||RUNM.glm):RUNM[ro],lane:ro,why:"you chose this lane"}}
+ var m=CFG.usemem===false?{bad:[]}:recall(text),paid=function(x){return x.lane==="agy"||x.lane==="grok"};
+ if(CFG.budget!==false&&paid(r)&&$("prio").value==="auto"&&ro==="auto"&&r.why.indexOf("hard")<0)r=$("ol").value?{model:"Ollama local",lane:"local",why:"super budget: free local model first"}:{model:"gpt-oss-120b",lane:"groq",why:"super budget: free tier first"};
+ if(m.bad.indexOf(r.model)>-1){var a=ALT.filter(function(x){return m.bad.indexOf(x[0])<0})[0];if(a)r={model:a[0],lane:a[1],why:"avoiding "+r.model+", which failed on a similar job"}}
+ return r}
+function paintRoute(){var r=pick($("in").value);$("rt").textContent="Route: "+r.model;$("rwhy").textContent="Runs on "+LANE[r.lane]+" because "+r.why+"."}
+["prio","runon","own","cheap","in"].forEach(function(i){$(i).addEventListener(i==="in"?"input":"change",paintRoute)});paintRoute();
+
+/* ---------- queue ---------- */
+function queue(text,src,hit){var no=refusal(text),r=hit?{model:hit.e.model,lane:hit.e.lane,why:"it worked on a similar job before"}:pick(src||text);jid();
+ var j={id:S.jid,text:text,r:r,i:0,state:no?"refused":"waiting",why:no,t:Date.now(),held:!!S.sess,src:src||text,replay:!!hit&&hit.s>=.9};S.jobs.push(j);tlog("think","job "+j.id+" route: "+r.model+" on "+LANE[r.lane]+" because "+r.why);paint();return j}
+function jid(){S.jid++}
+$("q").onclick=function(){var v=$("in").value.trim();if(!v)return;var go=function(r){var j=queue(r.text,v,r.hit);$("in").value="";
+  say(j.state==="refused"?j.why:"Queued job "+j.id+": "+j.r.model+" on "+LANE[j.r.lane]+" ("+j.r.why+")."+(S.sess?" The queue is held while the session is open.":"")+(j.replay?" Same as a job that worked before, so Approve replays it free.":"")+(r.split?" "+r.split:""),"a")};
+ var mh=CFG.usemem===false?null:recall(v);if(mh&&mh.ok){MS.saved++;msave();paintMem();tlog("mem","similar job ("+Math.round(mh.s*100)+"% match): reusing "+mh.ok.model+" and saved context, Enhance skipped");return go({text:mh.ok.enh,hit:{e:mh.ok,s:mh.s}})}
+ if(fine(v)||CFG.autoenh===false)go({text:v});else{S.busy=true;paint();enhance(v).then(function(r){S.busy=false;paint();go(r)})}};
+/* ---------- projects, menu, settings ---------- */
+var CFG={},PR=[{name:'Default',root:'~/maistro/project',jobs:[],jid:0}],PI=0,SECRET=[],OKS=['waiting','running','done','refused','rejected'];
+function curSave(){var p=PR[PI];p.jobs=S.jobs;p.jid=S.jid;p.root=$('root').value}
+function openM(title,fill){var b=$('mbox');b.innerHTML='';var h=document.createElement('div');h.className='row';h.innerHTML='<b></b><span class=sp></span>';h.firstChild.textContent=title;var c=document.createElement('button');c.className='btn sm';c.type='button';c.textContent='Close';c.onclick=closeM;h.appendChild(c);b.appendChild(h);fill(b);$('modal').hidden=false}
+function closeM(){$('modal').hidden=true;$('mbox').style.width='min(640px,100%)'}
+$('modal').onclick=function(e){if(e.target===this)closeM()};
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeM();$('menu').hidden=true}});
+document.addEventListener('click',function(){$('menu').hidden=true});
+function ask(title,ph,cb){openM(title,function(b){var i=document.createElement('input'),g=document.createElement('button');i.type='text';i.placeholder=ph;i.style.margin='10px 0';g.className='btn pri';g.type='button';g.textContent='Create';var go=function(){var v=i.value.trim();if(v){closeM();cb(v)}};g.onclick=go;i.onkeydown=function(e){if(e.key==='Enter')go()};b.appendChild(i);b.appendChild(g);i.focus()})}
+function switchTo(i){if(S.sess)return say('End the session before switching projects.','sys');curSave();PI=i;var p=PR[i];p.t=Date.now();S.jobs=p.jobs;S.jid=p.jid;$('root').value=p.root;$('root').dispatchEvent(new Event('input'));paint();say('Opened project '+p.name+'.','sys')}
+function saveFile(n,t){var f=function(){var a=document.createElement('a'),u=URL.createObjectURL(new Blob([t],{type:'application/json'}));a.href=u;a.download=n;document.body.appendChild(a);a.click();a.remove()};
+ (window.claude&&claude.use?claude.use('downloads'):Promise.resolve(null)).then(function(d){return d?d.save({filename:n,data:t}):f()}).then(function(){say('Exported '+n+'.','sys')},function(){say('The export was cancelled or blocked.','sys')})}
+var MENU={new_task:function(){$('in').value='';$('in').focus();paintRoute()},
+ new_project:function(){ask('New project','Project name',function(n){curSave();PR.push({name:n,root:'~/maistro/'+n.toLowerCase().replace(/[^a-z0-9]+/g,'-'),jobs:[],jid:0});switchTo(PR.length-1)})},
+ open_project:function(){openM('Open project',function(b){PR.forEach(function(p,i){var r=document.createElement('button');r.type='button';r.className='btn';r.style.cssText='display:block;width:100%;text-align:left;margin-top:8px';r.textContent=p.name+(i===PI?' (open)':'')+' • '+p.root;r.onclick=function(){closeM();if(i!==PI)switchTo(i)};b.appendChild(r)})})},
+ import_project:function(){$('pfile').click()},
+ export_project:function(){curSave();var p=PR[PI];saveFile(p.name.replace(/[^a-z0-9]+/gi,'-')+'.maistro.json',JSON.stringify({maistro:1,project:{name:p.name,root:p.root,jobs:p.jobs,jid:p.jid}},null,1))}};
+$('newt').onclick=function(e){e.stopPropagation();var m=$('menu');m.hidden=!m.hidden;$('newt').setAttribute('aria-expanded',!m.hidden)};
+$('menu').onclick=function(e){var k=e.target.getAttribute('data-a');if(k)MENU[k]();var r=e.target.getAttribute('data-r');if(r!==null)switchTo(+r)};
+$('pfile').onchange=function(){var f=this.files[0];this.value='';if(!f)return;f.text().then(function(t){var o=JSON.parse(t),p=o.project;if(!o.maistro||!p||typeof p.name!=='string'||!Array.isArray(p.jobs))throw 0;
+ var n=p.name.slice(0,60),k=1;while(PR.some(function(x){return x.name===n}))n=p.name.slice(0,60)+' '+(++k);
+ var jobs=p.jobs.slice(0,200).filter(function(j){return j&&typeof j.text==='string'&&j.r&&LANE[j.r.lane]&&typeof j.r.model==='string'}).map(function(j){var s=OKS.indexOf(j.state)>-1?j.state:'waiting';return{id:+j.id||0,text:j.text,r:{model:j.r.model,lane:j.r.lane,why:String(j.r.why||'')},i:Math.min(+j.i||0,STAGES.length),state:s==='running'?'waiting':s,why:String(j.why||''),t:+j.t||Date.now()}});
+ curSave();PR.push({name:n,root:String(p.root||'~/maistro/'+n),jobs:jobs,jid:Math.max(+p.jid||0,jobs.length)});switchTo(PR.length-1)}).catch(function(){say('That file is not a Maistro project export.','sys')})};
+function R(k,l,t,o,d,b){return{k:k,l:l,t:t,o:o,d:d,b:b}}
+var SCH=['General',R('theme','Theme','select',['auto','light','dark'],'auto'),R('fsize','Text size','range',[13,19,1],15),R('compact','Compact layout','check',0,0),R('still','Reduce motion','check',0,0),
+'Voice',R('vlang','Speech language','text',0,'en-US'),R('spk','Speak replies','check',0,0,'spk'),R('rate','Speaking speed','range',[.6,1.6,.1],1),
+'Routing',R('prio','Route by','select',0,'auto','prio'),R('runon','Run on','select',0,'auto','runon'),R('own','Own model (always wins)','select',0,'','own'),R('cheap','Cheap routing for small jobs','check',0,1,'cheap'),R('maxc','Longest small job (characters)','number',0,1500),
+'Enhance',R('autoenh','Enhance before queueing','check',0,1),R('ol','Ollama address','text',0,'http://localhost:11434','ol'),R('olm','Ollama model','text',0,'qwen2.5:7b','olm'),R('gk','Groq key','password',0,'','gk'),R('ok','OpenRouter key','password',0,'','ok'),R('timeout','Seconds to wait for each model','number',0,8),R('limit','Free enhances an hour','number',0,20),
+'Session',R('rules','Rules sent with every message','area',0,'Work only on this session branch. Keep changes small. Commit after each message. Run tests when the session ends.','rules'),R('prefix','Branch prefix','text',0,'session/you'),R('hours','Auto-end after hours','number',0,12),R('hold','Hold the queue during a session','check',0,1),
+'Budget and memory',R('budget','Super budget: free models first','check',0,1,'bud'),R('usemem','Remember and reuse past jobs','check',0,1,'umem'),R('cap','Paid jobs per day','number',0,5,'capn'),R('asteps','Agent steps per engine job','number',0,8),
+'Pipeline',R('eng','Engine target','select',0,'web','eng'),R('m3d','3D provider','select',['Meshy','Tripo','Rodin'],'Meshy'),R('img','Image workflow','select',['ComfyUI','InvokeAI','Flux','Grok Imagine'],'ComfyUI'),R('aud','Audio','select',['ElevenLabs','Suno','Udio','Local'],'ElevenLabs'),R('exp','Export formats','text',0,'GLB, STL'),R('stage','Milliseconds per demo stage','number',0,900),
+'Project',R('pname','Project name','text',0,'Default'),R('root','Project folder','text',0,'~/maistro/project','root')];
+function getv(r){if(r.k==='pname')return PR[PI].name;if(r.b){var e=$(r.b);return e.type==='checkbox'?e.checked:e.value}return CFG[r.k]!==undefined?CFG[r.k]:r.d}
+function save(){try{var o={};Object.keys(CFG).forEach(function(k){if(SECRET.indexOf(k)<0)o[k]=CFG[k]});localStorage.setItem('maistro.cfg',JSON.stringify(o))}catch(e){}}
+function apply(k,v){var d=document.documentElement;
+ if(k==='theme'){if(v==='auto')d.removeAttribute('data-theme');else d.setAttribute('data-theme',v)}
+ else if(k==='fsize')document.body.style.fontSize=v+'px';
+ else if(k==='compact')document.body.classList.toggle('compact',!!v);
+ else if(k==='still'){var was=still;still=!!v||matchMedia('(prefers-reduced-motion: reduce)').matches;if(was&&!still)mloop()}
+ else if(k==='limit'){$('lim').textContent=+v||20;meter()}
+ else if(k==='pname'&&v)PR[PI].name=String(v).slice(0,60);
+ save()}
+function setv(r,v){CFG[r.k]=v;if(r.b){var e=$(r.b);if(e.type==='checkbox')e.checked=!!v;else e.value=v;e.dispatchEvent(new Event(e.type==='checkbox'||e.tagName==='SELECT'?'change':'input'))}apply(r.k,v);if((r.k==='gk'||r.k==='ok')&&typeof ksave==='function'){KEYS[r.k]=String(v||'');ksave()}}
+function applyAll(){try{CFG=JSON.parse(localStorage.getItem('maistro.cfg')||'{}')||{}}catch(e){CFG={}}
+ SCH.forEach(function(r){if(typeof r!=='string'&&r.k in CFG&&SECRET.indexOf(r.k)<0&&r.k!=='pname'&&typeof CFG[r.k]!=='object')setv(r,CFG[r.k])});$('lim').textContent=+CFG.limit||20}
+function cfgOut(){var o={};SCH.forEach(function(r){if(typeof r!=='string'&&SECRET.indexOf(r.k)<0)o[r.k]=getv(r)});return o}
+function openSettings(){openM('Settings',function(b0){var b=document.createElement('div');SCH.forEach(function(r){
+  if(typeof r==='string'){var h=document.createElement('h3');h.className='sec';h.textContent=r;b.appendChild(h);return}
+  var w=document.createElement('label'),v=getv(r),c,sp=document.createElement('span');w.className=r.t==='check'?'row':'f';w.style.marginBottom='8px';
+  if(r.t==='select'){c=document.createElement('select');(r.o||[].map.call($(r.b).options,function(o){return[o.value,o.text]})).forEach(function(o){var p=document.createElement('option');p.value=Array.isArray(o)?o[0]:o;p.textContent=Array.isArray(o)?o[1]:o;c.appendChild(p)})}
+  else if(r.t==='area')c=document.createElement('textarea');
+  else{c=document.createElement('input');c.type=r.t==='check'?'checkbox':r.t;if(r.t==='range'){c.min=r.o[0];c.max=r.o[1];c.step=r.o[2]}if(r.t==='number')c.min=0}
+  if(r.t==='check')c.checked=!!v;else c.value=v;
+  sp.textContent=r.l+(r.t==='range'?' ('+v+')':'');
+  if(r.t==='check'){w.appendChild(c);w.appendChild(sp)}else{w.appendChild(sp);w.appendChild(c)}
+  c.onchange=c.oninput=function(){var x=r.t==='check'?c.checked:(r.t==='number'||r.t==='range')?+c.value:c.value;if(r.t==='range')sp.textContent=r.l+' ('+x+')';setv(r,x)};
+  b.appendChild(w)});
+ var h=document.createElement('h3');h.className='sec';h.textContent='Account and data';b.appendChild(h);
+ var row=document.createElement('div');row.className='row';
+ [['Sign out',function(){closeM();$('out').click()},!ME],['Export settings',function(){saveFile('maistro-settings.json',JSON.stringify(cfgOut(),null,1))}],['Import settings',function(){$('sfile').click()}],
+  ['Reset settings',function(){SCH.forEach(function(r){if(typeof r!=='string'&&r.k!=='pname'&&r.k!=='root')setv(r,r.d)});try{localStorage.removeItem('maistro.cfg');localStorage.removeItem('maistro.keys');KEYS={};if($('aior'))$('aior').value='';if($('gk'))$('gk').value='';if($('ok'))$('ok').value=''}catch(e){}closeM();say('Settings reset to defaults. Keys were cleared.','sys')}]].forEach(function(x){if(x[2])return;var g=document.createElement('button');g.type='button';g.className='btn sm';g.textContent=x[0];g.onclick=x[1];row.appendChild(g)});
+ b.appendChild(row);var n=document.createElement('p');n.className='why';n.textContent='Settings and API keys are saved on this device in plain text. Export includes them. Anyone with this browser can read them.';b.appendChild(n);layoutSettings(b0,b)})}
+function layoutSettings(b0,b){var P={},order=[],cur=null,wrap=document.createElement('div'),nav=document.createElement('nav'),pan=document.createElement('div'),btns={},used={},
+ G=[['Workspace',['General','Voice','Project']],['AI and cost',['Routing','Budget and memory','Enhance','Session']],['Tools',['Local setup','Pipeline']],['Account',['Account and data']]];
+ [].slice.call(b.childNodes).forEach(function(n){if(n.tagName==='H3'&&n.className==='sec'){cur=document.createElement('div');cur.hidden=true;P[n.textContent]=cur;order.push(n.textContent);var t=document.createElement('h3');t.textContent=n.textContent;t.style.marginTop='0';cur.appendChild(t);return}if(cur)cur.appendChild(n)});
+ P['Local setup']=localPanel();P['Local setup'].hidden=true;order.push('Local setup');
+ wrap.className='sset';nav.className='snav';pan.className='spane';
+ var show=function(k){layoutSettings.last=k;order.forEach(function(o){P[o].hidden=o!==k;btns[o].setAttribute('aria-current',o===k)})},
+  mk=function(l,fn){var x=document.createElement('button');x.type='button';x.textContent=l;x.onclick=fn;nav.appendChild(x);return x},
+  grp=function(l){var h=document.createElement('div');h.className='sgrp';h.textContent=l;nav.appendChild(h)};
+ G.forEach(function(g){grp(g[0]);g[1].forEach(function(k){if(P[k]){used[k]=1;btns[k]=mk(k,function(){show(k)})}});
+  if(g[0]==='Tools'){mk('Connected apps \u2192',function(){closeM();if(document.body.classList.contains('simple'))view(true);document.querySelector('.tab[data-p="app"]').click()});mk('Memory \u2192',function(){closeM();if(document.body.classList.contains('simple'))view(true);document.querySelector('.tab[data-p="mem"]').click()})}});
+ var rest=order.filter(function(k){return!used[k]});if(rest.length){grp('Other');rest.forEach(function(k){btns[k]=mk(k,function(){show(k)})})}
+ order.forEach(function(k){pan.appendChild(P[k])});wrap.appendChild(nav);wrap.appendChild(pan);b0.appendChild(wrap);$('mbox').style.width='min(860px,100%)';
+ show(P[layoutSettings.last]?layoutSettings.last:order[0])}
+$('gear').onclick=function(e){e.stopPropagation();openSettings()};
+$('sfile').onchange=function(){var f=this.files[0];this.value='';if(!f)return;f.text().then(function(t){var o=JSON.parse(t);if(!o||typeof o!=='object')throw 0;SCH.forEach(function(r){if(typeof r!=='string'&&r.k in o&&SECRET.indexOf(r.k)<0&&r.k!=='root'&&typeof o[r.k]!=='object')setv(r,o[r.k])});say('Settings imported.','sys')}).catch(function(){say('That file is not a Maistro settings export.','sys')})};
+function tick(j){if(j.state!=="running")return;setTimeout(function(){if(j.state!=="running")return;
+ if(S.sess&&CFG.hold!==false){j.state="waiting";paint();return}j.i++;tlog("out","job "+j.id+" stage "+Math.min(j.i,STAGES.length)+"/"+STAGES.length+": "+STAGES[Math.min(j.i,STAGES.length)-1]+" complete");if(j.i>=STAGES.length){j.state="done";remember(j,true);say("Job "+j.id+" finished. Sample demo ready in the Demo tab.","a")}paint();tick(j)},(+CFG.stage||900))}
+function paintTasks(){var T=$("tasks");if(!S.jobs.length){T.innerHTML="<p class='why' style='padding:8px'>Nothing queued. Describe a task and press Queue.</p>";return}T.innerHTML="";
+ S.jobs.slice().reverse().forEach(function(j){var d=document.createElement("div");d.className="t";
+  d.innerHTML="<b><i class='dot "+j.state+"'></i><span>"+esc(j.text.split("\n")[0].replace(/^Goal:\s*/,"").slice(0,48))+"</span><small>"+ago(j.t)+"</small></b><small>Runs on "+LANE[j.r.lane]+" \u2022 "+j.r.model+"</small><small>"+(j.state==="refused"?esc(j.why):j.state==="running"?"Stage: "+STAGES[j.i]:j.state==="waiting"&&S.sess?"Held while a session is open":j.state)+"</small>";
+  var r=document.createElement("div");r.className="row";var b=function(t,f,c){var x=document.createElement("button");x.type="button";x.className="btn sm "+(c||"");x.textContent=t;x.onclick=f;r.appendChild(x)};
+  if(j.state==="waiting")b("Approve",function(){startJob(j)},"pri"),b("Reject",function(){j.state="rejected";remember(j,false,"rejected by you");paint()});
+  if(j.state==="running")b("Pause",function(){j.state="waiting";paint()});
+  if(j.state==="done"){b("Worked",function(){remember(j,true,"confirmed");say("Remembered as a success.","sys")},"pri");b("Failed, retry",function(){remember(j,false,"marked failed");var n=queue(j.text,j.src);say("Remembered the failure. Requeued on "+n.r.model+".","sys")})}
+  d.appendChild(r);T.appendChild(d)})}
+
+/* ---------- session ---------- */
+function paintSess(){var s=S.sess;$("sinfo").textContent=s?"In session on "+s.branch+" \u2022 "+s.turns.length+" changes":"No session open.";
+ $("branch").textContent=(ME?ME.handle:"signed out")+" on "+(s?s.branch+" @ "+(s.turns.length?s.turns[s.turns.length-1].sha:s.base):"main");
+ var T=$("turns");T.innerHTML="";if(s)s.turns.slice().reverse().forEach(function(t){var d=document.createElement("div");d.className="job";d.innerHTML="<span class='mono'>"+t.sha+"</span> "+esc(t.text.slice(0,70))+"<div class='why'>"+t.note+"</div>";T.appendChild(d)})}
+$("s1").onclick=function(){if(S.sess)return;var d=new Date(),ymd=d.getFullYear()+("0"+(d.getMonth()+1)).slice(-2)+("0"+d.getDate()).slice(-2);
+ S.sess={branch:(CFG.prefix||"session/you")+"-"+ymd,base:sha(),turns:[],start:Date.now(),first:true};say("Session started on "+S.sess.branch+". Messages go straight to the AI and are committed. The queue is held. A session left open 12 hours ends itself.","sys");paint()};
+$("s2").onclick=function(){if(!S.sess||!S.sess.turns.length)return;var t=S.sess.turns.pop();say("Undid "+t.sha+".","sys");paint()};
+$("s3").onclick=function(){var s=S.sess;if(!s)return;S.sess=null;var j=queue("Prove session "+s.branch+": merge the branch, build, run tests, review.");
+ say("Session ended after "+s.turns.length+" changes. One job queued to prove the branch. Nothing reaches main any other way.","sys");S.jobs.forEach(function(x){x.held=false});paint()};
+setInterval(function(){if(S.sess&&Date.now()-S.sess.start>(+CFG.hours||12)*36e5)$("s3").click()},60000);
+function turn(text){var s=S.sess,code=/\.(cpp|cs|h|js|ts)\b|plugin|project settings|c\+\+/i.test(text),p=(s.first?"[opener] ":"")+$("rules").value;s.first=false;
+ tlog("think","session turn on "+s.branch+": applying with session rules, then committing");S.busy=true;paint();setTimeout(function(){S.busy=false;var sh=sha();tlog("out","commit "+sh+" on "+s.branch);s.turns.push({sha:sh,text:text,note:code?"Rebuild needed; tests wait for End session.":"Data or asset change; no rebuild."});
+  say("Done. Committed "+sh+". "+(code?"A rebuild is needed.":"No rebuild needed.")+" Checks run when the session ends.","a",s.branch);paint()},700)}
+
+/* ---------- send ---------- */
+$("send").onclick=function(){var v=$("in").value.trim();if(!v)return;$("in").value="";say(v,"u");
+ if(S.sess)return turn(v);var r=pick(v);S.busy=true;paint();
+ setTimeout(function(){S.busy=false;say("Routed to "+r.model+" on "+LANE[r.lane]+" ("+r.why+"). Press Queue to run it as a job, or Start session to work live.","a");paint()},500)};
+$("in").addEventListener("keydown",function(e){if(e.key==="Enter"&&(e.ctrlKey||e.metaKey))$("send").click()});
+
+/* ---------- voice + avatar ---------- */
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition,rec=null;
+function stateName(){return S.busy?"Thinking":S.voice?"Listening":"Muted"}
+function paintSpk(){var on=!!$("spk").checked;["spkb","askspk"].forEach(function(id){var b=$(id);if(!b)return;b.classList.toggle("on",on);b.setAttribute("aria-pressed",on?"true":"false")})}
+function paint(){paintTasks();paintSess();try{psave()}catch(e){}try{paintAsk()}catch(e){}var n=stateName(),on=!!S.voice;["mute","askmic"].forEach(function(id){var b=$(id);if(!b)return;var mine=on&&S.vwho===id;b.textContent=mine?"Mute":"Unmute";b.classList.toggle("on",mine);b.setAttribute("aria-pressed",mine?"true":"false")});$("state").textContent=n==="Muted"?"Muted. You can still write.":n==="Listening"?"Listening":"Thinking";paintSpk();if(still)drawAv()}
+function armVoice(who,target){rec=new SR();rec.continuous=true;rec.interimResults=true;rec.lang=CFG.vlang||"en-US";
+ var seed=target.value,last=seed,gen=++S.vgen;
+ rec.onresult=function(e){if(gen!==S.vgen)return;var cur=target.value;if(cur!==last){seed=cur;last=cur;try{rec.abort()}catch(x){}return}
+  var fin="",inter="";for(var i=0;i<e.results.length;i++){var tr=e.results[i][0].transcript;if(e.results[i].isFinal)fin+=tr;else inter+=tr}
+  var parts=[];if(seed)parts.push(seed.replace(/\s+$/,""));if(fin.trim())parts.push(fin.trim());if(inter.trim())parts.push(inter.trim());
+  var next=parts.join(" ");target.value=next;last=next;if(target.id==="in")paintRoute()};
+ rec.onerror=function(e){if(e.error==="aborted"||e.error==="no-speech")return;S.voice=false;say("Voice error: "+e.error+". Allow microphone access and try again.","sys");paint()};
+ rec.onend=function(){if(!S.voice||S.vwho!==who||gen!==S.vgen)return;armVoice(who,target)};
+ try{rec.start()}catch(x){S.voice=false;say("Could not start the microphone.","sys")}paint()}
+function startVoice(who,target){if(location.protocol==="file:"){say("Microphone is blocked on a file opened from disk (file://). Chrome and Edge only allow the mic on http://localhost or https. In the folder with this file, run: python -m http.server 8080  then open http://localhost:8080/maistro.html","sys");return}
+ if(!window.isSecureContext){say("Microphone needs a secure page. Open this from http://localhost or https, not a plain file.","sys");return}
+ if(!SR){say("Speech input is not supported here. Try Chrome or Edge.","sys");return}
+ if(S.voice&&S.vwho===who){S.voice=false;S.vgen++;try{rec&&rec.stop()}catch(x){}paint();return}
+ if(rec){S.vgen++;try{rec.onend=null;rec.stop()}catch(x){}}
+ S.voice=true;S.vwho=who;armVoice(who,target)}
+$("mute").onclick=function(){startVoice("mute",$("in"))};
+$("askmic").onclick=function(){startVoice("askmic",$("askin"));if(!ASK.open){ASK.open=true;saveAsk();paintAsk()}};
+function toggleSpk(){$("spk").checked=!$("spk").checked;CFG.spk=$("spk").checked;try{save()}catch(e){}paintSpk()}
+$("spkb").onclick=toggleSpk;$("askspk").onclick=toggleSpk;
+var av=$("av").getContext("2d"),mi=$("mini").getContext("2d"),T=0,still=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function dots(c,W,n,amp){c.clearRect(0,0,W,W);c.fillStyle=getComputedStyle(document.body).color;var s=W/n,lx=Math.cos(T*.7),ly=Math.sin(T*.5);
+ for(var y=0;y<n;y++)for(var x=0;x<n;x++){var dx=(x-n/2+.5)/(n/2),dy=(y-n/2+.5)/(n/2),r=Math.hypot(dx*.88,dy*1.02);if(r>1)continue;
+  var z=Math.sqrt(1-r*r),sh=Math.max(0,.15+.55*(dx*lx+dy*ly)+.7*z)*(.55+.45*amp)+.12*Math.sin(x*1.7+y*1.3+T*3)*amp;
+  var rad=s*.5*Math.min(1,Math.max(0,sh));if(rad>.3){c.beginPath();c.arc((x+.5)*s,(y+.5)*s,rad,0,6.3);c.fill()}}}
+function drawAv(){var n=stateName(),a=n==="Thinking"?1:n==="Listening"?.6+.3*Math.sin(T*6):.35;dots(av,150,32,a);dots(mi,28,12,.5)}
+function mloop(){T+=.02;drawAv();if(!still)requestAnimationFrame(mloop)}mloop();
+
+/* ---------- tabs, theme, demo ---------- */
+document.querySelectorAll(".tab").forEach(function(b){b.onclick=function(){document.querySelectorAll(".tab").forEach(function(x){x.setAttribute("aria-selected",x===b)});document.querySelectorAll(".pane").forEach(function(p){p.classList.toggle("on",p.id===b.dataset.p)})}});
+$("theme").onclick=function(){var r=document.documentElement,d=r.getAttribute("data-theme"),dark=d?d==="dark":matchMedia("(prefers-color-scheme: dark)").matches;r.setAttribute("data-theme",dark?"light":"dark");paint()};
+$("root").oninput=function(){$("crumb").textContent="this machine / "+($("root").value.split(/[\\\/]/).filter(Boolean).pop()||"project")};
+var GAME="<!DOCTYPE html><body style='margin:0;background:#0b1a16'><canvas id=c width=600 height=260 style='width:100%;display:block'></canvas><script>var c=document.getElementById('c'),x=c.getContext('2d'),s=0,o=[],px=300;setInterval(function(){o.push({x:Math.random()*580+10,y:-10,v:1.5+Math.random()*2})},500);function mv(e){var r=c.getBoundingClientRect();px=((e.touches?e.touches[0].clientX:e.clientX)-r.left)*600/r.width}c.addEventListener('mousemove',mv);c.addEventListener('touchmove',function(e){mv(e);e.preventDefault()},{passive:false});(function f(){x.fillStyle='#0b1a16';x.fillRect(0,0,600,260);o.forEach(function(q){q.y+=q.v;x.fillStyle='#ff9a3d';x.beginPath();x.arc(q.x,q.y,7,0,7);x.fill();if(q.y>235&&Math.abs(q.x-px)<30){s++;q.y=999}});o=o.filter(function(q){return q.y<260});x.fillStyle='#4fd8a4';x.fillRect(px-30,240,60,10);x.fillStyle='#fff';x.font='16px sans-serif';x.fillText('Caught: '+s,10,22);requestAnimationFrame(f)})()<\/script>";
+$("run").onclick=function(){$("fr").srcdoc=GAME;$("dnote").textContent="Running the built-in sample."+($("loc").value?" Loading "+$("loc").value+" needs a runner connected.":"")};
+$("stop").onclick=function(){$("fr").srcdoc="";$("dnote").textContent="Stopped."};
+/* ---------- accounts + vault (shared db) ---------- */
+var DB=null,UID=null,ME=null,fails=0,lock=0,TE=new TextEncoder();
+function b64(a){return btoa(String.fromCharCode.apply(0,new Uint8Array(a)))}
+function ub(s){return Uint8Array.from(atob(s),function(c){return c.charCodeAt(0)})}
+function rnd(n){return crypto.getRandomValues(new Uint8Array(n))}
+function bits(pw,salt,it){return crypto.subtle.importKey("raw",TE.encode(pw),"PBKDF2",false,["deriveBits"]).then(function(k){return crypto.subtle.deriveBits({name:"PBKDF2",salt:salt,iterations:it,hash:"SHA-256"},k,256)})}
+function gmsg(t,bad){var m=$("gmsg");m.textContent=t;m.className="why"+(bad?" err":"")}
+function vmsg(t){$("vmsg").textContent=t}
+function enter(a){ME=a;$("gate").hidden=true;$("who").textContent=a.handle;$("who").hidden=false;$("out").hidden=false;$("gp").value="";try{if($("rem").checked)localStorage.setItem("maistro.me",JSON.stringify({handle:a.handle,uid:a.uid||UID||null}));else localStorage.removeItem("maistro.me")}catch(e){}paintSess();say("Signed in as "+a.handle+(a.handle==="local"?" (this device only).":"."),"sys")}
+function ready(){var ok=!!(DB&&UID);$("gform").hidden=!ok;$("gskip").hidden=ok;gmsg(ok?"Create an account or sign in. Accounts are shared with everyone who opens this page.":"The shared account database is not available here. Open this page from claude.ai while signed in, or continue on this device only.",!ok)}
+if(window.claude&&claude.use){Promise.all([claude.use("db"),claude.use("user")]).then(function(r){DB=r[0];return r[1]?r[1].id():null}).then(function(id){UID=id;ready();auto()},function(){ready();auto()})}else{ready();auto()}
+function auto(){if(!SAVED||!SAVED.handle||ME)return;if(SAVED.handle==="local")return enter({handle:"local"});
+ if(!(DB&&UID&&SAVED.uid===UID)){$("gate").hidden=false;return}
+ DB.doc("accounts/"+UID).get().then(function(d){if(d.exists&&d.data().handle===SAVED.handle)enter({handle:SAVED.handle,uid:UID});else $("gate").hidden=false}).catch(function(){$("gate").hidden=false})}
+$("gskip").onclick=function(){enter({handle:"local"})};
+$("out").onclick=function(){ME=null;SAVED=null;try{localStorage.removeItem("maistro.me")}catch(e){}paintSess();$("gate").hidden=false;$("who").hidden=true;$("out").hidden=true;gmsg("Signed out.")};
+$("gnew").onclick=function(){var h=$("gh").value.trim().toLowerCase(),p=$("gp").value;
+ if(!/^[a-z0-9_]{3,20}$/.test(h))return gmsg("Use 3 to 20 letters, numbers or underscores for the username.",1);
+ if(p.length<8)return gmsg("Use a passphrase of at least 8 characters.",1);
+ DB.collection("accounts").where("handle","==",h).get().then(function(s){if(!s.empty)throw"That username is taken.";return DB.doc("accounts/"+UID).get()}).then(function(d){
+  if(d.exists)throw"This viewer already has the account "+d.data().handle+". Sign in instead.";var salt=rnd(16);
+  return bits(p,salt,250000).then(function(x){return DB.doc("accounts/"+UID).set({handle:h,salt:b64(salt),hash:b64(x),iter:250000,role:"member",created:Date.now()})})}).then(function(){enter({handle:h,uid:UID})}).catch(function(e){gmsg(typeof e==="string"?e:"Could not create the account. Try again.",1)})};
+$("gin").onclick=function(){var h=$("gh").value.trim().toLowerCase(),p=$("gp").value;
+ if(Date.now()<lock)return gmsg("Too many tries. Wait "+Math.ceil((lock-Date.now())/1000)+" seconds.",1);
+ DB.collection("accounts").where("handle","==",h).limit(1).get().then(function(s){var bad=function(){fails++;if(fails>=5){lock=Date.now()+30000;fails=0}throw"Wrong username or passphrase."};
+  if(s.empty)return bad();var a=s.docs[0].data();return bits(p,ub(a.salt),a.iter).then(function(x){if(b64(x)!==a.hash)return bad();fails=0;enter({handle:a.handle,uid:s.docs[0].id})})}).catch(function(e){gmsg(typeof e==="string"?e:"Could not sign in. Try again.",1)})};
+function vkey(tp,salt,use){return bits(tp,salt,250000).then(function(b){return crypto.subtle.importKey("raw",b,"AES-GCM",false,[use])})}
+$("vsave").onclick=function(){var tp=$("vtp").value;if(!DB||!ME||!UID)return vmsg("Sign in with a shared account first.");if(tp.length<8)return vmsg("Use a team passphrase of at least 8 characters.");
+ var salt=rnd(16),iv=rnd(12);vkey(tp,salt,"encrypt").then(function(k){return crypto.subtle.encrypt({name:"AES-GCM",iv:iv},k,TE.encode(JSON.stringify({gk:$("gk").value,ok:$("ok").value})))})
+ .then(function(ct){return DB.doc("vault/"+UID).set({by:ME.handle,salt:b64(salt),iv:b64(iv),ct:b64(ct),t:Date.now()})}).then(function(){vmsg("Saved, encrypted with the team passphrase.")},function(){vmsg("Could not save to the vault.")})};
+$("vload").onclick=function(){var tp=$("vtp").value;if(!DB||!ME||!UID)return vmsg("Sign in with a shared account first.");if(!tp)return vmsg("Enter the team passphrase.");
+ DB.collection("vault").get().then(function(s){var by=[];return Promise.all(s.docs.map(function(d){var v=d.data();return vkey(tp,ub(v.salt),"decrypt").then(function(k){return crypto.subtle.decrypt({name:"AES-GCM",iv:ub(v.iv)},k,ub(v.ct))}).then(function(pt){var o=JSON.parse(new TextDecoder().decode(pt));if(o.gk&&!$("gk").value)$("gk").value=o.gk;if(o.ok&&!$("ok").value)$("ok").value=o.ok;by.push(v.by)}).catch(function(){})})).then(function(){vmsg(by.length?"Loaded keys saved by "+by.join(", ")+".":"No vault entry opened with that passphrase.")})}).catch(function(){vmsg("Could not read the vault.")})};
+/* ---------- floating windows ---------- */
+var Z=30;
+function tb(card,title,fn,label){var t=document.createElement("div"),sp=document.createElement("span"),b=document.createElement("button");t.className="tb";sp.textContent=title;sp.style.flex="1";b.type="button";b.className="btn sm";b.textContent=label;b.onclick=fn;t.appendChild(sp);t.appendChild(b);card.insertBefore(t,card.firstChild);
+ card.onpointerdown=function(){card.style.zIndex=++Z};
+ t.onpointerdown=function(e){if(e.target===b)return;var r=card.getBoundingClientRect(),dx=e.clientX-r.left,dy=e.clientY-r.top;t.setPointerCapture(e.pointerId);
+  t.onpointermove=function(m){card.style.right=card.style.bottom="auto";card.style.left=Math.max(0,Math.min(innerWidth-80,m.clientX-dx))+"px";card.style.top=Math.max(0,Math.min(innerHeight-40,m.clientY-dy))+"px"};
+  t.onpointerup=t.onpointercancel=function(){t.onpointermove=t.onpointerup=null}};return t}
+function dock(c){c.classList.remove("float");c.style.cssText="";if(c.tbar)c.tbar.remove();c.tbar=null;if(c.ph){c.ph.replaceWith(c);c.ph=null}}
+function pop(c,title){if(c.ph)return dock(c);var r=c.getBoundingClientRect(),p=document.createElement("div"),d=document.createElement("button");p.className="card ph";p.textContent=title+" is in its own window.";d.type="button";d.className="btn sm";d.textContent="Bring back";d.onclick=function(){dock(c)};p.appendChild(d);c.ph=p;c.parentNode.insertBefore(p,c);
+ c.classList.add("float");c.style.cssText="left:"+Math.max(0,Math.min(r.left+30,innerWidth-340))+"px;top:"+Math.max(0,r.top+30)+"px;width:"+Math.min(Math.max(340,r.width),innerWidth-20)+"px;height:"+Math.max(240,Math.min(r.height,innerHeight-80))+"px;z-index:"+(++Z);c.tbar=tb(c,title,function(){dock(c)},"Dock")}
+[["sidec","Tasks","brand"],["mainc","Conversation","top"],["ctl","Controls","tabs"]].forEach(function(x){var c=$(x[0]),b=document.createElement("button");b.type="button";b.className="btn sm";b.textContent="\u29C9";b.title="Pop out into a window you can move and resize";b.setAttribute("aria-label","Pop out "+x[1]);b.onclick=function(){pop(c,x[1])};c.querySelector("."+x[2]).appendChild(b)});
+
+/* ---------- terminal ---------- */
+$("tbtn").onclick=function(){var t=$("term");t.hidden=!t.hidden;if(t.hidden)return;if(!t.tbar){t.tbar=tb(t,"Terminal: chat, thinking and live output",function(){t.hidden=true},"Close");var r=t.getBoundingClientRect();t.style.left=r.left+"px";t.style.top=r.top+"px";t.style.right=t.style.bottom="auto"}t.style.zIndex=++Z};
+$("tcl").onclick=function(){$("tout").innerHTML=""};
+$("tcp").onclick=function(){if(navigator.clipboard)navigator.clipboard.writeText($("tout").innerText)};
+$("tth").onchange=function(){[].forEach.call($("tout").querySelectorAll(".k-think"),function(d){d.hidden=!$("tth").checked})};
+tlog("sys","Terminal ready. Chat, thinking and job output appear here.");
+
+/* ---------- simple / advanced ---------- */
+function view(adv){document.body.classList.toggle("simple",!adv);$("vw").textContent="View: "+(adv?"Advanced":"Simple");try{localStorage.setItem("maistro.view",adv?"adv":"simple")}catch(e){}
+ if(!adv){$("term").hidden=true;document.querySelector('.tab[data-p="ses"]').click()}}
+$("vw").onclick=function(){view(document.body.classList.contains("simple"))};
+view((function(){try{return localStorage.getItem("maistro.view")!=="simple"}catch(e){return true}})());
+
+/* ---------- memory pane ---------- */
+function paintMem(){var ok=MEM.filter(function(e){return e.ok}).length,L=$("mlist");
+ $("mst").textContent=MEM.length+" remembered, "+ok+" worked, "+(MEM.length-ok)+" failed. Calls saved: "+MS.saved+". Paid jobs today: "+MS.paid+".";L.innerHTML="";
+ MEM.slice().reverse().slice(0,40).forEach(function(e){var d=document.createElement("div"),h=document.createElement("b"),m=document.createElement("span"),w=document.createElement("div"),x=document.createElement("button");d.className="job";
+  h.className=e.ok?"ok":"err";h.textContent=e.ok?"Worked ":"Failed ";m.className="mono";m.textContent=e.model+" x"+e.n;w.className="why";w.textContent=e.src.slice(0,90)+(e.why?" \u2022 "+e.why:"");
+  x.type="button";x.className="btn sm";x.textContent="Forget";x.onclick=function(){MEM.splice(MEM.indexOf(e),1);msave();paintMem()};d.appendChild(h);d.appendChild(m);d.appendChild(w);d.appendChild(x);L.appendChild(d)})}
+$("mcl").onclick=function(){MEM.length=0;msave();paintMem();say("Memory cleared.","sys")};
+$("mex").onclick=function(){saveFile("maistro-memory.json",JSON.stringify(MEM,null,1))};
+$("bud").onchange=function(){CFG.budget=this.checked;save();paintRoute()};
+$("umem").onchange=function(){CFG.usemem=this.checked;save();paintRoute()};
+$("capn").oninput=function(){CFG.cap=+this.value;save()};
+
+/* ---------- connected apps ---------- */
+var APPS=[
+{id:"video2x",n:"Video2X",t:"cli",v:"video2x -i {in} -o {out} -p realesrgan -s 2",d:"Video upscaling and frame interpolation. Needs a GPU machine, so it runs as a command on your runner."},
+{id:"upscayl",n:"Upscayl",t:"cli",v:"upscayl-bin -i {in} -o {out} -s 4",d:"Image upscaling through its command line tool on your runner."},
+{id:"glm",n:"GLM 5.2 / 5.4",t:"api",v:"https://api.z.ai/api/paas/v4",m:"glm-5.2",d:"Adds a GLM lane to routing. Any OpenAI-compatible address works. Set the model to glm-5.2 or glm-5.4."},
+{id:"cnvs",n:"cnvs.dev",t:"web",v:"https://cnvs.dev/",d:"Opens as a link. I could not check its API, so add an address here if it offers one."},
+{id:"sys1",n:"Typesafe System One / JEV",t:"api",v:"",m:"",d:"Blank connector. Paste the address, model and key from the Typesafe docs."},
+{id:"gitea",n:"Gitea",t:"api",v:"https://gitea.example.com",m:"",d:"Your Gitea server. Test checks /api/v1/version with your token."}];
+function asave(){try{localStorage.setItem("maistro.apps",JSON.stringify(AC))}catch(e){}}
+function cmdFor(a,c){if(a.t==="cli")return c.v;var u=(c.v||"").replace(/\/+$/,"");
+ if(a.id==="gitea")return "curl -H \"Authorization: token $GITEA_TOKEN\" "+u+"/api/v1/version";
+ if(a.t==="api")return "curl "+u+"/chat/completions -H \"Authorization: Bearer $KEY\" -H \"Content-Type: application/json\" -d '{\"model\":\""+(c.m||"")+"\",\"messages\":[{\"role\":\"user\",\"content\":\"hi\"}]}'";return "curl "+u}
+function copy(t){(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){say("Copied. Run it on your runner.","sys")},function(){say("Copy was blocked here. Command: "+t,"sys")})}
+function testApp(a,c,out){var b=(c.v||"").replace(/\/+$/,"");if(!b)return out("Add an address first.");var u=a.id==="gitea"?b+"/api/v1/version":a.t==="api"?b+"/models":b,ac=new AbortController(),h={};setTimeout(function(){ac.abort()},6000);
+ if(KEYS[a.id])h.Authorization=(a.id==="gitea"?"token ":"Bearer ")+KEYS[a.id];tlog("out","test "+a.n+": GET "+u);
+ fetch(u,{signal:ac.signal,headers:h}).then(function(r){out(a.n+" answered "+r.status+".");tlog("out",a.n+" HTTP "+r.status)},function(){out("Could not reach it from this page. Hosted pages and browsers block cross-site calls. Open the downloaded file locally, or use the copied command.");tlog("err",a.n+" unreachable from the browser")})}
+function paintApps(){var L=$("alist");L.innerHTML="";APPS.forEach(function(a){var c=AC[a.id]=AC[a.id]||{on:false,v:a.v,m:a.m||""},w=document.createElement("div"),h=document.createElement("label"),cb=document.createElement("input"),nm=document.createElement("b"),p=document.createElement("p"),r=document.createElement("div"),o=document.createElement("p");
+ w.className="job";h.className="row";cb.type="checkbox";cb.checked=!!c.on;cb.onchange=function(){c.on=cb.checked;asave();tlog("sys",a.n+(c.on?" enabled":" disabled"))};nm.textContent=a.n;h.appendChild(cb);h.appendChild(nm);w.appendChild(h);
+ p.className="why";p.textContent=a.d;w.appendChild(p);
+ var f=function(ph,k,pw){var i=document.createElement("input");i.type=pw?"password":"text";i.placeholder=ph;i.autocomplete="off";i.value=pw?(KEYS[a.id]||""):(c[k]||"");i.style.marginBottom="6px";i.oninput=function(){if(pw){KEYS[a.id]=i.value;ksave()}else{c[k]=i.value;asave()}};w.appendChild(i)};
+ f(a.t==="cli"?"Command ({in} and {out} get filled in)":"Address","v");if(a.t==="api"){f("Model","m");f("API key (saved on this device)","",1)}
+ r.className="row";o.className="why";
+ var bt=function(l,fn){var x=document.createElement("button");x.type="button";x.className="btn sm";x.textContent=l;x.onclick=fn;r.appendChild(x)};
+ if(a.t!=="cli")bt("Test",function(){testApp(a,c,function(m){o.textContent=m})});
+ bt(a.t==="cli"?"Copy command":"Copy curl",function(){copy(cmdFor(a,c))});
+ if(a.t==="cli")bt("Queue as job",function(){$("in").value="Run "+a.n+" on the input file: "+c.v;paintRoute();$("in").focus()});
+ if(a.t==="web")bt("Open",function(){if(/^https:\/\//.test(c.v))window.open(c.v,"_blank","noopener")});
+ var lk=({video2x:['https://github.com/k4yt3x/video2x/releases','Download','https://github.com/k4yt3x/video2x'],upscayl:['https://upscayl.org/download','Download','https://docs.upscayl.org'],glm:['https://z.ai/manage-apikey/apikey-list','Get API key','https://docs.z.ai'],cnvs:['https://cnvs.dev/','Open','https://cnvs.dev/'],sys1:['https://typesafe.ai/blog/introducing-system-one-models-and-jev','Open','https://typesafe.ai/blog/introducing-system-one-models-and-jev'],gitea:['https://about.gitea.com/products/gitea','Download','https://docs.gitea.com']})[a.id];if(lk)links(r,lk[0],lk[1],lk[2]);w.appendChild(r);w.appendChild(o);L.appendChild(w)})}
+paintApps();
+/* ---------- projects: saved, recent, reactive store ---------- */
+var STORE={subs:[],on:function(f){this.subs.push(f)},emit:function(){this.subs.forEach(function(f){try{f()}catch(e){}})}};
+function agoL(t){var m=Math.round((Date.now()-t)/60000);return m<1?"now":m<60?m+"m":m<1440?Math.round(m/60)+"h":Math.round(m/1440)+"d"}
+function psave(){curSave();try{localStorage.setItem("maistro.proj",JSON.stringify({cur:PI,list:PR.map(function(p){return{name:p.name,root:p.root,jid:p.jid,t:p.t||0,jobs:(p.jobs||[]).slice(-200)}})}))}catch(e){}STORE.emit()}
+function restoreProj(){try{var sv=JSON.parse(localStorage.getItem("maistro.proj")||"null");if(sv&&sv.list&&sv.list.length){PR=sv.list.map(function(p){p.jobs=(p.jobs||[]).map(function(j){if(j.state==="running")j.state="waiting";return j});return p});PI=Math.min(sv.cur||0,PR.length-1);var p=PR[PI];S.jobs=p.jobs;S.jid=p.jid||0;$("root").value=p.root||"~/maistro/project";$("root").dispatchEvent(new Event("input"))}}catch(e){}PR[PI].t=PR[PI].t||Date.now()}
+function paintRecent(){var L=$("reclist"),M=$("mrec"),list=PR.map(function(p,i){return{p:p,i:i}}).sort(function(a,b){return(b.p.t||0)-(a.p.t||0)});L.innerHTML="";M.innerHTML="";
+ list.slice(0,8).forEach(function(x,n){var p=x.p,b=document.createElement("button"),nm=document.createElement("b"),sm=document.createElement("small");b.type="button";b.className="btn sm";b.style.cssText="display:block;width:100%;text-align:left;margin:3px 0";nm.textContent=p.name;sm.style.cssText="display:block;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap";sm.textContent=(p.root||"")+" \u2022 "+(p.jobs||[]).length+" jobs"+(p.t?" \u2022 "+agoL(p.t):"");
+  b.appendChild(nm);b.appendChild(sm);if(x.i===PI)b.setAttribute("aria-current","true");b.onclick=function(){if(x.i!==PI)switchTo(x.i)};L.appendChild(b);
+  if(n<5){var m=document.createElement("button");m.type="button";m.setAttribute("role","menuitem");m.setAttribute("data-r",x.i);m.textContent=p.name+(x.i===PI?" (open)":"");M.appendChild(m)}})}
+STORE.on(paintRecent);
+function jname(j){return String(j.text||"").split("\n")[0].replace(/^Goal:\s*/,"").slice(0,60)||"Untitled job"}
+function paintQueue(){var L=$("rqlist"),all=[];PR.forEach(function(p,i){(p.jobs||[]).forEach(function(j){all.push({p:p,i:i,j:j})})});all.sort(function(a,b){return(b.j.t||0)-(a.j.t||0)});L.innerHTML="";
+ if(!all.length){var e=document.createElement("p");e.className="why";e.textContent="No jobs yet.";L.appendChild(e);return}
+ all.slice(0,60).forEach(function(x){var b=document.createElement("button"),t=document.createElement("b"),d=document.createElement("i"),n=document.createElement("span"),sm=document.createElement("small");
+  b.type="button";b.className="btn sm";b.style.cssText="display:block;width:100%;text-align:left;margin:3px 0";d.className="dot "+x.j.state;d.style.cssText="display:inline-block;margin-right:6px";n.textContent=jname(x.j);t.appendChild(d);t.appendChild(n);t.style.cssText="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap";
+  sm.style.cssText="display:block;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap";sm.textContent=x.p.name+" \u2022 job "+x.j.id+" \u2022 "+x.j.state+" \u2022 "+agoL(x.j.t||Date.now());
+  b.appendChild(t);b.appendChild(sm);b.onclick=function(){openJob(x.i,x.j)};L.appendChild(b)})}
+function openJob(i,j){var p=PR[i];openM("Job "+j.id+" in "+p.name,function(b){var info=document.createElement("p"),pre=document.createElement("pre"),row=document.createElement("div"),go=document.createElement("button");
+ info.className="why";info.textContent="Project "+p.name+" ("+p.root+"). State: "+j.state+(j.state==="running"?", stage "+STAGES[Math.min(j.i,STAGES.length-1)]:"")+". Runs on "+LANE[j.r.lane]+" with "+j.r.model+" because "+j.r.why+". Queued "+new Date(j.t||Date.now()).toLocaleString()+"."+(j.why?" "+j.why:"");
+ pre.className="mono";pre.style.cssText="white-space:pre-wrap;margin:8px 0";pre.textContent=j.text;row.className="row";go.type="button";go.className="btn pri";go.textContent=i===PI?"Show in task list":"Open project "+p.name;
+ go.onclick=function(){closeM();if(i!==PI){if(S.sess)return say("End the session before switching projects.","sys");switchTo(i)}$("tasks").scrollTop=0};row.appendChild(go);b.appendChild(info);b.appendChild(pre);b.appendChild(row)})}
+STORE.on(paintQueue);
+/* ---------- connect all AIs, links ---------- */
+function E(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e}
+function links(par,dl,dll,doc,docl){[[dll,dl],[docl||'Instructions',doc]].forEach(function(x){if(!x[1]||!/^https:[/][/]/.test(x[1]))return;var a=E('a','btn sm',x[0]);a.href=x[1];a.target='_blank';a.rel='noopener noreferrer';par.appendChild(a)})}
+var AI={},AIOWN={};try{AI=JSON.parse(localStorage.getItem('maistro.ai')||'{}')||{}}catch(e){}
+function pm(s){return s.split(' ').filter(Boolean).map(function(x){var a=x.split(':'),pre=a[1]||'',lv=(a[2]||'').split(',').filter(Boolean).map(function(t){return t[0]==='!'?[t.slice(1),t.slice(1)]:[pre+t,t]});return{id:a[0],lv:lv}})}
+var PV=[
+['openai','OpenAI','https://api.openai.com/v1','https://platform.openai.com/api-keys','https://platform.openai.com/docs','gpt-6.2-astra:reasoning-:none,low,medium,high,max gpt-6.2-sol:reasoning-:!instant,low,medium,high gpt-6.1-sol:reasoning-:!instant,low,medium,high gpt-6.1-terra:reasoning-:!instant,low,medium gpt-6-astra:reasoning-:low,medium,high gpt-6-sol:reasoning-:!instant,low,medium,high gpt-6-luna:reasoning-:!instant,low gpt-live-1.1 gpt-5.6-sol:reasoning-:!instant,low,medium,high gpt-5.6-terra:reasoning-:!instant,medium gpt-5.6-luna:reasoning-:!instant gpt-5.5-pro:reasoning-:medium,high,xhigh gpt-5.4-mini:reasoning-:low,medium,high gpt-5.4-nano:reasoning-:low,medium gpt-5.3-codex:reasoning-:low,medium,high,xhigh','gpt-image-2.5-flare sora-2 whisper-v3 text-embedding-3-large','openai'],
+['anthropic','Anthropic Claude','https://api.anthropic.com/v1','https://console.anthropic.com/settings/keys','https://docs.claude.com','claude-fable-5-2:thinking-:off,low,medium,high,max claude-mythos-5-2:thinking-:medium,high,max claude-opus-5-5:thinking-:off,low,medium,high,max claude-sonnet-5-5:thinking-:off,low,medium,high claude-haiku-5-5:thinking-:off,low,medium claude-fable-5-1:thinking-:medium,high claude-opus-4-8:thinking-:off,high','','anthropic'],
+['google','Google Gemini','https://generativelanguage.googleapis.com/v1beta/openai','https://aistudio.google.com/apikey','https://ai.google.dev/gemini-api/docs','gemini-4-carbon:thinking-:low,medium,high,deep gemini-4-neon:thinking-:off,low,medium,high gemini-4-hydrogen:thinking-:off,low,medium gemini-4-argon:thinking-:off,low gemini-3.8-flash:thinking-:off,low,medium,high gemini-3.8-live gemini-3.8-live-extended-thinking','gemini-3.8-flash-tts gemini-3.8-flash-lite-tts gemini-nano-banana-2.1 gemini-3-pro-image gemini-omni-1.2-flash genie-4 veo-3','google'],
+['xai','xAI Grok','https://api.x.ai/v1','https://console.x.ai','https://docs.x.ai','grok-4.7::non-reasoning,reasoning-low,reasoning-medium,reasoning-high,big-brain grok-4.6::non-reasoning,reasoning-low,reasoning-high','','x-ai'],
+['meta','Meta Muse and Llama','https://api.llama.com/compat/v1','https://llama.developer.meta.com','https://llama.developer.meta.com/docs','muse-wonder::standard,reasoning-high llama-4-maverick::standard,reasoning-high llama-4-scout::standard,reasoning-high llama-4-behemoth::standard,reasoning-high','','meta-llama'],
+['deepseek','DeepSeek','https://api.deepseek.com','https://platform.deepseek.com/api_keys','https://api-docs.deepseek.com','deepseek-v4.1-flash::non-thinking,thinking deepseek-v4::non-thinking,thinking deepseek-r2:reasoning-:low,medium,high','','deepseek'],
+['qwen','Alibaba Qwen','https://dashscope-intl.aliyuncs.com/compatible-mode/v1','https://bailian.console.alibabacloud.com','https://www.alibabacloud.com/help/en/model-studio/','qwen4-max::non-thinking,thinking-low,thinking-medium,thinking-high qwen3.8-max::non-thinking,thinking-high qwen3.8-plus::non-thinking,thinking-high qwen3.8-turbo::non-thinking,thinking-high','qwen-image','qwen'],
+['moonshot','Moonshot Kimi','https://api.moonshot.ai/v1','https://platform.moonshot.ai','https://platform.moonshot.ai/docs','kimi-k3.1-pro-prime::instant,thinking-medium,thinking-high kimi-k3.1-pro::instant,thinking-high kimi-k3::instant,thinking-high','','moonshotai'],
+['zai','Z.AI GLM','https://api.z.ai/api/paas/v4','https://z.ai/manage-apikey/apikey-list','https://docs.z.ai','glm-5.4::non-thinking,thinking-low,thinking-high glm-5.3::non-thinking,thinking-high','','z-ai'],
+['mistral','Mistral AI','https://api.mistral.ai/v1','https://console.mistral.ai/api-keys','https://docs.mistral.ai','mistral-large-4::standard,reasoning-high mistral-medium-4::standard,reasoning-high mistral-small-4::standard,reasoning-high codestral-latest::standard,reasoning-high','pixtral-large-latest','mistralai'],
+['midjourney','Midjourney','','https://www.midjourney.com','https://docs.midjourney.com','','midjourney-v7',''],
+['flux','Black Forest Flux','','https://dashboard.bfl.ai','https://docs.bfl.ai','','flux-2-pro flux.1-krea-dev',''],
+['runway','Runway','','https://dev.runwayml.com','https://docs.dev.runwayml.com','','runway-gen-4 runway-gen-3',''],
+['eleven','ElevenLabs','','https://elevenlabs.io/app/settings/api-keys','https://elevenlabs.io/docs','','eleven_multilingual_v3 eleven_flash_v2_5','']
+].map(function(r){return{id:r[0],n:r[1],b:r[2],k:r[3],d:r[4],ch:pm(r[5]),md:pm(r[6]),s:r[7]}});
+function dlv(m){var x=m.lv.filter(function(t){return /medium/.test(t[0])})[0]||m.lv[0];return x?x[0]:''}
+function aiS(p){var f=p.ch[0]||p.md[0];return AI[p.id]=AI[p.id]||{on:false,m:f.id,l:dlv(f),v:p.b}}
+function aiT(p,c){var via=!KEYS['ai:'+p.id]&&KEYS.or&&p.s;return via?{via:1,u:'https://openrouter.ai/api/v1',m:p.s+'/'+c.m}:{u:c.v,m:c.m+(c.l?':'+c.l:'')}}
+function aiCurl(p,c){var t=aiT(p,c),b={model:t.m,messages:[{role:'user',content:'hi'}]},q=/(low|medium|high)$/.exec(c.l||'');if(t.via&&q)b.reasoning={effort:q[1]};return `curl ${(t.u||'').replace(/[/]+$/,'')}/chat/completions -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" -d '${JSON.stringify(b)}'`}
+function aiOwn(){var s=$('own'),v=s.value,g=document.getElementById('ownai');if(g)g.remove();g=document.createElement('optgroup');g.id='ownai';g.label='Connected AIs';AIOWN={};
+ PV.forEach(function(p){var c=AI[p.id];if(!c||!c.on)return;var id=c.m+(c.l?':'+c.l:''),o=E('option',0,p.n+': '+id);o.value=id;AIOWN[id]=1;g.appendChild(o)});
+ if(g.children.length)s.appendChild(g);s.value=v;paintRoute()}
+function aisave(){try{localStorage.setItem('maistro.ai',JSON.stringify(AI))}catch(e){}aiOwn()}
+function paintAI(){var L=$('ailist');L.innerHTML='';PV.forEach(function(p){var c=aiS(p),all=p.ch.concat(p.md),d=E('details'),s=E('summary'),cb=E('input'),cur=E('span','why'),ms=E('select'),ls=E('select'),bi=E('input'),ki=E('input'),r=E('div','row'),o=E('p','why'),sh=function(){cur.textContent=' '+c.m+(c.l?':'+c.l:'')};
+ cb.type='checkbox';cb.checked=c.on;cb.onclick=function(e){e.stopPropagation()};cb.onchange=function(){c.on=cb.checked;aisave()};sh();
+ s.appendChild(cb);s.appendChild(document.createTextNode(' '));s.appendChild(E('b',0,p.n));s.appendChild(cur);d.appendChild(s);
+ [[p.ch,'Chat and reasoning'],[p.md,'Media, audio and other']].forEach(function(g){if(!g[0].length)return;var og=document.createElement('optgroup');og.label=g[1];g[0].forEach(function(m){var x=E('option',0,m.id);x.value=m.id;og.appendChild(x)});ms.appendChild(og)});
+ var fill=function(){var m=all.filter(function(x){return x.id===c.m})[0]||all[0];ls.innerHTML='';m.lv.forEach(function(t){var x=E('option',0,t[1]);x.value=t[0];ls.appendChild(x)});ls.disabled=!m.lv.length;if(!m.lv.length){ls.appendChild(E('option',0,'not applicable'));c.l=''}else{if(!m.lv.some(function(t){return t[0]===c.l}))c.l=dlv(m);ls.value=c.l}};
+ ms.value=c.m;fill();ms.onchange=function(){c.m=ms.value;c.l='';fill();sh();aisave()};ls.onchange=function(){c.l=ls.value;sh();aisave()};
+ [['Model',ms],['Reasoning strength',ls]].forEach(function(x){var l=E('label','f',x[0]);l.appendChild(x[1]);d.appendChild(l)});
+ bi.type='text';bi.placeholder='Base address';bi.value=c.v||'';bi.oninput=function(){c.v=bi.value;aisave()};ki.type='password';ki.placeholder='API key (saved on this device)';ki.autocomplete='off';ki.value=KEYS['ai:'+p.id]||'';ki.oninput=function(){KEYS['ai:'+p.id]=ki.value;ksave();paintRoute()};bi.style.marginBottom=ki.style.marginBottom='6px';d.appendChild(bi);d.appendChild(ki);
+ var bt=function(l,fn){var x=E('button','btn sm',l);x.type='button';x.onclick=fn;r.appendChild(x)};
+ bt('Test',function(){var t=aiT(p,c);testApp({id:t.via?'or':'ai:'+p.id,n:p.n,t:'api'},{v:t.u},function(m){o.textContent=m})});bt('Copy curl',function(){copy(aiCurl(p,c))});links(r,p.k,'Get API key',p.d);d.appendChild(r);d.appendChild(o);L.appendChild(d)})}
+$('aior').oninput=function(){KEYS.or=this.value;ksave()};if(KEYS.or)$('aior').value=KEYS.or;
+$('aiall').onclick=function(){KEYS.or=$('aior').value.trim();ksave();var n=0,v=0;PV.forEach(function(p){aiS(p).on=true;if(KEYS['ai:'+p.id])n++;else if(KEYS.or&&p.s)v++});aisave();paintAI();$('aimsg').textContent='Connected '+PV.length+' providers. '+n+' use their own key, '+v+' go through your OpenRouter key, '+(PV.length-n-v)+' still need a key in their card.';tlog('sys','connect all: '+PV.length+' providers enabled')};
+$('aioff').onclick=function(){PV.forEach(function(p){aiS(p).on=false});aisave();paintAI();$('aimsg').textContent='All providers disconnected.'};
+links($('aiolk'),'https://openrouter.ai/keys','Get OpenRouter key','https://openrouter.ai/docs');
+links($('slinks'),'https://ollama.com/download','Get Ollama','https://github.com/ollama/ollama','Ollama instructions');links($('slinks'),'https://console.groq.com/keys','Get Groq key','https://console.groq.com/docs','Groq instructions');links($('slinks'),'https://openrouter.ai/keys','Get OpenRouter key','https://openrouter.ai/docs','OpenRouter instructions');
+[['Unreal Engine','https://www.unrealengine.com/download','https://dev.epicgames.com/documentation/unreal-engine'],['Unity','https://unity.com/download','https://docs.unity3d.com'],['ComfyUI','https://www.comfy.org/download','https://docs.comfy.org'],['InvokeAI','https://www.invoke.com/downloads','https://invoke-ai.github.io/InvokeAI/'],['Meshy','https://www.meshy.ai','https://docs.meshy.ai'],['Tripo','https://www.tripo3d.ai','https://platform.tripo3d.ai/docs'],['Rodin','https://hyper3d.ai','https://developer.hyper3d.ai'],['Git','https://git-scm.com/downloads','https://git-scm.com/doc']].forEach(function(t){var j=E('div','job'),r=E('div','row');j.appendChild(E('b',0,t[0]));links(r,t[1],'Download',t[2]);j.appendChild(r);$('tlinks').appendChild(j)});
+paintAI();aiOwn();
+/* ---------- local bridge, status lights, engine agent ---------- */
+var BR={url:(window.MAISTRO&&MAISTRO.url)||'http://127.0.0.1:8787',token:(window.MAISTRO&&MAISTRO.token)||''},ST={},PROBE={},STB=false,pollN=0;
+try{if(!window.MAISTRO){BR.url=localStorage.getItem('maistro.bru')||BR.url;BR.token=localStorage.getItem('maistro.brt')||''}}catch(e){}
+function brf(p,body,ms){var c=new AbortController(),t=setTimeout(function(){c.abort()},ms||4000),h={'Content-Type':'application/json'};if(BR.token)h.Authorization='Bearer '+BR.token;
+ return fetch(BR.url+p,{method:body?'POST':'GET',headers:h,body:body?JSON.stringify(body):undefined,signal:c.signal}).then(function(r){clearTimeout(t);if(r.status===401)throw new Error('token');return r.json()},function(e){clearTimeout(t);throw e})}
+function setS(id,n,s,d){ST[id]={n:n,s:s,d:d}}
+function paintStat(){var L=$('slist'),k=Object.keys(ST),g=0,r=0,W={g:'Online',r:'Offline',a:'Needs attention',x:'Not set up'};L.innerHTML='';
+ k.forEach(function(id){var x=ST[id],row=E('div','row'),dot=E('span','lt '+x.s);dot.setAttribute('role','img');dot.setAttribute('aria-label',W[x.s]);row.style.marginBottom='6px';row.appendChild(dot);row.appendChild(E('b',0,x.n));row.appendChild(E('span','why',W[x.s]+(x.d?' \u2022 '+x.d:'')));L.appendChild(row);if(x.s==='g')g++;if(x.s==='r')r++});
+ var b=$('sbtn');b.innerHTML='';b.appendChild(E('span','lt '+(r?'r':(g===k.length&&k.length?'g':'a'))));b.appendChild(document.createTextNode('Status '+g+'/'+k.length))}
+function hdrsFor(p,t){var h={},k=t.via?KEYS.or:KEYS['ai:'+p.id];if(k){h.Authorization='Bearer '+k;if(p.id==='anthropic'&&!t.via){h['x-api-key']=k;h['anthropic-version']='2023-06-01'}}return h}
+function probeItems(){var it=[],m={};
+ APPS.forEach(function(a){var c=AC[a.id];if(!c||!c.on)return;var k='app:'+a.id;m[k]=a.n;if(a.t==='cli')it.push({id:k,type:'cmd',cmd:a.id==='video2x'?'video2x':'upscayl-bin'});else if(c.v)it.push({id:k,url:a.id==='gitea'?c.v.replace(/[/]+$/,'')+'/api/v1/version':c.v})});
+ it.push({id:'git',type:'cmd',cmd:'git'});m.git='Git';
+ PV.forEach(function(p){var c=AI[p.id];if(!c||!c.on||(!c.v&&!p.s))return;var t=aiT(p,c),k='ai:'+p.id;m[k]=p.n;if(!(t.via?KEYS.or:KEYS['ai:'+p.id])){PROBE[k]={n:p.n,s:'a',d:'no key yet'};return}if(t.u)it.push({id:k,url:t.u.replace(/[/]+$/,'')+'/models',headers:hdrsFor(p,t)})});
+ return{it:it,m:m}}
+function poll(){if(document.hidden)return;var hosted=location.protocol==='https:'&&!/^(localhost|127[.])/.test(location.hostname),was=STB;
+ brf('/ping',0,2500).then(function(){return brf('/status',0,5000)}).then(function(s){STB=true;ST={};var mu=s.mcp.unreal||{},my=s.mcp.unity||{};
+  setS('bridge','Maistro bridge','g',BR.url);setS('ue','Unreal Remote Control',s.unreal.ok?'g':'r',s.unreal.detail);setS('uemcp','Unreal MCP',mu.ok?'g':'r',mu.detail);setS('unity','Unity editor bridge',s.unity.ok?'g':'r',s.unity.detail);setS('unmcp','Unity MCP',my.ok?'g':'r',my.detail);setS('ollama','Ollama',s.ollama.ok?'g':'r',s.ollama.detail);
+  var pr=Promise.resolve();if(pollN++%6===0){PROBE={};var pi=probeItems();pr=brf('/probe',{items:pi.it},12000).then(function(res){res.forEach(function(r){PROBE[r.id]={n:pi.m[r.id]||r.id,s:r.ok?'g':'r',d:r.detail}})}).catch(function(){})}
+  return pr.then(function(){Object.keys(PROBE).forEach(function(k){ST[k]=PROBE[k]});paintStat();if(!was)tlog('sys','bridge connected')})
+ }).catch(function(e){STB=false;ST={};var tok=e&&e.message==='token';setS('bridge','Maistro bridge',tok?'a':'r',tok?'token missing or wrong: paste it in Settings, Local setup':hosted?'this page is hosted and the host blocks local connections; open the local copy':'not running. Start it with: node maistro-bridge.mjs');
+  ['Unreal Remote Control','Unreal MCP','Unity editor bridge','Unity MCP','Ollama'].forEach(function(n){setS(n,n,'a','needs the bridge')});var pi=probeItems();Object.keys(pi.m).forEach(function(k){setS(k,pi.m[k],'a','needs the bridge')});paintStat();if(was)tlog('err','bridge disconnected')})}
+$('srf').onclick=poll;$('sbtn').onclick=function(){document.querySelector('.tab[data-p="stat"]').click()};$('sset').onclick=function(){openSettings()};
+setInterval(poll,5000);poll();
+function dlSetup(){var g=function(i){return document.getElementById(i).textContent},F={'maistro-bridge.mjs':g('f-bridge'),'MaistroUnityBridge.cs':g('f-unity'),'init_unreal.py':g('f-unreal'),'README.txt':g('f-readme')};
+ saveFile('maistro-setup.mjs',g('f-setup').replace('__FILES__',function(){return JSON.stringify(F)}))}
+function localPanel(){var d=E('div'),h=E('h3',0,'Local setup'),r=E('div','row'),b=E('button','btn pri','Download setup'),c=E('button','btn','Check connection');h.style.marginTop='0';d.appendChild(h);
+ d.appendChild(E('p','why','A small program on your computer links Maistro to Unreal, Unity, Ollama and MCP servers. Download the setup file, then with Node.js 18 or newer run: node maistro-setup.mjs --unity C:/path/UnityProject --unreal C:/path/UnrealProject . It writes the bridge, installs the Unity editor script, adds the Unreal startup script and enables the Remote Control and Python plugins in your .uproject (backup kept). Then run: node maistro-bridge/maistro-bridge.mjs . A hosted page cannot reach your computer, so open Maistro from the bridge (save the page as maistro.html next to it, then open http://127.0.0.1:8787) or paste the token below.'));
+ b.type=c.type='button';b.onclick=dlSetup;c.onclick=function(){poll();say('Checking the bridge. See the Status tab.','sys')};r.appendChild(b);r.appendChild(c);links(r,'https://nodejs.org/en/download','Get Node.js','https://nodejs.org/en/learn/getting-started/introduction-to-nodejs','Node.js instructions');d.appendChild(r);
+ var f=function(l,v,pw,fn){var x=E('label','f',l),i=E('input');i.type=pw?'password':'text';i.value=v;i.autocomplete='off';i.oninput=function(){fn(i.value)};x.appendChild(i);d.appendChild(x);return i};
+ f('Bridge address',BR.url,0,function(v){BR.url=v.trim();try{localStorage.setItem('maistro.bru',BR.url)}catch(e){}});
+ f('Bridge token (printed when the bridge starts)',BR.token,1,function(v){BR.token=v.trim();try{localStorage.setItem('maistro.brt',BR.token)}catch(e){}});
+ var sv=E('select'),l1=E('label','f','MCP server to set up'),m=E('p','why'),sb=E('button','btn','Save MCP server to bridge');[['unreal','Unreal MCP server'],['unity','Unity MCP server']].forEach(function(x){var o=E('option',0,x[1]);o.value=x[0];sv.appendChild(o)});l1.appendChild(sv);d.appendChild(l1);
+ var cm=f('Start command of your MCP server (stdio)','',0,function(){}),ul=f('or its URL (HTTP)','',0,function(){});sb.type='button';
+ sb.onclick=function(){var p=cm.value.trim().split(' ').filter(Boolean);brf('/mcp/config',{server:sv.value,command:p[0]||'',args:p.slice(1),url:ul.value.trim()}).then(function(){m.textContent='Saved. The bridge is connecting. Watch the Status tab.'},function(){m.textContent='Could not reach the bridge. Start it and set the token first.'})};
+ d.appendChild(sb);d.appendChild(m);return d}
+function llmFor(j){var m=j.r.model,pv=PV.filter(function(p){var c=AI[p.id];return c&&c.on&&(c.m+(c.l?':'+c.l:''))===m})[0];
+ if(pv){var c=AI[pv.id],t=aiT(pv,c);return{url:t.u,key:t.via?KEYS.or:KEYS['ai:'+pv.id],model:t.m}}
+ if(j.r.lane==='groq')return{url:'https://api.groq.com/openai/v1',key:$('gk').value,model:'openai/gpt-oss-120b'};
+ return{url:$('ol').value.replace(/[/]+$/,'')+'/v1',key:'',model:$('olm').value}}
+function runAgent(j){var eng=$('eng').value,l=llmFor(j),h={'Content-Type':'application/json',Authorization:'Bearer '+BR.token};j.state='running';j.i=0;paint();
+ if($('term').hidden&&!document.body.classList.contains('simple'))$('tbtn').click();tlog('think','job '+j.id+': agent on '+(eng==='ue'?'Unreal':'Unity')+' using '+l.model);
+ var ev=function(e){if(e.k==='think')tlog('think',e.t);else if(e.k==='out'){tlog('out',e.t);j.i=Math.min(j.i+1,STAGES.length-1)}else if(e.k==='err')tlog('err',e.t);
+  else if(e.k==='done'){if(e.t==='ok'){j.state='done';j.i=STAGES.length;remember(j,true);say('Job '+j.id+' finished in '+(eng==='ue'?'Unreal':'Unity')+'.','a')}else{j.state='rejected';remember(j,false,'agent stopped early');say('Job '+j.id+' stopped before finishing. See the terminal.','a')}}paint()};
+ fetch(BR.url+'/agent',{method:'POST',headers:h,body:JSON.stringify({goal:j.text,engine:eng,steps:+CFG.asteps||8,llm:l})}).then(function(r){var rd=r.body.getReader(),dec=new TextDecoder(),buf='';
+  return(function pump(){return rd.read().then(function(x){if(x.done)return;buf+=dec.decode(x.value,{stream:true});var i;while((i=buf.indexOf('\n'))>=0){var ln=buf.slice(0,i);buf=buf.slice(i+1);try{ev(JSON.parse(ln))}catch(z){}}return pump()})})()
+ }).catch(function(e){ev({k:'done',t:'fail'});tlog('err','agent connection lost: '+e.message)})}
+/* ---------- ask bubble ---------- */
+var ASK={off:false,open:false,items:[],x:null,y:null};
+try{var _as=JSON.parse(localStorage.getItem("maistro.ask")||"null");if(_as&&typeof _as==="object"){ASK.off=!!_as.off;ASK.open=!!_as.open&&!ASK.off;if(typeof _as.x==="number")ASK.x=_as.x;if(typeof _as.y==="number")ASK.y=_as.y;if(Array.isArray(_as.items))ASK.items=_as.items.filter(function(it){return it&&typeof it.text==="string"&&it.text.trim()}).slice(-80)}}catch(e){}
+function saveAsk(){try{localStorage.setItem("maistro.ask",JSON.stringify({off:ASK.off,open:ASK.open,x:ASK.x,y:ASK.y,items:ASK.items.slice(-80)}))}catch(e){}}
+function placeAsk(x,y){var root=$("askroot");if(!root)return;ASK.x=Math.max(8,Math.min(innerWidth-70,x));ASK.y=Math.max(8,Math.min(innerHeight-70,y));root.classList.add("placed");root.style.left=ASK.x+"px";root.style.top=ASK.y+"px";root.style.right=root.style.bottom="auto";flipAsk()}
+function flipAsk(){var root=$("askroot"),pop=$("askpop");if(!root||!pop)return;var r=root.getBoundingClientRect(),above=r.top>innerHeight*0.42,leftish=r.left<innerWidth*0.55;pop.style.bottom=above?"68px":"auto";pop.style.top=above?"auto":"68px";pop.style.right=leftish?"auto":"0";pop.style.left=leftish?"0":"auto"}
+var AP=[],APdrag=null;
+function burst(n,vx,vy){for(var i=0;i<n;i++){var a=Math.random()*6.28,sp=.5+Math.random()*1.8;AP.push({x:90,y:90,vx:Math.cos(a)*sp+(vx||0),vy:Math.sin(a)*sp+(vy||0),life:1,r:1+Math.random()*2.4,c:Math.random()<.55?"#ff9a3d":"#ffe7c2"})}}
+function tickFx(){var c=$("askfx");if(!c){requestAnimationFrame(tickFx);return}if(still){requestAnimationFrame(tickFx);return}var g=c.getContext("2d");g.clearRect(0,0,180,180);if(!$("askroot").classList.contains("off")&&Math.random()<.55){var a=Math.random()*6.28,rad=30+Math.random()*42;AP.push({x:90+Math.cos(a)*rad,y:90+Math.sin(a)*rad,vx:Math.cos(a+1.4)*.3,vy:Math.sin(a+1.4)*.3-.12,life:1,r:.8+Math.random()*1.6,c:Math.random()<.7?"#ff9a3d":"#fff1d6"})}AP=AP.filter(function(q){q.x+=q.vx;q.y+=q.vy;q.life-=.014;q.vy-=.006;if(q.life<=0)return false;g.globalAlpha=Math.max(0,q.life);g.fillStyle=q.c;g.beginPath();g.arc(q.x,q.y,q.r,0,6.3);g.fill();return true});g.globalAlpha=1;requestAnimationFrame(tickFx)}
+function bindDrag(el,onClick){el.addEventListener("pointerdown",function(e){if(e.button!=null&&e.button!==0)return;var r=$("askroot").getBoundingClientRect();APdrag={id:e.pointerId,sx:e.clientX,sy:e.clientY,ox:r.left,oy:r.top,moved:false,el:el};el.classList.add("drag");try{el.setPointerCapture(e.pointerId)}catch(x){}});el.addEventListener("pointermove",function(e){if(!APdrag||e.pointerId!==APdrag.id)return;var dx=e.clientX-APdrag.sx,dy=e.clientY-APdrag.sy;if(dx*dx+dy*dy>25)APdrag.moved=true;if(APdrag.moved){placeAsk(APdrag.ox+dx,APdrag.oy+dy);if(Math.random()<.7)burst(1,-dx*.03,-dy*.03);e.preventDefault()}});function up(e){if(!APdrag||e.pointerId!==APdrag.id)return;var moved=APdrag.moved;APdrag.el.classList.remove("drag");APdrag=null;if(moved){saveAsk();return}onClick()};el.addEventListener("pointerup",up);el.addEventListener("pointercancel",up)}
+function askParse(raw){
+ var t=String(raw||"").replace(/\r/g,"").trim();
+ if(!t)return{cmd:"noop"};
+ if(/^(please\s+)?(clear|forget|empty)\s+(the\s+)?(list|to-?dos?)\b[.!]?$/i.test(t))return{cmd:"clear"};
+ if(/^(please\s+)?(create|make|queue|turn into)\s+(the\s+)?(jobs?|them|these|the list)\b[.!]?$/i.test(t))return{cmd:"jobs"};
+ var also=/\b(then\s+)?(create|make|queue)\s+(the\s+)?jobs?\b/i.test(t);
+ t=t.replace(/\b(then\s+)?(and\s+)?(create|make|queue)\s+(the\s+)?jobs?\b[.!]*/ig,"").trim();
+ t=t.replace(/^(please\s+)?(can you\s+|could you\s+|i want you to\s+|i need you to\s+)?(add|put|list)\s+/i,"");
+ t=t.replace(/^(these|this|the following)\s+/i,"");
+ t=t.replace(/^(to\s+)?(my|the)\s+(list|to-?dos?)\s*[:\-]?\s*/i,"");
+ t=t.replace(/\s+to\s+(my|the)\s+(list|to-?dos?|jobs?)\s*[.!]?\s*$/i,"");
+ t=t.replace(/^\s*[:\-]\s*/,"").trim();
+ if(!t)return also?{cmd:"jobs"}:{cmd:"noop"};
+ var parts;
+ if(/[\n;]/.test(t)||/(^|\n)\s*(?:[-*•]|\d+[.)])\s+\S/.test(t))parts=t.split(/\n+|;\s*/);
+ else if(/,/.test(t))parts=t.split(/,\s*/);
+ else if(/\band\b.+\band\b/i.test(t))parts=t.split(/\s+and\s+/i);
+ else parts=[t];
+ var items=parts.map(function(s){return s.replace(/^\s*(?:[-*•]|\d+[.)])\s*/,"").replace(/^(?:and|then)\s+/i,"").replace(/^(?:a|an)\s+/i,"").replace(/[.\s]+$/,"").trim()}).filter(function(s){return s.length>1&&!/^(please|thanks|thank you)$/i.test(s)}).slice(0,40);
+ return{cmd:also?"add+jobs":"add",items:items}}
+function askAdd(items){var added=[],skip=[];items.forEach(function(text){text=text.slice(0,2000);var dup=ASK.items.some(function(it){return it.text.toLowerCase()===text.toLowerCase()&&!it.jobId});if(dup){skip.push(text);return}ASK.items.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),text:text});added.push(text)});return{added:added,skip:skip}}
+function askMake(){var n=0,bad=0;ASK.items.forEach(function(it){if(it.jobId)return;var j=queue(it.text);it.jobId=j.id;it.jobWhy=j.state==="refused"?j.why:"";if(j.state==="refused")bad++;else n++});saveAsk();paintAsk();
+ if(!n&&!bad)say("Nothing new on the list. Add something first.","ask");
+ else say("Created "+n+" job"+(n===1?"":"s")+" from your list."+(S.sess?" The queue is held while the session is open.":" Approve them on the board to run.")+(bad?" "+bad+" could not be queued.":""),"ask")}
+function askGo(force){var raw=$("askin").value,p=askParse(raw);
+ if(p.cmd==="clear"){ASK.items=[];$("askin").value="";saveAsk();paintAsk();say("Cleared the Ask Maistro list.","ask");return}
+ if(p.cmd==="jobs"||(force&&!raw.trim())){$("askin").value="";askMake();return}
+ var added=[],skip=[];
+ if(p.items&&p.items.length){var r=askAdd(p.items);added=r.added;skip=r.skip;$("askin").value="";saveAsk();paintAsk()}
+ var msg="";
+ if(added.length)msg="Added "+added.length+(added.length<=3?": "+added.join(", "):"")+".";
+ if(skip.length)msg+=(msg?" ":"")+skip.length+" already on the list.";
+ if(p.cmd==="add+jobs"||force){if(msg)say(msg,"a");askMake();return}
+ if(!msg){say("Tell me what to add. One item per line, or separate them with commas.","ask");return}
+ say(msg+" Create jobs when the list looks right.","ask")}
+function paintAsk(){var root=$("askroot");if(!root)return;
+ root.classList.toggle("off",!!ASK.off);
+ root.classList.toggle("up",!$("term").hidden&&ASK.x==null);
+ if(ASK.x!=null)placeAsk(ASK.x,ASK.y);else flipAsk();
+ var open=!!ASK.open&&!ASK.off;
+ $("askpop").hidden=!open;
+ $("askorb").setAttribute("aria-expanded",open?"true":"false");
+ var pending=ASK.items.filter(function(it){return !it.jobId}).length;
+ $("askorb").classList.toggle("has",pending>0&&!ASK.off);
+ var badge=$("askbadge");badge.hidden=!pending||!!ASK.off;badge.textContent=pending>9?"9+":String(pending);
+ var L=$("asklist");L.innerHTML="";
+ if(!ASK.items.length){var e=document.createElement("p");e.className="why";e.textContent="Nothing on the list yet.";L.appendChild(e);return}
+ ASK.items.slice().reverse().forEach(function(it){var row=document.createElement("div"),tx=document.createElement("div"),sm=document.createElement("small"),x=document.createElement("button"),j=it.jobId?S.jobs.filter(function(q){return q.id===it.jobId})[0]:null;
+  row.className="askrow";tx.appendChild(document.createElement("b")).textContent=it.text;
+  sm.textContent=j?("job "+j.id+" · "+j.state+(j.state==="refused"&&j.why?" · "+j.why:"")):it.jobId?"job "+it.jobId:"on the list";
+  if(j&&j.state==="refused")sm.className="err";tx.appendChild(sm);row.appendChild(tx);
+  x.type="button";x.className="btn sm";x.textContent="Remove";x.onclick=function(){ASK.items=ASK.items.filter(function(q){return q!==it});saveAsk();paintAsk()};row.appendChild(x);L.appendChild(row)})}
+function bootAsk(){
+ if(ASK.x!=null)placeAsk(ASK.x,ASK.y);
+ bindDrag($("askorb"),function(){ASK.open=!ASK.open;burst(18);saveAsk();paintAsk();if(ASK.open)$("askin").focus()});
+ bindDrag($("asktab"),function(){ASK.off=false;ASK.open=true;burst(14);saveAsk();paintAsk();$("askin").focus()});
+ $("askx").onclick=function(){ASK.open=false;saveAsk();paintAsk()};
+ $("askoff").onclick=function(){ASK.off=true;ASK.open=false;saveAsk();paintAsk()};
+ addEventListener("resize",function(){if(ASK.x!=null)placeAsk(ASK.x,ASK.y)});
+ tickFx();
+ $("askadd").onclick=function(){askGo(false)};
+ $("askjobs").onclick=function(){askGo(true)};
+ $("askin").addEventListener("keydown",function(e){if(e.key==="Enter"&&(e.metaKey||e.ctrlKey)){e.preventDefault();askGo(true)}else if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();askGo(false)}});
+ document.addEventListener("keydown",function(e){if(e.key==="Escape"&&ASK.open){ASK.open=false;saveAsk();paintAsk()}})}
+bootAsk();
+applyAll();
+["gk","ok"].forEach(function(id){var e=$(id);if(!e)return;if(KEYS[id]&&!e.value)e.value=KEYS[id];e.addEventListener("input",function(){KEYS[id]=e.value;ksave();CFG[id]=e.value;save()})});
+restoreProj();paintMem();paint();
+})();
+</script>
+</body>
+</html>
