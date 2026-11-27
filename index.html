@@ -5,7 +5,7 @@
 <link rel="apple-touch-icon" href="icon.jpg">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Maistro r21</title>
+<title>Maistro r22</title>
 <style>
 :root{--bg:#dfe9e4;--glass:rgba(255,255,255,.62);--ink:#14231f;--mute:#5a6e68;--line:rgba(20,35,31,.16);--acc:#d9731a;--acc-ink:#fff;--ok:#12805c;--bad:#b3261e;--chip:rgba(20,35,31,.08);--user:#cfe5db;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -130,15 +130,15 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 </style>
 </head>
 <body>
-<div class="gate" id="gate"><div class="card box"><div class="brand"><img src="icon.jpg" alt="" width="42" height="42" style="border-radius:10px">Maistro<span class="rev" id="grev">r21</span></div><p class="why" id="gmsg">Sign in. Accounts are shared.</p>
-<div id="gform"><label class="f">Username<input type="text" id="gh" autocomplete="username"></label><label class="f">Passphrase<input type="password" id="gp" autocomplete="current-password"></label><div class="row"><button class="btn pri" id="gin" type="button">Sign in</button><button class="btn" id="gnew" type="button">Create account</button></div><div id="grecent" class="row" style="margin-top:8px;flex-wrap:wrap"></div><p class="why" id="gstat" style="margin:8px 0 0;min-height:1.2em"></p></div>
+<div class="gate" id="gate"><div class="card box"><div class="brand"><img src="icon.jpg" alt="" width="42" height="42" style="border-radius:10px">Maistro<span class="rev" id="grev">r22</span></div><p class="why" id="gmsg">Sign in. Accounts are shared.</p>
+<div id="gform"><label class="f">Username<input type="text" id="gh" autocomplete="username"></label><label class="f">Passphrase<input type="password" id="gp" autocomplete="current-password"></label><div class="row"><button class="btn pri" id="gin" type="button">Sign in</button><button class="btn" id="gnew" type="button">Create account</button></div><div id="grecent" class="row" style="margin-top:8px;flex-wrap:wrap"></div><label class="f" id="gconfirm" hidden>Confirm passphrase<input type="password" id="gp2" autocomplete="new-password"></label><div id="gstat" style="display:none;margin-top:10px;padding:10px 12px;border-radius:8px;font-weight:700"></div></div>
 <label class="pill" style="display:inline-block;margin-top:8px"><input type="checkbox" id="rem" checked> Remember this browser</label>
 <button class="btn" id="gskip" type="button" hidden>Continue on this device only</button>
 <p class="why" style="margin-top:12px">Passphrases are never stored. Only a salted hash is saved.</p><div id="glog" class="mono" style="max-height:120px;overflow:auto;font-size:11px;margin-top:8px"></div></div></div>
 <div class="app">
 
 <aside class="card side" id="sidec" aria-label="Tasks">
-  <div class="brand"><img src="icon.jpg" alt="" width="28" height="28" style="border-radius:7px">Maistro<span class="rev" id="rev">r21</span><button class="live" id="live" type="button" title="Live. Tap to refresh"><span class="lt g" id="livedot"></span></button><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
+  <div class="brand"><img src="icon.jpg" alt="" width="28" height="28" style="border-radius:7px">Maistro<span class="rev" id="rev">r22</span><button class="live" id="live" type="button" title="Live. Tap to refresh"><span class="lt g" id="livedot"></span></button><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
   <div class="menu" id="menu" role="menu" hidden><button type="button" role="menuitem" data-a="new_task">New Task</button><button type="button" role="menuitem" data-a="new_project">New Project</button><button type="button" role="menuitem" data-a="open_project">Open Project</button><button type="button" role="menuitem" data-a="import_project">Import Project</button><button type="button" role="menuitem" data-a="export_project">Export Project</button><div class="sgrp" style="padding:6px 10px 2px">Recent projects</div><div id="mrec"></div></div>
   <details id="rec" open><summary>📁 Recent projects</summary><div id="reclist"></div></details>
   <details id="rq" open><summary>🧾 Recent queue</summary><div id="rqlist"></div></details>
@@ -570,7 +570,7 @@ console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
 <script>
 (function(){
 var $=function(i){return document.getElementById(i)};
-var REV="r21"; /* bump REV on every build */
+var REV="r22"; /* bump REV on every build */
 var S={voice:false,vwho:"",vgen:0,jobs:[],jid:0,sess:null,hits:[],busy:false,last:""};
 var STAGES=["Brief","Image","3D mesh","Cleanup","Import","Demo link"];
 function sha(){return Math.random().toString(16).slice(2,9)}
@@ -852,7 +852,7 @@ function b64(a){return btoa(String.fromCharCode.apply(0,new Uint8Array(a)))}
 function ub(s){return Uint8Array.from(atob(s),function(c){return c.charCodeAt(0)})}
 function rnd(n){return crypto.getRandomValues(new Uint8Array(n))}
 function bits(pw,salt,it){return crypto.subtle.importKey("raw",TE.encode(pw),"PBKDF2",false,["deriveBits"]).then(function(k){return crypto.subtle.deriveBits({name:"PBKDF2",salt:salt,iterations:it,hash:"SHA-256"},k,256)})}
-function gmsg(t,bad){var m=$("gmsg");if(m){m.textContent=t;m.className="why"+(bad?" err":"")};var s=$("gstat");if(s){s.textContent=t;s.className=bad?"why err":"why";s.style.color=bad?"var(--bad)":"var(--ok)";s.style.fontWeight="600"}}
+function gmsg(t,bad){var m=$("gmsg");if(m){m.textContent=t;m.className="why"+(bad?" err":"")};var s=$("gstat");if(!s)return;s.style.display="block";s.textContent=t;s.style.color="#fff";s.style.background=bad?"#b3261e":"#12805c"}
 var LOG=[];try{LOG=JSON.parse(localStorage.getItem("maistro.log")||"[]")||[]}catch(e){LOG=[]}
 function mlog(msg,extra){var row={t:new Date().toISOString(),msg:String(msg),extra:extra?String(extra).slice(0,300):""};LOG.push(row);if(LOG.length>120)LOG=LOG.slice(-120);try{localStorage.setItem("maistro.log",JSON.stringify(LOG))}catch(e){}var box=$("glog");if(box){var line=document.createElement("div");line.textContent=row.t.slice(11,19)+" "+row.msg+(row.extra?" · "+row.extra:"");box.appendChild(line);box.scrollTop=box.scrollHeight}clearTimeout(mlog.tm);mlog.tm=setTimeout(sendLog,1200)}
 function sendLog(){if(typeof ghTok!=="function"||!ghTok())return;var id=(typeof ghUser==="function"?ghUser():"device");ghPut("lists/logs/"+id+".json",{id:id,items:LOG.slice(-80),updated:Date.now()},"log: "+id).then(function(){mlog("log sent")},function(e){var box=$("glog");if(box){var line=document.createElement("div");line.textContent="log send failed · "+e.message;box.appendChild(line)}})}
@@ -874,11 +874,13 @@ if(window.claude&&claude.use){Promise.all([claude.use("db"),claude.use("user")])
 function auto(){if(!SAVED||!SAVED.handle||ME)return;if(SAVED.handle==="local")return enter({handle:"local"});enter({handle:SAVED.handle,uid:SAVED.uid||null})}
 $("gskip").onclick=function(){enter({handle:"local"})};
 $("out").onclick=function(){ME=null;SAVED=null;try{localStorage.removeItem("maistro.me")}catch(e){}paintSess();showGate();$("who").hidden=true;$("out").hidden=true;gmsg("Signed out. Tap a user or sign in.")};
-$("gnew").onclick=function(){var h=$("gh").value.trim().toLowerCase(),p=$("gp").value;
+$("gnew").onclick=function(){var h=$("gh").value.trim().toLowerCase(),p=$("gp").value,p2=$("gp2").value;
  mlog("create",h);
  if(!/^[a-z0-9_]{3,20}$/.test(h))return gmsg("Use 3 to 20 letters, numbers or underscores.",1);
  if(p.length<8)return gmsg("Use a password of at least 8 characters.",1);
- gmsg("Registering…");
+ if($("gconfirm").hidden){$("gconfirm").hidden=false;$("gp2").value="";$("gp2").focus();gmsg("Type the password again to confirm.");return}
+ if(p2!==p){$("gp2").value="";$("gp2").focus();return gmsg("Passwords do not match. Type it again.",1)}
+ gmsg("Creating account…");
  var rec={handle:h,pass:p,role:"member",created:Date.now(),local:true};
  saveLocalUser(rec);SEED.users.push(rec);
  gmsg("Register complete.");
