@@ -5,7 +5,7 @@
 <link rel="apple-touch-icon" href="icon.jpg">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Maistro r12</title>
+<title>Maistro r13</title>
 <style>
 :root{--bg:#dfe9e4;--glass:rgba(255,255,255,.62);--ink:#14231f;--mute:#5a6e68;--line:rgba(20,35,31,.16);--acc:#d9731a;--acc-ink:#fff;--ok:#12805c;--bad:#b3261e;--chip:rgba(20,35,31,.08);--user:#cfe5db;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -17,11 +17,13 @@ body{margin:0;min-height:100vh;color:var(--ink);font:15px/1.5 system-ui,"Segoe U
 button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}
 :focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 code,.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}
-.app{display:grid;grid-template-columns:250px minmax(0,1fr) 330px;gap:10px;padding:10px;height:100vh;min-height:560px}
-@media(max-width:1020px){.app{grid-template-columns:1fr;height:auto}}
+.app{display:grid;grid-template-columns:var(--lw,250px) 8px minmax(0,1fr) 8px var(--rw,330px);gap:6px;padding:10px;height:100vh;min-height:560px}
+.grip{cursor:col-resize;border-radius:6px;background:var(--line)}
+.grip:hover{background:var(--acc)}
+@media(max-width:1020px){.app{grid-template-columns:1fr;height:auto}.grip{display:none}}
 .card{background:var(--glass);border:1px solid var(--line);border-radius:14px;backdrop-filter:blur(14px);display:flex;flex-direction:column;min-height:0;overflow:hidden}
 .side{padding:12px}
-.brand{display:flex;gap:8px;align-items:center;font-weight:700;font-size:17px}.rev{font-weight:600;font-size:11px;color:var(--mute);border:1px solid var(--line);border-radius:99px;padding:1px 6px;letter-spacing:.03em}
+.brand{display:flex;gap:8px;align-items:center;font-weight:700;font-size:17px}.rev{font-weight:600;font-size:11px;color:var(--mute);border:1px solid var(--line);border-radius:99px;padding:1px 6px;letter-spacing:.03em}.live{display:inline-flex;align-items:center;border:1px solid var(--line);background:var(--chip);border-radius:99px;padding:3px 7px}.live .lt{margin:0}
 .sp{flex:1}
 .btn{border:1px solid var(--line);background:var(--chip);border-radius:9px;padding:5px 11px}
 .btn:hover{border-color:var(--acc)}
@@ -59,10 +61,11 @@ code,.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}
 textarea{width:100%;min-height:58px;resize:vertical;border:0;background:transparent;outline:0}
 .row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .pill{background:var(--chip);border-radius:999px;padding:2px 10px;font-size:12px}
-.tabs{display:flex;border-bottom:1px solid var(--line)}
-.tab{flex:1;border:0;background:none;padding:9px 4px;color:var(--mute);border-bottom:2px solid transparent}
-.tab[aria-selected=true]{color:var(--ink);border-bottom-color:var(--acc);font-weight:600}
-.pane{display:none;padding:12px;overflow-y:auto}.pane.on{display:block}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;padding:8px;border-bottom:1px solid var(--line);background:rgba(0,0,0,.18)}
+.tab{flex:0 1 auto;border:1px solid var(--line);background:var(--chip);padding:6px 10px;color:var(--ink);border-radius:8px;font-size:13px}
+.tab[aria-selected=true]{background:var(--acc);color:var(--acc-ink);border-color:var(--acc);font-weight:700}
+.tab .popb{margin-left:6px;border:0;background:transparent;color:inherit;padding:0 2px;font-size:12px}
+.pane{display:none;padding:12px;overflow:auto;min-height:0}.pane.on{display:block}#ctl{overflow:hidden}#ctl .pane.on{flex:1;overflow:auto}.side,#mainc{overflow:auto}
 label.f{display:flex;flex-direction:column;gap:2px;font-size:12.5px;color:var(--mute);margin-bottom:8px}
 input[type=text],input[type=password],select,.pane textarea{width:100%;border:1px solid var(--line);background:var(--chip);border-radius:8px;padding:5px 8px}
 .pane textarea{min-height:64px}
@@ -82,7 +85,7 @@ body.compact{line-height:1.3}body.compact .t,body.compact .job{padding:4px 8px}b
 .gate .box{padding:20px;width:min(380px,100%)}
 body.simple [data-adv]{display:none!important}
 .tabs{flex-wrap:wrap}.tab{font-size:13px}
-.float,#term{position:fixed!important;z-index:30;resize:both;min-width:260px;min-height:150px;max-width:100vw;max-height:100vh;background:var(--bg);box-shadow:0 12px 36px rgba(0,0,0,.4)}
+.float,#term{position:fixed!important;z-index:30;resize:both;overflow:auto;min-width:260px;min-height:180px;max-width:100vw;max-height:100vh;background:var(--bg);box-shadow:0 12px 36px rgba(0,0,0,.4)}.float.pane{display:flex!important;flex-direction:column}
 #term{right:16px;bottom:16px;width:min(580px,94vw);height:300px}
 .sset{display:flex;gap:16px;align-items:flex-start}.snav{flex:0 0 190px;display:flex;flex-direction:column;gap:2px;position:sticky;top:0}.spane{flex:1;min-width:0}
 .sgrp{margin:12px 0 4px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}.sgrp:first-child{margin-top:0}
@@ -101,7 +104,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 #askroot.up{bottom:max(328px,env(safe-area-inset-bottom))}
 #askroot.off{right:0;bottom:max(120px,env(safe-area-inset-bottom))}
 #askroot.off.up{bottom:max(340px,env(safe-area-inset-bottom))}
-#askpop{position:absolute;right:0;bottom:68px;width:min(360px,calc(100vw - 28px));max-height:min(72vh,540px);overflow:auto}
+#askpop{position:absolute;right:0;bottom:68px;width:min(360px,calc(100vw - 28px));height:min(520px,72vh);min-width:280px;min-height:240px;max-width:96vw;max-height:90vh;overflow:auto;resize:both}
 #askpop .ah{position:sticky;top:0;z-index:1;display:flex;gap:6px;align-items:center;padding:8px 8px 8px 12px;border-bottom:1px solid var(--line);background:var(--bg);font-weight:700}#askx{margin-left:10px;width:30px;height:30px;padding:0;flex:none;font-size:18px;line-height:1;border-radius:8px}
 #askbody{padding:10px 12px 12px}
 #askin{width:100%;min-height:72px;resize:vertical;border:1px solid var(--line);background:var(--chip);border-radius:10px;padding:8px 10px}
@@ -135,7 +138,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 <div class="app">
 
 <aside class="card side" id="sidec" aria-label="Tasks">
-  <div class="brand"><img src="icon.jpg" alt="" width="28" height="28" style="border-radius:7px">Maistro<span class="rev" id="rev">r12</span><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
+  <div class="brand"><img src="icon.jpg" alt="" width="28" height="28" style="border-radius:7px">Maistro<span class="rev" id="rev">r13</span><button class="live" id="live" type="button" title="Live. Tap to refresh"><span class="lt g" id="livedot"></span></button><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
   <div class="menu" id="menu" role="menu" hidden><button type="button" role="menuitem" data-a="new_task">New Task</button><button type="button" role="menuitem" data-a="new_project">New Project</button><button type="button" role="menuitem" data-a="open_project">Open Project</button><button type="button" role="menuitem" data-a="import_project">Import Project</button><button type="button" role="menuitem" data-a="export_project">Export Project</button><div class="sgrp" style="padding:6px 10px 2px">Recent projects</div><div id="mrec"></div></div>
   <details id="rec" open><summary>📁 Recent projects</summary><div id="reclist"></div></details>
   <details id="rq" open><summary>🧾 Recent queue</summary><div id="rqlist"></div></details>
@@ -145,7 +148,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
     <div>Free enhances this hour: <span id="hits">0</span> of <span id="lim">20</span></div><div class="meter"><i id="hbar"></i></div>
   </div>
 </aside>
-
+<div class="grip" id="gl" title="Drag to resize"></div>
 <main class="card" id="mainc" aria-label="Conversation">
   <div class="top">
     <span class="crumb mono" id="crumb">this machine / project</span><span class="sp"></span>
@@ -166,7 +169,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
     </div>
   </div>
 </main>
-
+<div class="grip" id="gr" title="Drag to resize"></div>
 <aside class="card" id="ctl" aria-label="Controls">
   <div class="tabs" role="tablist">
     <button class="tab" role="tab" aria-selected="true" data-p="ses">Session</button>
@@ -176,6 +179,8 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
     <button class="tab" role="tab" aria-selected="false" data-p="app" data-adv>Apps</button>
     <button class="tab" role="tab" aria-selected="false" data-p="mem" data-adv>Memory</button>
     <button class="tab" role="tab" aria-selected="false" data-p="ai" data-adv>Models</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="usr" data-adv>Users</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="askset" data-adv>Ask</button>
     <button class="tab" role="tab" aria-selected="false" data-p="stat" data-adv>Status</button>
   </div>
 
@@ -227,6 +232,15 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
     <p class="why" id="bmsg">Live status of the bridge, Unreal, Unity, MCP servers, tools and connected AIs. Checked every few seconds.</p>
     <div class="row" style="margin-bottom:8px"><button class="btn sm" id="srf" type="button">Check now</button><button class="btn sm" id="sset" type="button">Local setup</button></div>
     <div id="slist"></div>
+  </div>
+  <div class="pane" id="usr" data-adv>
+    <p class="why">People with Maistro open in the last minute.</p>
+    <div id="usrlist"></div>
+  </div>
+  <div class="pane" id="askset" data-adv>
+    <p class="why">Ask Maistro settings. The bubble stays on screen. This tab is for the options.</p>
+    <button class="btn" id="askopen" type="button">Open Ask Maistro</button>
+    <label class="f" style="margin-top:8px">Auto-send after silence (seconds)<input type="number" id="askwait2" min="1" max="30" value="3"></label>
   </div>
   <div class="pane" id="ai" data-adv>
     <p class='why'>One click connects every provider below. Open a card to pick the submodel and reasoning strength; your pick appears under Own model in Route. One OpenRouter key can stand in for any provider you have no key for. Keys are saved on this device in plain text. Model names are taken from your list and are not checked against the providers.</p>
@@ -556,7 +570,7 @@ console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
 <script>
 (function(){
 var $=function(i){return document.getElementById(i)};
-var REV="r12"; /* bump REV on every build */
+var REV="r13"; /* bump REV on every build */
 var S={voice:false,vwho:"",vgen:0,jobs:[],jid:0,sess:null,hits:[],busy:false,last:""};
 var STAGES=["Brief","Image","3D mesh","Cleanup","Import","Demo link"];
 function sha(){return Math.random().toString(16).slice(2,9)}
@@ -873,7 +887,15 @@ function tb(card,title,fn,label){var t=document.createElement("div"),sp=document
 function dock(c){c.classList.remove("float");c.style.cssText="";if(c.tbar)c.tbar.remove();c.tbar=null;if(c.ph){c.ph.replaceWith(c);c.ph=null}}
 function pop(c,title){if(c.ph)return dock(c);var r=c.getBoundingClientRect(),p=document.createElement("div"),d=document.createElement("button");p.className="card ph";p.textContent=title+" is in its own window.";d.type="button";d.className="btn sm";d.textContent="Bring back";d.onclick=function(){dock(c)};p.appendChild(d);c.ph=p;c.parentNode.insertBefore(p,c);
  c.classList.add("float");c.style.cssText="left:"+Math.max(0,Math.min(r.left+30,innerWidth-340))+"px;top:"+Math.max(0,r.top+30)+"px;width:"+Math.min(Math.max(340,r.width),innerWidth-20)+"px;height:"+Math.max(240,Math.min(r.height,innerHeight-80))+"px;z-index:"+(++Z);c.tbar=tb(c,title,function(){dock(c)},"Dock")}
+document.querySelectorAll(".tab").forEach(function(b){var pb=document.createElement("button");pb.type="button";pb.className="popb";pb.textContent="\u29C9";pb.title="Pop out";pb.onclick=function(e){e.stopPropagation();var pane=$(b.dataset.p);if(pane)pop(pane,b.childNodes[0]&&b.childNodes[0].textContent||b.dataset.p)};b.appendChild(pb)});
 [["sidec","Tasks","brand"],["mainc","Conversation","top"],["ctl","Controls","tabs"]].forEach(function(x){var c=$(x[0]),b=document.createElement("button");b.type="button";b.className="btn sm";b.textContent="\u29C9";b.title="Pop out into a window you can move and resize";b.setAttribute("aria-label","Pop out "+x[1]);b.onclick=function(){pop(c,x[1])};c.querySelector("."+x[2]).appendChild(b)});
+(function(){var app=document.querySelector(".app");try{var sv=JSON.parse(localStorage.getItem("maistro.grid")||"null");if(sv){if(sv.l)app.style.setProperty("--lw",sv.l+"px");if(sv.r)app.style.setProperty("--rw",sv.r+"px")}}catch(e){}
+ function drag(id,key){var g=$(id);if(!g)return;g.addEventListener("pointerdown",function(e){e.preventDefault();var x0=e.clientX,cs=getComputedStyle(app),start=parseFloat(cs.getPropertyValue(key==="l"?"--lw":"--rw"))||(key==="l"?250:330);
+  function mv(ev){var dx=ev.clientX-x0,val=Math.max(180,Math.min(640,key==="l"?start+dx:start-dx));app.style.setProperty(key==="l"?"--lw":"--rw",val+"px")}
+  function up(){removeEventListener("pointermove",mv);removeEventListener("pointerup",up);var cs2=getComputedStyle(app);try{localStorage.setItem("maistro.grid",JSON.stringify({l:parseFloat(cs2.getPropertyValue("--lw")),r:parseFloat(cs2.getPropertyValue("--rw"))}))}catch(err){}}
+  addEventListener("pointermove",mv);addEventListener("pointerup",up)})}
+ drag("gl","l");drag("gr","r")})();
+
 
 /* ---------- terminal ---------- */
 $("tbtn").onclick=function(){var t=$("term");t.hidden=!t.hidden;if(t.hidden)return;if(!t.tbar){t.tbar=tb(t,"Terminal: chat, thinking and live output",function(){t.hidden=true},"Close");var r=t.getBoundingClientRect();t.style.left=r.left+"px";t.style.top=r.top+"px";t.style.right=t.style.bottom="auto"}t.style.zIndex=++Z};
@@ -1174,13 +1196,20 @@ function bootAsk(){
  $("askmain").onclick=function(){loadMain().then(function(m){var n=m&&m.items?m.items.length:0,d=m&&m.days?Object.keys(m.days).length:0;say(n?"Main: "+n+" item"+(n===1?"":"s")+" across "+d+" day"+(d===1?"":"s")+".":"Main list is empty. It fills once a day.","sys")}).catch(function(){say("Could not load the main list.","sys")})};
  $("askimp").onclick=improveFromLists;
  $("askupd").onclick=function(){location.reload()};
+ $("live").onclick=function(){if($("askupd")&&!$("askupd").hidden){location.reload();return}liveTick();askStat("Refreshed.")};
+ $("askopen").onclick=function(){ASK.off=false;ASK.open=true;saveAsk();paintAsk()};
+ $("askwait2").value=+CFG.askwait||3;
+ $("askwait2").oninput=function(){CFG.askwait=Math.max(1,+this.value||3);if($("askwait"))$("askwait").value=CFG.askwait;save()};
+
  loadGlobal().catch(function(){});
  loadMain().catch(function(){});
  if(ghTok())syncMain().catch(function(){});
  loadMine(true);
- function liveTick(){loadGlobal().catch(function(){});loadMain().catch(function(){});loadMine(true)}
+ function paintUsers(list){var box=$("usrlist");if(!box)return;box.innerHTML="";var now=Date.now();var on=(list||[]).filter(function(u){return now-(u.t||0)<60000});if(!on.length){var e=document.createElement("p");e.className="why";e.textContent="No one else is online.";box.appendChild(e);return}on.forEach(function(u){var row=document.createElement("div");row.className="askrow";var t=document.createElement("div");var b=document.createElement("b");b.textContent=u.handle||u.id;t.appendChild(b);var sm=document.createElement("small");sm.textContent=(u.id===ghUser()?"you · ":"")+u.id;t.appendChild(sm);row.appendChild(t);box.appendChild(row)})}
+function beat(){var id=ghUser(),me={id:id,handle:(ME&&ME.handle)||id,t:Date.now()};return ghGet("lists/online.json").catch(function(){return null}).then(function(d){var users=((d&&d.users)||[]).filter(function(u){return u.id!==id&&Date.now()-(u.t||0)<60000});users.push(me);paintUsers(users);if(!ghTok())return;return ghPut("lists/online.json",{users:users,updated:Date.now()},"online")})}
+function liveTick(){var dot=$("livedot");loadGlobal().then(function(){if(dot&&$("askupd").hidden)dot.className="lt g"}).catch(function(){if(dot)dot.className="lt r"});loadMain().catch(function(){});loadMine(true);beat().catch(function(){})}
  setInterval(liveTick,15000);
- setInterval(function(){fetch("index.html?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var REV="(r\d+)"/);if(m&&m[1]!==REV){askStat("Update "+m[1]+" is ready.");var b=$("askupd");if(b)b.hidden=false}}).catch(function(){})},60000);
+ setInterval(function(){fetch("index.html?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var REV="(r\d+)"/);if(m&&m[1]!==REV){askStat("Update "+m[1]+" is ready.");var b=$("askupd");if(b)b.hidden=false;var d=$("livedot");if(d)d.className="lt r"}}).catch(function(){})},60000);
  $("askwait").value=+CFG.askwait||3;
  $("askwait").oninput=function(){CFG.askwait=Math.max(1,+this.value||3);save()};
  $("askin").addEventListener("keydown",function(e){if(e.key==="Enter"&&(e.metaKey||e.ctrlKey)){e.preventDefault();askGo(true)}else if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();askGo(false)}});
