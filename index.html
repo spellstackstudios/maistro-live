@@ -11,7 +11,7 @@
 <meta name="theme-color" content="#08130f">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Maistro r30</title>
+<title>Maistro r31</title>
 <style>
 :root{--bg:#dfe9e4;--glass:rgba(255,255,255,.62);--win:rgba(255,255,255,.16);--ink:#14231f;--mute:#5a6e68;--line:rgba(20,35,31,.16);--acc:#d9731a;--acc-ink:#fff;--ok:#12805c;--bad:#b3261e;--chip:rgba(20,35,31,.08);--user:#cfe5db;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -136,7 +136,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 </style>
 </head>
 <body>
-<div class="gate" id="gate"><div class="card box"><div class="brand"><img src="icon.jpg" alt="" width="42" height="42" style="border-radius:10px">Maistro<span class="rev" id="grev">r30</span></div><p class="why" id="gmsg">Sign in. Accounts are shared.</p>
+<div class="gate" id="gate"><div class="card box"><div class="brand"><img src="icon.jpg" alt="" width="42" height="42" style="border-radius:10px">Maistro<span class="rev" id="grev">r31</span></div><p class="why" id="gmsg">Sign in. Accounts are shared.</p>
 <div id="gform"><label class="f">Username<input type="text" id="gh" autocomplete="username"></label><label class="f">Passphrase<input type="password" id="gp" autocomplete="current-password"></label><div class="row"><button class="btn pri" id="gin" type="button">Sign in</button><button class="btn" id="gnew" type="button">Create account</button></div><div id="grecent" class="row" style="margin-top:8px;flex-wrap:wrap"></div><label class="f" id="gconfirm" hidden>Confirm passphrase<input type="password" id="gp2" autocomplete="new-password"></label><div id="gstat" style="display:block;margin-top:10px;padding:10px 12px;border-radius:8px;font-weight:700;color:#fff;background:#12805c">Ready.</div></div>
 <label class="pill" style="display:inline-block;margin-top:8px"><input type="checkbox" id="rem" checked> Remember this browser</label>
 <button class="btn pri" id="install" type="button" style="margin-top:10px;width:100%">Install app</button>
@@ -176,7 +176,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 <div class="app">
 
 <aside class="card side" id="sidec" aria-label="Tasks">
-  <div class="brand"><canvas id="mini" width="28" height="28" aria-hidden="true"></canvas>Maistro<span class="rev" id="rev">r30</span><button class="live" id="live" type="button" title="Live. Tap to refresh"><span class="lt g" id="livedot"></span></button><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
+  <div class="brand"><canvas id="mini" width="28" height="28" aria-hidden="true"></canvas>Maistro<span class="rev" id="rev">r31</span><button class="live" id="live" type="button" title="Live. Tap to refresh"><span class="lt g" id="livedot"></span></button><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
   <div class="menu" id="menu" role="menu" hidden><button type="button" role="menuitem" data-a="new_task">New Task</button><button type="button" role="menuitem" data-a="new_project">New Project</button><button type="button" role="menuitem" data-a="open_project">Open Project</button><button type="button" role="menuitem" data-a="import_project">Import Project</button><button type="button" role="menuitem" data-a="export_project">Export Project</button><div class="sgrp" style="padding:6px 10px 2px">Recent projects</div><div id="mrec"></div></div>
   <details id="rec" open><summary>📁 Recent projects</summary><div id="reclist"></div></details>
   <details id="rq" open><summary>🧾 Recent queue</summary><div id="rqlist"></div></details>
@@ -289,7 +289,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
     <div id="askrestore" hidden></div>
     <p class="why" id="askstat">No token yet. Generate opens GitHub with the right scope. Paste or Import brings it in. It stays on this device.</p>
     <div class="row" style="margin-top:6px"><button class="btn sm" id="asksync" type="button">Save lists</button><button class="btn sm" id="askmine" type="button">Load mine</button><button class="btn sm" id="askglob" type="button">Load today</button><button class="btn sm" id="askmain" type="button">Load main</button><button class="btn sm" id="askimp" type="button">Improve from lists</button></div>
-    <div id="askimpbox"></div>
+    <div id="askimpbox"></div><h3 class="sec" style="margin-top:12px">Done from lists</h3><div id="donelog"></div>
   </div>
   <div class="pane" id="ai" data-adv>
     <p class='why'>One click connects every provider below. Open a card to pick the submodel and reasoning strength; your pick appears under Own model in Route. One OpenRouter key can stand in for any provider you have no key for. Keys are saved on this device in plain text.</p>
@@ -614,7 +614,7 @@ console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
 <script>
 (function(){
 var $=function(i){return document.getElementById(i)};
-var REV="r30"; /* bump REV on every build */
+var REV="r31"; /* bump REV on every build */
 var S={voice:false,vwho:"",vgen:0,jobs:[],jid:0,sess:null,hits:[],busy:false,last:""};
 var STAGES=["Brief","Image","3D mesh","Cleanup","Import","Demo link"];
 function sha(){return Math.random().toString(16).slice(2,9)}
@@ -1214,8 +1214,14 @@ function paintImprove(){var box=$("askimpbox");if(!box)return;box.innerHTML="";v
  var h=document.createElement("p");h.className="why";h.textContent="Today"+(days?" · main keeps "+days+" day"+(days===1?"":"s"):"");box.appendChild(h);
  items.forEach(function(it){var row=document.createElement("div");row.className="askrow";var tx=document.createElement("div");tx.appendChild(document.createElement("b")).textContent=it.text;var sm=document.createElement("small");sm.textContent=(it.n||1)+" ask"+(it.n===1?"":"s")+(it.by&&it.by.length?" · "+it.by.slice(0,4).join(", "):"");tx.appendChild(sm);row.appendChild(tx);
   var b=document.createElement("button");b.type="button";b.className="btn sm";b.textContent="Add";b.onclick=function(){askAdd([it.text]);saveAsk();paintAsk()};row.appendChild(b);box.appendChild(row)})}
-function improveFromLists(){loadMain().then(function(main){var items=(main&&main.items&&main.items.length)?main.items:(ASK.global||[]);if(!items.length)return loadGlobal().then(function(g){items=g||[];if(!items.length){say("Nothing on the lists yet.","sys");return}return pull(items,"today")});return pull(items,"main")}).catch(function(){say("Could not read the lists.","sys")});function pull(items,from){var top=items.slice(0,5).map(function(it){return it.text});var r=askAdd(top);saveAsk();paintAsk();say("Pulled "+(r.added.length||0)+" often-asked item"+(r.added.length===1?"":"s")+" from the "+from+" list.","ask")}}
-function askMake(){var n=0,bad=0;ASK.items.forEach(function(it){if(it.jobId)return;var j=queue(it.text);it.jobId=j.id;it.jobWhy=j.state==="refused"?j.why:"";if(j.state==="refused")bad++;else n++});saveAsk();paintAsk();
+var DONE=[];try{DONE=JSON.parse(localStorage.getItem("maistro.done")||"[]")||[]}catch(e){DONE=[]}
+function doneKey(t){return String(t||"").trim().toLowerCase()}
+function isDone(t){var k=doneKey(t);return DONE.some(function(d){return doneKey(d.text)===k})}
+function markDone(text,job){if(!text||isDone(text))return;DONE.unshift({text:text,job:job||"",t:Date.now(),by:(ME&&ME.handle)||ghUser()});DONE=DONE.slice(0,200);try{localStorage.setItem("maistro.done",JSON.stringify(DONE))}catch(e){}paintDone();if(typeof ghTok==="function"&&ghTok())ghPut("lists/done.json",{items:DONE.slice(0,200),updated:Date.now()},"done log").catch(function(){})}
+function loadDone(){return ghGet("lists/done.json").then(function(d){var remote=(d&&d.items)||[];var by={};DONE.concat(remote).forEach(function(x){if(x&&x.text)by[doneKey(x.text)]=x});DONE=Object.keys(by).map(function(k){return by[k]});try{localStorage.setItem("maistro.done",JSON.stringify(DONE))}catch(e){}paintDone()}).catch(function(){paintDone()})}
+function paintDone(){var box=$("donelog");if(!box)return;box.innerHTML="";if(!DONE.length){var e=document.createElement("p");e.className="why";e.textContent="Nothing done from lists yet.";box.appendChild(e);return}DONE.slice(0,20).forEach(function(d){var row=document.createElement("div");row.className="job";row.innerHTML="<b>"+esc(d.text)+"</b><div class='why'>"+(d.job?"Job "+d.job+" · ":"")+(d.by||"")+" · "+new Date(d.t).toLocaleString()+"</div>";box.appendChild(row)})}
+function improveFromLists(){loadDone().then(function(){return loadMain()}).then(function(main){var items=(main&&main.items&&main.items.length)?main.items:(ASK.global||[]);if(!items.length)return loadGlobal().then(function(g){items=g||[];if(!items.length){say("Nothing on the lists yet.","sys");return}return pull(items,"today")});return pull(items,"main")}).catch(function(){say("Could not read the lists.","sys")});function pull(items,from){var fresh=items.filter(function(it){return it&&it.text&&!isDone(it.text)});var skipped=items.length-fresh.length;var top=fresh.slice(0,5).map(function(it){return it.text});if(!top.length){say("Everything on the "+from+" list is already in the done log.","sys");return}var r=askAdd(top);saveAsk();paintAsk();say("Pulled "+(r.added.length||0)+" new item"+(r.added.length===1?"":"s")+" from the "+from+" list."+(skipped?" Skipped "+skipped+" already done.":""),"ask")}}
+function askMake(){var n=0,bad=0,skip=0;ASK.items.forEach(function(it){if(it.jobId)return;if(isDone(it.text)){skip++;return}var j=queue(it.text);it.jobId=j.id;it.jobWhy=j.state==="refused"?j.why:"";markDone(it.text,j.id);if(j.state==="refused")bad++;else n++});saveAsk();paintAsk();if(skip)say("Skipped "+skip+" already done.","ask");
  if(!n&&!bad)say("Nothing new on the list. Add something first.","ask");
  else say("Created "+n+" job"+(n===1?"":"s")+" from your list."+(S.sess?" The queue is held while the session is open.":" Approve them on the board to run.")+(bad?" "+bad+" could not be queued.":""),"ask")}
 function askGo(force){var raw=$("askin").value,p=askParse(raw);
@@ -1254,7 +1260,7 @@ function paintAsk(){var root=$("askroot");if(!root)return;
   L.appendChild(row)})}
 function askMenu(it,x,y){var m=$("askmenu");if(!m){m=document.createElement("div");m.id="askmenu";document.body.appendChild(m);document.addEventListener("pointerdown",function(e){if(m&&!m.contains(e.target))m.hidden=true})}
  m.innerHTML="";m.hidden=false;m.style.left=Math.min(x,innerWidth-160)+"px";m.style.top=Math.min(y,innerHeight-160)+"px";
- [["Edit",function(){var v=prompt("Edit item",it.text);if(v&&v.trim()){it.text=v.trim().slice(0,2000);it.t=Date.now();saveAsk();paintAsk()}}],["Remove",function(){ASK.items=ASK.items.filter(function(q){return q!==it});saveAsk();paintAsk()}],["Make job",function(){if(!it.jobId){var j=queue(it.text);it.jobId=j.id;saveAsk();paintAsk();say("Queued "+it.text,"ask")}}],["Add note",function(){var v=prompt("Note",it.note||"");if(v!=null){it.note=v.trim();saveAsk();paintAsk()}}]].forEach(function(c){var b=document.createElement("button");b.type="button";b.textContent=c[0];b.onclick=function(){m.hidden=true;c[1]()};m.appendChild(b)})}
+ [["Edit",function(){var v=prompt("Edit item",it.text);if(v&&v.trim()){it.text=v.trim().slice(0,2000);it.t=Date.now();saveAsk();paintAsk()}}],["Remove",function(){ASK.items=ASK.items.filter(function(q){return q!==it});saveAsk();paintAsk()}],["Make job",function(){if(isDone(it.text)){say("Already done: "+it.text,"ask");return}if(!it.jobId){var j=queue(it.text);it.jobId=j.id;markDone(it.text,j.id);saveAsk();paintAsk();say("Queued "+it.text,"ask")}}],["Add note",function(){var v=prompt("Note",it.note||"");if(v!=null){it.note=v.trim();saveAsk();paintAsk()}}]].forEach(function(c){var b=document.createElement("button");b.type="button";b.textContent=c[0];b.onclick=function(){m.hidden=true;c[1]()};m.appendChild(b)})}
 function bootAsk(){
  if(ASK.x!=null)placeAsk(ASK.x,ASK.y);
  bindDrag($("askorb"),function(){ASK.open=!ASK.open;burst(18);saveAsk();paintAsk();if(ASK.open)$("askin").focus()});
@@ -1280,7 +1286,7 @@ function bootAsk(){
  $("askmine").onclick=function(){loadMine(false)};
  $("askglob").onclick=function(){loadGlobal().then(function(items){say(items.length?"Today: "+items.length+" item"+(items.length===1?"":"s")+".":"Nothing on today's list yet.","sys")}).catch(function(){say("Could not load today's list.","sys")})};
  $("askmain").onclick=function(){loadMain().then(function(m){var n=m&&m.items?m.items.length:0,d=m&&m.days?Object.keys(m.days).length:0;say(n?"Main: "+n+" item"+(n===1?"":"s")+" across "+d+" day"+(d===1?"":"s")+".":"Main list is empty. It fills once a day.","sys")}).catch(function(){say("Could not load the main list.","sys")})};
- $("askimp").onclick=improveFromLists;
+ $("askimp").onclick=improveFromLists;loadDone();
  $("askupd").onclick=function(){location.reload()};
  $("live").onclick=function(){if($("askupd")&&!$("askupd").hidden){location.reload();return}liveTick();askStat("Refreshed.")};
  $("askopen").onclick=function(){ASK.off=false;ASK.open=true;saveAsk();paintAsk()};
