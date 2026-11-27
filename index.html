@@ -5,7 +5,7 @@
 <link rel="apple-touch-icon" href="icon.jpg">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Maistro r17</title>
+<title>Maistro r18</title>
 <style>
 :root{--bg:#dfe9e4;--glass:rgba(255,255,255,.62);--ink:#14231f;--mute:#5a6e68;--line:rgba(20,35,31,.16);--acc:#d9731a;--acc-ink:#fff;--ok:#12805c;--bad:#b3261e;--chip:rgba(20,35,31,.08);--user:#cfe5db;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -81,7 +81,7 @@ h3{margin:12px 0 4px;font-size:14px}
 .menu button:hover{background:var(--chip)}
 .sec{border-top:1px solid var(--line);margin-top:14px;padding-top:8px}
 body.compact{line-height:1.3}body.compact .t,body.compact .job{padding:4px 8px}body.compact .m{max-width:92%}
-.gate{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px;background:radial-gradient(900px 500px at 85% 0,rgba(217,115,26,.22),transparent 60%),var(--bg)}.gate[hidden]{display:none!important}
+.gate{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px;background:radial-gradient(900px 500px at 85% 0,rgba(217,115,26,.22),transparent 60%),var(--bg)}.gate[hidden]{display:none!important}#gate:not([hidden]) ~ #askroot{display:none!important}
 .gate .box{padding:20px;width:min(380px,100%)}
 body.simple [data-adv]{display:none!important}
 .tabs{flex-wrap:wrap}.tab{font-size:13px}
@@ -130,7 +130,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 </style>
 </head>
 <body>
-<div class="gate" id="gate"><div class="card box"><div class="brand">Maistro</div><p class="why" id="gmsg">Sign in. Accounts are shared.</p>
+<div class="gate" id="gate"><div class="card box"><div class="brand"><img src="icon.jpg" alt="" width="42" height="42" style="border-radius:10px">Maistro<span class="rev" id="grev">r18</span></div><p class="why" id="gmsg">Sign in. Accounts are shared.</p>
 <div id="gform"><label class="f">Username<input type="text" id="gh" autocomplete="username"></label><label class="f">Passphrase<input type="password" id="gp" autocomplete="current-password"></label><div class="row"><button class="btn pri" id="gin" type="button">Sign in</button><button class="btn" id="gnew" type="button">Create account</button></div><div id="grecent" class="row" style="margin-top:8px;flex-wrap:wrap"></div></div>
 <label class="pill" style="display:inline-block;margin-top:8px"><input type="checkbox" id="rem" checked> Remember this browser</label>
 <button class="btn" id="gskip" type="button" hidden>Continue on this device only</button>
@@ -138,7 +138,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 <div class="app">
 
 <aside class="card side" id="sidec" aria-label="Tasks">
-  <div class="brand"><img src="icon.jpg" alt="" width="28" height="28" style="border-radius:7px">Maistro<span class="rev" id="rev">r17</span><button class="live" id="live" type="button" title="Live. Tap to refresh"><span class="lt g" id="livedot"></span></button><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
+  <div class="brand"><img src="icon.jpg" alt="" width="28" height="28" style="border-radius:7px">Maistro<span class="rev" id="rev">r18</span><button class="live" id="live" type="button" title="Live. Tap to refresh"><span class="lt g" id="livedot"></span></button><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
   <div class="menu" id="menu" role="menu" hidden><button type="button" role="menuitem" data-a="new_task">New Task</button><button type="button" role="menuitem" data-a="new_project">New Project</button><button type="button" role="menuitem" data-a="open_project">Open Project</button><button type="button" role="menuitem" data-a="import_project">Import Project</button><button type="button" role="menuitem" data-a="export_project">Export Project</button><div class="sgrp" style="padding:6px 10px 2px">Recent projects</div><div id="mrec"></div></div>
   <details id="rec" open><summary>📁 Recent projects</summary><div id="reclist"></div></details>
   <details id="rq" open><summary>🧾 Recent queue</summary><div id="rqlist"></div></details>
@@ -570,7 +570,7 @@ console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
 <script>
 (function(){
 var $=function(i){return document.getElementById(i)};
-var REV="r17"; /* bump REV on every build */
+var REV="r18"; /* bump REV on every build */
 var S={voice:false,vwho:"",vgen:0,jobs:[],jid:0,sess:null,hits:[],busy:false,last:""};
 var STAGES=["Brief","Image","3D mesh","Cleanup","Import","Demo link"];
 function sha(){return Math.random().toString(16).slice(2,9)}
