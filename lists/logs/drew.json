@@ -2,11 +2,6 @@
   "id": "drew",
   "items": [
     {
-      "t": "2026-11-27T17:39:06.882Z",
-      "msg": "rejected",
-      "extra": "drew"
-    },
-    {
       "t": "2026-11-27T17:39:06.883Z",
       "msg": "sign in failed",
       "extra": "Wrong username or password."
@@ -400,7 +395,12 @@
       "t": "2026-11-27T21:08:45.444Z",
       "msg": "log sent",
       "extra": ""
+    },
+    {
+      "t": "2026-11-27T21:08:47.800Z",
+      "msg": "log sent",
+      "extra": ""
     }
   ],
-  "updated": 1795813726645
+  "updated": 1795813729001
 }
