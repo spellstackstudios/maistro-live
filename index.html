@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="icon" href="icon.jpg">
-<link rel="apple-touch-icon" href="icon.jpg">
+<link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
 <link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -11,7 +11,7 @@
 <meta name="theme-color" content="#08130f">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Maistro r31</title>
+<title>Maistro r32</title>
 <style>
 :root{--bg:#dfe9e4;--glass:rgba(255,255,255,.62);--win:rgba(255,255,255,.16);--ink:#14231f;--mute:#5a6e68;--line:rgba(20,35,31,.16);--acc:#d9731a;--acc-ink:#fff;--ok:#12805c;--bad:#b3261e;--chip:rgba(20,35,31,.08);--user:#cfe5db;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -136,7 +136,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 </style>
 </head>
 <body>
-<div class="gate" id="gate"><div class="card box"><div class="brand"><img src="icon.jpg" alt="" width="42" height="42" style="border-radius:10px">Maistro<span class="rev" id="grev">r31</span></div><p class="why" id="gmsg">Sign in. Accounts are shared.</p>
+<div class="gate" id="gate"><div class="card box"><div class="brand"><img src="icon.png" alt="" width="42" height="42" style="border-radius:10px">Maistro<span class="rev" id="grev">r32</span></div><p class="why" id="gmsg">Sign in. Accounts are shared.</p>
 <div id="gform"><label class="f">Username<input type="text" id="gh" autocomplete="username"></label><label class="f">Passphrase<input type="password" id="gp" autocomplete="current-password"></label><div class="row"><button class="btn pri" id="gin" type="button">Sign in</button><button class="btn" id="gnew" type="button">Create account</button></div><div id="grecent" class="row" style="margin-top:8px;flex-wrap:wrap"></div><label class="f" id="gconfirm" hidden>Confirm passphrase<input type="password" id="gp2" autocomplete="new-password"></label><div id="gstat" style="display:block;margin-top:10px;padding:10px 12px;border-radius:8px;font-weight:700;color:#fff;background:#12805c">Ready.</div></div>
 <label class="pill" style="display:inline-block;margin-top:8px"><input type="checkbox" id="rem" checked> Remember this browser</label>
 <button class="btn pri" id="install" type="button" style="margin-top:10px;width:100%">Install app</button>
@@ -176,7 +176,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 <div class="app">
 
 <aside class="card side" id="sidec" aria-label="Tasks">
-  <div class="brand"><canvas id="mini" width="28" height="28" aria-hidden="true"></canvas>Maistro<span class="rev" id="rev">r31</span><button class="live" id="live" type="button" title="Live. Tap to refresh"><span class="lt g" id="livedot"></span></button><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
+  <div class="brand"><canvas id="mini" width="28" height="28" aria-hidden="true"></canvas>Maistro<span class="rev" id="rev">r32</span><button class="live" id="live" type="button" title="Live. Tap to refresh"><span class="lt g" id="livedot"></span></button><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
   <div class="menu" id="menu" role="menu" hidden><button type="button" role="menuitem" data-a="new_task">New Task</button><button type="button" role="menuitem" data-a="new_project">New Project</button><button type="button" role="menuitem" data-a="open_project">Open Project</button><button type="button" role="menuitem" data-a="import_project">Import Project</button><button type="button" role="menuitem" data-a="export_project">Export Project</button><div class="sgrp" style="padding:6px 10px 2px">Recent projects</div><div id="mrec"></div></div>
   <details id="rec" open><summary>📁 Recent projects</summary><div id="reclist"></div></details>
   <details id="rq" open><summary>🧾 Recent queue</summary><div id="rqlist"></div></details>
@@ -604,7 +604,8 @@ console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
       <div class="row" style="margin-top:8px"><button class="btn" id="askadd" type="button">Add to list</button><button class="btn pri" id="askjobs" type="button">Create jobs</button></div>
       <div id="askdup" hidden></div>
       <div id="asklist"></div>
-      <p class="why" style="margin-top:12px"><span class="lt g"></span>Live. Token and Ask settings are in the Ask tab.</p>
+      <div class="row" style="margin-top:12px"><button class="btn sm" id="asksync2" type="button">Save lists</button><button class="btn sm" id="askmine2" type="button">Load mine</button><button class="btn sm" id="askglob2" type="button">Load today</button><button class="btn sm" id="askmain2" type="button">Load main</button><button class="btn sm" id="askimp2" type="button">Improve from lists</button></div>
+      <p class="why" style="margin-top:8px"><span class="lt g"></span>Live. Token and Ask settings are in the Ask tab.</p>
       <button class="btn sm pri" id="askupd" type="button" hidden style="margin-top:6px">Update ready. Tap to reload</button>
     </div>
   </section>
@@ -614,7 +615,7 @@ console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
 <script>
 (function(){
 var $=function(i){return document.getElementById(i)};
-var REV="r31"; /* bump REV on every build */
+var REV="r32"; /* bump REV on every build */
 var S={voice:false,vwho:"",vgen:0,jobs:[],jid:0,sess:null,hits:[],busy:false,last:""};
 var STAGES=["Brief","Image","3D mesh","Cleanup","Import","Demo link"];
 function sha(){return Math.random().toString(16).slice(2,9)}
@@ -1287,6 +1288,7 @@ function bootAsk(){
  $("askglob").onclick=function(){loadGlobal().then(function(items){say(items.length?"Today: "+items.length+" item"+(items.length===1?"":"s")+".":"Nothing on today's list yet.","sys")}).catch(function(){say("Could not load today's list.","sys")})};
  $("askmain").onclick=function(){loadMain().then(function(m){var n=m&&m.items?m.items.length:0,d=m&&m.days?Object.keys(m.days).length:0;say(n?"Main: "+n+" item"+(n===1?"":"s")+" across "+d+" day"+(d===1?"":"s")+".":"Main list is empty. It fills once a day.","sys")}).catch(function(){say("Could not load the main list.","sys")})};
  $("askimp").onclick=improveFromLists;loadDone();
+ $("asksync2").onclick=$("asksync").onclick;$("askmine2").onclick=$("askmine").onclick;$("askglob2").onclick=$("askglob").onclick;$("askmain2").onclick=$("askmain").onclick;$("askimp2").onclick=$("askimp").onclick;
  $("askupd").onclick=function(){location.reload()};
  $("live").onclick=function(){if($("askupd")&&!$("askupd").hidden){location.reload();return}liveTick();askStat("Refreshed.")};
  $("askopen").onclick=function(){ASK.off=false;ASK.open=true;saveAsk();paintAsk()};
