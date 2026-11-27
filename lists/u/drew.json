@@ -5,9 +5,24 @@
   "items": [
     {
       "text": "Make it so that each window is collapsible and expandable except for the main top maistro window",
-      "t": 1795777718615,
+      "t": 1795802397181,
+      "job": false
+    },
+    {
+      "text": "From the talk to maestro screen on the home page should be able to tap on the current model being used and then switch from a drop-down",
+      "t": 1795801928543,
+      "job": false
+    },
+    {
+      "text": "different buttons like session route demo setup always pop out on first tap but speaks that and make it so that the pop-up button is a little bit further away from the main title to click on",
+      "t": 1795802058852,
+      "job": false
+    },
+    {
+      "text": "Optimize the settings menu for mobile",
+      "t": 1795802074972,
       "job": false
     }
   ],
-  "updated": 1795777866457
+  "updated": 1795802397181
 }
