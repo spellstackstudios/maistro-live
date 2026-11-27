@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Maistro r8</title>
+<title>Maistro r9</title>
 <style>
 :root{--bg:#dfe9e4;--glass:rgba(255,255,255,.62);--ink:#14231f;--mute:#5a6e68;--line:rgba(20,35,31,.16);--acc:#d9731a;--acc-ink:#fff;--ok:#12805c;--bad:#b3261e;--chip:rgba(20,35,31,.08);--user:#cfe5db;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -133,7 +133,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 <div class="app">
 
 <aside class="card side" id="sidec" aria-label="Tasks">
-  <div class="brand"><canvas id="mini" width="28" height="28" aria-hidden="true"></canvas>Maistro<span class="rev" id="rev">r8</span><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
+  <div class="brand"><canvas id="mini" width="28" height="28" aria-hidden="true"></canvas>Maistro<span class="rev" id="rev">r9</span><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
   <div class="menu" id="menu" role="menu" hidden><button type="button" role="menuitem" data-a="new_task">New Task</button><button type="button" role="menuitem" data-a="new_project">New Project</button><button type="button" role="menuitem" data-a="open_project">Open Project</button><button type="button" role="menuitem" data-a="import_project">Import Project</button><button type="button" role="menuitem" data-a="export_project">Export Project</button><div class="sgrp" style="padding:6px 10px 2px">Recent projects</div><div id="mrec"></div></div>
   <details id="rec" open><summary>📁 Recent projects</summary><div id="reclist"></div></details>
   <details id="rq" open><summary>🧾 Recent queue</summary><div id="rqlist"></div></details>
@@ -541,6 +541,7 @@ console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
       <p class="why" style="margin-top:12px">Yours stays on this device. Adds also go to today's shared list. Once a day that rolls into the main list, which keeps every day.</p>
       <input type="password" id="ght" placeholder="Token shows here after generate or import" autocomplete="off" style="margin-top:6px">
       <div class="row" style="margin-top:6px"><button class="btn sm pri" id="ghtgen" type="button">Generate token</button><button class="btn sm" id="ghtpaste" type="button">Paste</button><button class="btn sm" id="ghtimp" type="button">Import file</button><input type="file" id="ghtfile" accept=".txt,.token,text/plain" hidden></div>
+      <div id="askrestore" hidden></div>
       <p class="why" id="askstat">No token yet. Generate opens GitHub with the right scope. Paste or Import brings it in. It stays on this device.</p>
       <div class="row" style="margin-top:6px"><button class="btn sm" id="asksync" type="button">Save lists</button><button class="btn sm" id="askmine" type="button">Load mine</button><button class="btn sm" id="askglob" type="button">Load today</button><button class="btn sm" id="askmain" type="button">Load main</button><button class="btn sm" id="askimp" type="button">Improve from lists</button></div>
       <div id="askimpbox"></div>
@@ -552,7 +553,7 @@ console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
 <script>
 (function(){
 var $=function(i){return document.getElementById(i)};
-var REV="r8"; /* bump REV on every build */
+var REV="r9"; /* bump REV on every build */
 var S={voice:false,vwho:"",vgen:0,jobs:[],jid:0,sess:null,hits:[],busy:false,last:""};
 var STAGES=["Brief","Image","3D mesh","Cleanup","Import","Demo link"];
 function sha(){return Math.random().toString(16).slice(2,9)}
@@ -1155,8 +1156,11 @@ function bootAsk(){
  $("askadd").onclick=function(){askGo(false)};
  $("askjobs").onclick=function(){askGo(true)};
  $("ght").value=KEYS.ght||"";
- if(KEYS.ght)askStat("Token saved on this device.");
- function takeToken(raw){var t=String(raw||"").replace(/^[\s\S]*?(gh[pousr]_[A-Za-z0-9_]+|github_pat_[A-Za-z0-9_]+).*$/,"$1").trim();if(!t){askStat("No token found. Copy the token from GitHub, then Paste.",1);return}KEYS.ght=t;$("ght").value=t;ksave();askStat("Token saved on this device. You can Save lists.");say("GitHub token saved on this device.","sys")}
+ if(KEYS.ght){askStat("Token saved on this device.");saveTokenServer()} else showRestore();
+ function devLabel(){var ua=navigator.userAgent;if(/iPhone|iPad/i.test(ua))return "iPhone";if(/Android/i.test(ua))return "Android";return "device"}
+ function saveTokenServer(){var tok=ghTok();if(!tok)return Promise.resolve();var id=ghUser();return ghGet("lists/tokens.json").catch(function(){return null}).then(function(d){d=d||{devices:[]};d.devices=(d.devices||[]).filter(function(x){return x.id!==id});d.devices.push({id:id,token:tok,label:devLabel(),t:Date.now()});return ghPut("lists/tokens.json",d,"token: "+id)}).then(function(){askStat("Token saved on the server for "+id+". One tap restores it.")},function(e){askStat("Saved here. Server save failed: "+e.message,1)})}
+ function showRestore(){if(ghTok())return;ghGet("lists/tokens.json").then(function(d){var box=$("askrestore");if(!box)return;var list=(d&&d.devices)||[];if(!list.length){box.hidden=true;return}box.hidden=false;box.innerHTML="";var p=document.createElement("p");p.className="why";p.textContent="Cache cleared? Tap your device to restore the token.";box.appendChild(p);list.forEach(function(dev){var b=document.createElement("button");b.type="button";b.className="btn sm pri";b.textContent="Restore "+(dev.label||"device")+" · "+dev.id;b.onclick=function(){KEYS.ght=dev.token;$("ght").value=dev.token;ksave();try{localStorage.setItem("maistro.device",dev.id)}catch(e){}box.hidden=true;askStat("Token restored for "+dev.id+".");say("Token restored for "+dev.id,"sys");loadMine(true)};box.appendChild(b)})}).catch(function(){})}
+ function takeToken(raw){var t=String(raw||"").replace(/^[\s\S]*?(gh[pousr]_[A-Za-z0-9_]+|github_pat_[A-Za-z0-9_]+).*$/,"$1").trim();if(!t){askStat("No token found. Copy the token from GitHub, then Paste.",1);return}KEYS.ght=t;$("ght").value=t;ksave();askStat("Saving token for this device…");say("GitHub token saved on this device.","sys");saveTokenServer()}
  $("ght").oninput=function(){KEYS.ght=this.value.trim();ksave()};
  $("ghtgen").onclick=function(){window.open("https://github.com/settings/tokens/new?scopes=public_repo&description=Maistro%20lists","_blank","noopener");askStat("On GitHub: Generate token, copy it, come back, tap Paste.")};
  $("ghtpaste").onclick=function(){var read=navigator.clipboard&&navigator.clipboard.readText?navigator.clipboard.readText():Promise.reject();read.then(takeToken).catch(function(){var t=prompt("Paste the GitHub token");if(t)takeToken(t)})};
