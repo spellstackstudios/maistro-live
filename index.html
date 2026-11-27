@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Maistro r2</title>
+<title>Maistro r3</title>
 <style>
 :root{--bg:#dfe9e4;--glass:rgba(255,255,255,.62);--ink:#14231f;--mute:#5a6e68;--line:rgba(20,35,31,.16);--acc:#d9731a;--acc-ink:#fff;--ok:#12805c;--bad:#b3261e;--chip:rgba(20,35,31,.08);--user:#cfe5db;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -133,7 +133,7 @@ a.btn{text-decoration:none;display:inline-block;color:inherit}
 <div class="app">
 
 <aside class="card side" id="sidec" aria-label="Tasks">
-  <div class="brand"><canvas id="mini" width="28" height="28" aria-hidden="true"></canvas>Maistro<span class="rev" id="rev">r2</span><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
+  <div class="brand"><canvas id="mini" width="28" height="28" aria-hidden="true"></canvas>Maistro<span class="rev" id="rev">r3</span><span class="sp"></span><button class="btn sm" id="newt" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="New, open, import or export" title="New, open, import or export">+</button><button class="btn sm" id="gear" type="button" aria-label="Settings" title="Settings">⚙︎</button></div>
   <div class="menu" id="menu" role="menu" hidden><button type="button" role="menuitem" data-a="new_task">New Task</button><button type="button" role="menuitem" data-a="new_project">New Project</button><button type="button" role="menuitem" data-a="open_project">Open Project</button><button type="button" role="menuitem" data-a="import_project">Import Project</button><button type="button" role="menuitem" data-a="export_project">Export Project</button><div class="sgrp" style="padding:6px 10px 2px">Recent projects</div><div id="mrec"></div></div>
   <details id="rec" open><summary>📁 Recent projects</summary><div id="reclist"></div></details>
   <details id="rq" open><summary>🧾 Recent queue</summary><div id="rqlist"></div></details>
@@ -548,7 +548,7 @@ console.log('Next: node ' + path.join(out, 'maistro-bridge.mjs'));
 <script>
 (function(){
 var $=function(i){return document.getElementById(i)};
-var REV="r2"; /* bump REV on every build */
+var REV="r3"; /* bump REV on every build */
 var S={voice:false,vwho:"",vgen:0,jobs:[],jid:0,sess:null,hits:[],busy:false,last:""};
 var STAGES=["Brief","Image","3D mesh","Cleanup","Import","Demo link"];
 function sha(){return Math.random().toString(16).slice(2,9)}
@@ -1072,7 +1072,7 @@ function ghGet(path){return fetch("https://raw.githubusercontent.com/"+GH.owner+
 function ghPut(path,obj,msg){var tok=($("ght").value||KEYS.ght||"").trim();if(!tok)return Promise.reject(new Error("Add a GitHub token to save lists."));return fetch("https://api.github.com/repos/"+GH.owner+"/"+GH.repo+"/contents/"+path+"?ref="+GH.branch,{headers:{Authorization:"Bearer "+tok,Accept:"application/vnd.github+json"}}).then(function(r){return r.status===404?{sha:""}:r.json()}).then(function(cur){var body={message:msg,content:ghB64(JSON.stringify(obj,null,2)),branch:GH.branch};if(cur&&cur.sha)body.sha=cur.sha;return fetch("https://api.github.com/repos/"+GH.owner+"/"+GH.repo+"/contents/"+path,{method:"PUT",headers:{Authorization:"Bearer "+tok,Accept:"application/vnd.github+json","Content-Type":"application/json"},body:JSON.stringify(body)})}).then(function(r){if(!r.ok)return r.json().then(function(j){throw new Error(j.message||("save "+r.status))});return r.json()})}
 function pushLists(texts){var tok=($("ght").value||KEYS.ght||"").trim();if(!tok)return Promise.resolve();var user=ghUser(),mine={user:user,items:ASK.items.slice(-80).map(function(it){return{text:it.text,t:it.t||Date.now(),job:!!it.jobId}}),updated:Date.now()};
  return ghGet("lists/global.json").catch(function(){return null}).then(function(g){g=g||{items:[]};var items=g.items||[];(texts||[]).forEach(function(text){var k=text.toLowerCase(),hit=items.filter(function(it){return String(it.text).toLowerCase()===k})[0];if(hit){hit.n=(hit.n||1)+1;hit.by=hit.by||[];if(hit.by.indexOf(user)<0)hit.by.push(user);hit.t=Date.now()}else items.push({text:text,n:1,by:[user],t:Date.now()})});items.sort(function(a,b){return (b.n||0)-(a.n||0)});return ghPut("lists/u/"+user+".json",mine,"list: "+user).then(function(){return ghPut("lists/global.json",{items:items.slice(0,200),updated:Date.now()},"list: shared")})}).then(function(){say("Saved your list and the shared list.","sys")},function(e){say("Could not save lists. "+e.message,"sys")})}
-function loadMine(){ghGet("lists/u/"+ghUser()+".json").then(function(d){if(!d||!d.items){say("No saved list for "+ghUser()+" yet.","sys");return}d.items.forEach(function(it){if(it&&it.text&&!ASK.items.some(function(q){return q.text.toLowerCase()===it.text.toLowerCase()}))ASK.items.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),text:it.text})});saveAsk();paintAsk();say("Loaded your list ("+ghUser()+").","sys")}).catch(function(){say("Could not load your list.","sys")})}
+function loadMine(quiet){return ghGet("lists/u/"+ghUser()+".json").then(function(d){if(!d||!d.items||!d.items.length){if(!quiet)say("No saved list for "+ghUser()+" yet.","sys");return 0}var n=0;d.items.forEach(function(it){if(it&&it.text&&!ASK.items.some(function(q){return q.text.toLowerCase()===it.text.toLowerCase()})){ASK.items.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),text:it.text});n++}});if(n){saveAsk();paintAsk()}if(!quiet)say(n?"Loaded "+n+" from your list ("+ghUser()+").":"Your list is already here.","sys");return n}).catch(function(){if(!quiet)say("Could not load your list.","sys");return 0})}
 function loadGlobal(){return ghGet("lists/global.json").then(function(d){ASK.global=(d&&d.items)||[];paintImprove();return ASK.global})}
 function paintImprove(){var box=$("askimpbox");if(!box)return;box.innerHTML="";var items=(ASK.global||[]).slice(0,8);if(!items.length){var e=document.createElement("p");e.className="why";e.textContent="No shared asks yet.";box.appendChild(e);return}
  var h=document.createElement("p");h.className="why";h.textContent="Often asked";box.appendChild(h);
@@ -1123,10 +1123,11 @@ function bootAsk(){
  $("ght").value=KEYS.ght||"";
  $("ght").oninput=function(){KEYS.ght=this.value;ksave()};
  $("asksync").onclick=function(){pushLists(ASK.items.map(function(it){return it.text}))};
- $("askmine").onclick=loadMine;
- $("askglob").onclick=function(){loadGlobal().then(function(){say("Loaded the shared list.","sys")}).catch(function(){say("Could not load the shared list.","sys")})};
+ $("askmine").onclick=function(){loadMine(false)};
+ $("askglob").onclick=function(){loadGlobal().then(function(items){say(items.length?"Shared list: "+items.length+" item"+(items.length===1?"":"s")+".":"Shared list is empty.","sys")}).catch(function(){say("Could not load the shared list.","sys")})};
  $("askimp").onclick=improveFromLists;
  loadGlobal().catch(function(){});
+ loadMine(true);
  $("askin").addEventListener("keydown",function(e){if(e.key==="Enter"&&(e.metaKey||e.ctrlKey)){e.preventDefault();askGo(true)}else if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();askGo(false)}});
  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&ASK.open){ASK.open=false;saveAsk();paintAsk()}})}
 bootAsk();
